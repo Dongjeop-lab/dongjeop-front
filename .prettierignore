@@ -1,0 +1,27 @@
+# dependencies
+node_modules/
+
+# build outputs
+.next/
+out/
+dist/
+build/
+
+# logs
+*.log
+
+# environment files
+.env*
+
+# package manager files
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+# generated files
+*.tsbuildinfo
+
+# IDE/Editor files
+.vscode/
+.idea/
+.DS_Store
