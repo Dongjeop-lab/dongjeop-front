@@ -1,0 +1,77 @@
+name: "🐞 Bug Report"
+description: 버그 제보 - 문제가 발생했을 때 사용해주세요
+title: "bug: "
+labels: [bug, needs-triage]
+assignees: [jyj0216jyj, hyrmzz1]
+body:
+  - type: textarea
+    id: describe
+    attributes:
+      label: 🔍 무엇이 잘못되었나요?
+      description: 현재 동작과 기대했던 동작을 구체적으로 설명해주세요
+      placeholder: |
+        예시:
+        - 현재: 로그인 버튼을 클릭해도 아무 반응이 없음
+        - 기대: 로그인 페이지로 이동해야 함
+    validations: { required: true }
+    
+  - type: textarea
+    id: steps
+    attributes:
+      label: 📋 재현 단계
+      description: 문제를 다시 발생시킬 수 있는 단계를 적어주세요
+      placeholder: |
+        1. localhost:3000 접속
+        2. 헤더의 '로그인' 버튼 클릭
+        3. 아무 반응 없음 (콘솔에 에러 표시)
+    validations: { required: true }
+    
+  - type: dropdown
+    id: urgency
+    attributes:
+      label: ⚡ 긴급도
+      description: 이 버그가 프로젝트에 미치는 영향 정도
+      options:
+        - 🔴 Critical - 서비스 전체가 동작하지 않음
+        - 🟡 High - 주요 기능이 동작하지 않음  
+        - 🟢 Medium - 일부 기능에 문제가 있음
+        - ⚪ Low - UI 오류나 경미한 문제
+    validations: { required: true }
+    
+  - type: textarea
+    id: env
+    attributes:
+      label: 🖥️ 환경 정보
+      description: 문제가 발생한 환경을 적어주세요
+      placeholder: |
+        - OS: macOS 14.1 / Windows 11
+        - 브라우저: Chrome 120, Safari 17
+        - 디바이스: Desktop / Mobile (iPhone 15)
+        - 네트워크: WiFi / 4G
+        - Node.js: 20.10.0 (개발 환경인 경우)
+    validations: { required: true }
+    
+  - type: textarea
+    id: logs
+    attributes:
+      label: 📊 로그 및 스크린샷
+      description: 콘솔 에러, 네트워크 탭 정보, 스크린샷을 첨부해주세요
+      placeholder: |
+        콘솔 에러:
+        ```
+        TypeError: Cannot read property 'map' of undefined
+        ```
+        
+        스크린샷: (이미지 첨부)
+        
+  - type: checkboxes
+    id: additional_info
+    attributes:
+      label: ✅ 추가 정보
+      description: 해당하는 항목이 있으면 체크해주세요
+      options:
+        - label: 이 버그는 특정 브라우저에서만 발생합니다
+        - label: 이 버그는 모바일에서만 발생합니다  
+        - label: 이 버그는 개발 환경에서만 발생합니다
+        - label: 이 버그는 간헐적으로 발생합니다
+        - label: 워크어라운드(임시 해결책)가 있습니다

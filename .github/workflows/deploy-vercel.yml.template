@@ -1,0 +1,233 @@
+# =============================================================================
+# 🚀 Vercel 배포 워크플로우 (옵션 3: 하이브리드 - 간편한 서버 배포)
+# 
+# 📊 배포 전략 비교:
+# 
+# 옵션 1 (정적 배포) → 별도 정적 호스팅 서비스 사용
+# ✅ 장점: 간단, 저렴, 빠름, CDN 자동 활용, 무한 확장
+# ❌ 단점: API Routes 불가, SSR 불가, 동적 기능 제한
+# 💰 비용: 월 $1-10 (정적 호스팅 서비스)
+# 
+# 옵션 2 (서버 배포) → deploy-custom-server.yml.template 사용
+# ✅ 장점: 모든 Next.js 기능, API Routes, SSR, 완전한 제어권
+# ❌ 단점: 서버 관리, 복잡성, 운영 부담
+# 💰 비용: 월 $10-50+ (서버 인스턴스 + 관리 시간)
+# 
+# 옵션 3 (Vercel) → 이 템플릿 사용 ⭐
+# ✅ 장점: 모든 기능 + 자동 관리, 글로벌 CDN, 간편함, 자동 스케일링
+# ❌ 단점: 비용 증가, 플랫폼 종속성, 제한된 커스터마이징
+# 💰 비용: 월 $0-100+ (사용량 기반)
+#
+# 🎯 이 템플릿을 선택해야 하는 경우:
+# - 빠른 프로토타입, 스타트업 MVP
+# - Next.js 모든 기능 사용 (API Routes, SSR, ISR)
+# - 서버 관리 부담 없이 확장성 원할 때
+# - 글로벌 CDN과 자동 최적화 필요할 때
+# - 팀이 작고 인프라 전문가가 없을 때
+#
+# ✨ Vercel 특별 기능들:
+# - 🌍 자동 글로벌 CDN 및 엣지 배포
+# - 🔄 PR마다 자동 미리보기 배포
+# - 📊 성능 분석 및 Core Web Vitals 모니터링
+# - 🔧 자동 환경변수 관리
+# - 📱 모바일 성능 최적화
+# - 🚀 자동 스케일링 (트래픽 급증 대응)
+#
+# 활성화 방법:
+# 1. Vercel 계정 생성 및 프로젝트 연결
+# 2. GitHub Secrets에 Vercel 토큰 및 프로젝트 정보 추가
+# 3. 파일명을 deploy-vercel.yml로 변경 후 주석 해제
+# 4. 커밋 & 푸시 → 자동 배포 시작
+# =============================================================================
+
+# name: 🚀 Vercel 자동 배포
+# 
+# on:
+#   push:
+#     branches: [ main ]
+#   pull_request:
+#     branches: [ main ]  # PR마다 미리보기 배포
+#   workflow_dispatch:  # 수동 배포 버튼 활성화
+# 
+# permissions:
+#   contents: read
+#   pull-requests: write  # PR 댓글 권한 (미리보기 URL 댓글)
+# 
+# jobs:
+#   deploy:
+#     name: 🌐 Vercel 배포
+#     runs-on: ubuntu-latest
+#     timeout-minutes: 10
+#     
+#     steps:
+#       - name: 📥 코드 체크아웃
+#         uses: actions/checkout@v4
+# 
+#       - name: 🟢 Node.js 22.12.0 설정
+#         uses: actions/setup-node@v4
+#         with:
+#           node-version: '22.12.0'
+#           cache: 'npm'
+#           cache-dependency-path: 'package-lock.json'
+# 
+#       - name: 📦 의존성 설치
+#         run: npm ci
+# 
+#       - name: 🔍 배포 전 품질 검사
+#         run: |
+#           npm run lint
+#           npm run typecheck
+# 
+#       - name: 🏗️ 프로덕션 빌드
+#         run: npm run build
+#         env:
+#           # Next.js 환경변수 (Vercel에서 자동 주입되지만 빌드용)
+#           NEXT_PUBLIC_API_URL: ${{ secrets.NEXT_PUBLIC_API_URL }}
+#           NEXT_PUBLIC_MAP_API_KEY: ${{ secrets.NEXT_PUBLIC_MAP_API_KEY }}
+#           NEXT_PUBLIC_DOMAIN: ${{ secrets.NEXT_PUBLIC_DOMAIN }}
+#           NODE_ENV: production
+# 
+#       - name: 🚀 Vercel 배포 실행
+#         uses: amondnet/vercel-action@v25
+#         id: vercel-deploy
+#         with:
+#           vercel-token: ${{ secrets.VERCEL_TOKEN }}
+#           vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
+#           vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
+#           vercel-args: ${{ github.event_name == 'pull_request' && '--prod=false' || '--prod' }}
+#           github-token: ${{ secrets.GITHUB_TOKEN }}
+#           scope: ${{ secrets.VERCEL_ORG_ID }}
+# 
+#       - name: 📊 배포 결과 요약
+#         if: always()
+#         run: |
+#           echo "## 🚀 Vercel 배포 완료" >> $GITHUB_STEP_SUMMARY
+#           echo "- ✅ 의존성 설치 완료" >> $GITHUB_STEP_SUMMARY
+#           echo "- ✅ 품질 검사 완료" >> $GITHUB_STEP_SUMMARY
+#           echo "- ✅ 프로덕션 빌드 완료" >> $GITHUB_STEP_SUMMARY  
+#           echo "- ✅ Vercel 배포 완료" >> $GITHUB_STEP_SUMMARY
+#           echo "" >> $GITHUB_STEP_SUMMARY
+#           if [ "${{ github.event_name }}" = "pull_request" ]; then
+#             echo "🔗 **미리보기 URL:** ${{ steps.vercel-deploy.outputs.preview-url }}" >> $GITHUB_STEP_SUMMARY
+#             echo "📱 **모바일 테스트:** [Mobile Preview](${{ steps.vercel-deploy.outputs.preview-url }})" >> $GITHUB_STEP_SUMMARY
+#           else
+#             echo "🔗 **프로덕션 사이트:** https://${{ secrets.NEXT_PUBLIC_DOMAIN }}" >> $GITHUB_STEP_SUMMARY
+#             echo "📊 **Vercel 대시보드:** [Analytics 보기](https://vercel.com/dashboard)" >> $GITHUB_STEP_SUMMARY
+#           fi
+#           echo "⚡ **배포 시간:** 약 1-2분 (즉시 반영)" >> $GITHUB_STEP_SUMMARY
+
+# =============================================================================
+# 📋 GitHub Secrets 설정 가이드
+# 경로: GitHub 저장소 → Settings → Secrets and variables → Actions → New secret
+# =============================================================================
+
+# 🔑 Vercel 계정 정보 (필수):
+# VERCEL_TOKEN: 개인 액세스 토큰 (vercel.com → Settings → Tokens에서 생성)
+# VERCEL_ORG_ID: 팀/개인 계정 ID (Vercel 대시보드 → Settings → General에서 확인)
+# VERCEL_PROJECT_ID: 프로젝트 ID (Vercel 프로젝트 → Settings → General에서 확인)
+
+# 🌐 환경변수 (프로젝트에 맞게):
+# NEXT_PUBLIC_API_URL: https://api.dongjeop.com (백엔드 API URL)
+# NEXT_PUBLIC_MAP_API_KEY: Google Maps API 키
+# NEXT_PUBLIC_DOMAIN: dongjeop.com (커스텀 도메인, 옵션)
+
+# 💡 추가 환경변수 (필요시):
+# NEXT_PUBLIC_CDN_URL: Vercel이 자동 제공하므로 보통 불필요
+# NEXT_PUBLIC_ANALYTICS_ID: Google Analytics ID
+
+# =============================================================================
+# 🚀 Vercel 프로젝트 설정 가이드
+# =============================================================================
+
+# 1단계: Vercel 계정 생성
+# - https://vercel.com 접속 → GitHub로 가입
+# - 무료 Hobby 플랜으로 시작 (개인 프로젝트 충분)
+
+# 2단계: 프로젝트 연결
+# - Vercel 대시보드 → "New Project" 클릭
+# - GitHub 저장소 선택 (dongjeop-front)
+# - Framework Preset: Next.js 자동 감지
+# - Root Directory: ./ (기본값)
+
+# 3단계: 환경변수 설정 (Vercel 대시보드에서)
+# - 프로젝트 → Settings → Environment Variables
+# - Production, Preview, Development 환경별로 설정
+#   * NEXT_PUBLIC_API_URL=https://api.dongjeop.com (Production)
+#   * NEXT_PUBLIC_API_URL=https://staging-api.dongjeop.com (Preview)
+#   * NEXT_PUBLIC_MAP_API_KEY=your-google-maps-key (All Environments)
+
+# 4단계: 도메인 연결 (선택사항)
+# - 프로젝트 → Settings → Domains
+# - 커스텀 도메인 추가 (예: dongjeop.com)
+# - DNS A 레코드: 76.76.21.21 설정
+
+# 5단계: GitHub Secrets 가져오기
+# - VERCEL_TOKEN: Settings → Tokens → "Create Token" → 복사
+# - VERCEL_ORG_ID: Settings → General → Team ID 복사 (개인 계정은 Personal Account ID)
+# - VERCEL_PROJECT_ID: 프로젝트 → Settings → General → Project ID 복사
+
+# =============================================================================
+# 🎯 Vercel 특화 기능들
+# =============================================================================
+
+# 🔄 자동 미리보기 배포:
+# - 모든 PR에 대해 자동으로 미리보기 URL 생성
+# - PR 댓글에 미리보기 링크 자동 추가
+# - 브랜치별 고유 URL 제공
+
+# 📊 성능 모니터링:
+# - Core Web Vitals 자동 추적
+# - 실시간 성능 분석 리포트
+# - Lighthouse 점수 모니터링
+
+# 🌍 글로벌 CDN:
+# - 전 세계 엣지 서버에 자동 배포
+# - 지역별 최적화된 콘텐츠 제공
+# - 자동 이미지 최적화 (WebP, AVIF)
+
+# ⚡ 서버리스 함수:
+# - API Routes 자동 서버리스 배포
+# - 무한 확장, 사용한 만큼만 과금
+# - 콜드 스타트 최적화
+
+# =============================================================================
+# 🚀 실제 배포 단계
+# =============================================================================
+
+# 1단계: 준비
+# ✅ Vercel 계정 생성 및 프로젝트 연결
+# ✅ 환경변수 설정 (Vercel 대시보드 + GitHub Secrets)
+# ✅ 도메인 연결 (선택사항)
+
+# 2단계: 활성화
+# ✅ 이 파일명을 deploy-vercel.yml로 변경
+# ✅ 주석 해제 후 커밋 & 푸시
+
+# 3단계: 확인
+# ✅ GitHub Actions 탭에서 배포 로그 확인
+# ✅ Vercel 대시보드에서 배포 상태 확인
+# ✅ https://your-domain.com 또는 Vercel URL로 접속 확인
+
+# =============================================================================
+# 💰 비용 및 제한사항
+# =============================================================================
+
+# 📊 Hobby 플랜 (무료):
+# - 대역폭: 100GB/월
+# - 서버리스 함수 실행: 100GB-시/월
+# - 동시 빌드: 1개
+# - 팀 멤버: 1명 (개인만)
+# - 커스텀 도메인: 무제한
+
+# 🚀 Pro 플랜 ($20/월):
+# - 대역폭: 1TB/월 (초과 시 $40/TB)
+# - 서버리스 함수 실행: 1000GB-시/월
+# - 동시 빌드: 3개
+# - 팀 멤버: 무제한
+# - 고급 분석 및 로그
+
+# 🎯 언제 유료 플랜이 필요한가?
+# - 월 10만+ 페이지뷰
+# - 팀 협업 필요
+# - 고급 분석 필요
+# - 더 빠른 빌드 속도 필요

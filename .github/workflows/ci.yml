@@ -1,0 +1,55 @@
+name: 🔍 코드 품질 검사
+
+on:
+  push:
+    branches: [ main, develop ]  # Git Flow에 맞게 develop 사용
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+permissions:
+  contents: read
+  pull-requests: write    # PR 댓글 권한
+  checks: write          # 체크 상태 업데이트 권한
+
+jobs:
+  ci:
+    name: 📋 품질 검사
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    
+    steps:
+      - name: 📥 코드 체크아웃
+        uses: actions/checkout@v4
+
+      - name: 🟢 Node.js 22.12.0 설정
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22.12.0'
+          cache: 'npm'
+          cache-dependency-path: 'package-lock.json'
+
+      - name: 📦 의존성 설치
+        run: npm ci
+
+      - name: 🔍 린트 검사
+        run: npm run lint
+
+      - name: 🎯 타입 검사  
+        run: npm run typecheck
+
+      - name: 🏗️ 빌드 검사
+        run: npm run build
+        env:
+          NODE_ENV: production
+
+      - name: 📊 검사 결과 요약
+        if: always()
+        run: |
+          echo "## 🔍 CI 검사 결과" >> $GITHUB_STEP_SUMMARY
+          echo "- ✅ 의존성 설치 완료" >> $GITHUB_STEP_SUMMARY
+          echo "- ✅ 린트 검사 완료" >> $GITHUB_STEP_SUMMARY  
+          echo "- ✅ 타입 검사 완료" >> $GITHUB_STEP_SUMMARY
+          echo "- ✅ 빌드 검사 완료" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Next.js 버전:** $(npx next --version)" >> $GITHUB_STEP_SUMMARY
+          echo "**Node.js 버전:** $(node --version)" >> $GITHUB_STEP_SUMMARY

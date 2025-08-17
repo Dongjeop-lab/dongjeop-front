@@ -1,0 +1,124 @@
+# =============================================================================
+# 🏷️ 자동 라벨링 워크플로우
+# 
+# 📝 목적:
+# - PR에서 변경된 파일 경로를 분석하여 자동으로 적절한 라벨을 부여
+# - 코드 리뷰와 이슈 관리 효율성 향상
+# - 팀원들이 변경 사항의 범위를 한눈에 파악 가능
+#
+# 🎯 동작 방식:
+# 1. PR이 생성되거나 새 커밋이 푸시될 때 자동 실행
+# 2. .github/labeler.yml 파일의 규칙에 따라 라벨 분석
+# 3. 변경된 파일 경로와 매칭되는 라벨들을 자동 부여
+# 4. 기존 라벨은 유지하고 새로운 라벨만 추가
+#
+# 📁 연동 파일:
+# - .github/labeler.yml: 파일 경로 → 라벨 매핑 규칙 정의
+# - .github/ISSUE_TEMPLATE/*.yml: feature_request에서 동일한 카테고리 사용
+# - .github/pull_request_template.md: 변경사항 체크리스트와 일치
+#
+# 🏷️ 자동 부여되는 라벨들:
+# ui, api, pages, map, upload, types, utils, styles, config, 
+# documentation, deployment, test, assets, pwa 등
+# =============================================================================
+
+name: 🏷️ 자동 라벨링
+
+on:
+  pull_request:
+    types: [opened, synchronize]  # PR 생성 또는 새 커밋 푸시 시
+
+permissions:
+  contents: read
+  pull-requests: write  # 라벨 추가/수정 권한
+
+jobs:
+  auto-label:
+    name: 📋 PR 라벨 자동 분류
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    
+    steps:
+      - name: 📥 코드 체크아웃
+        uses: actions/checkout@v4
+
+      - name: 🏷️ 파일 변경사항 기반 자동 라벨링
+        uses: actions/labeler@v5
+        with:
+          repo-token: "${{ secrets.GITHUB_TOKEN }}"
+          configuration-path: .github/labeler.yml
+          sync-labels: true  # 파일 변경 시 라벨 동기화
+
+      - name: 📊 라벨링 결과 요약
+        if: always()
+        run: |
+          echo "## 🏷️ 자동 라벨링 완료" >> $GITHUB_STEP_SUMMARY
+          echo "- ✅ 변경된 파일 경로 분석 완료" >> $GITHUB_STEP_SUMMARY
+          echo "- ✅ 관련 라벨 자동 부여 완료" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "📁 **라벨링 규칙:** [.github/labeler.yml](/.github/labeler.yml) 파일 참조" >> $GITHUB_STEP_SUMMARY
+          echo "🔧 **라벨 수정:** PR 페이지에서 수동으로 라벨 추가/제거 가능" >> $GITHUB_STEP_SUMMARY
+
+# =============================================================================
+# 🔧 라벨링 규칙 커스터마이징
+# =============================================================================
+
+# .github/labeler.yml 파일을 수정하여 라벨링 규칙을 변경할 수 있습니다:
+#
+# 예시:
+# ```yaml
+# # 새로운 라벨 추가
+# backend:
+#   - "src/lib/api/**"
+#   - "src/services/**"
+# 
+# # 기존 라벨 수정  
+# ui:
+#   - "src/components/**"
+#   - "src/app/**/components/**"
+#   - "stories/**"  # Storybook 파일도 UI로 분류
+# ```
+#
+# 주의사항:
+# - 파일 경로는 글롭 패턴 사용 (**, *, ? 지원)
+# - 여러 라벨이 매칭되면 모두 부여됨
+# - GitHub에 해당 라벨이 미리 생성되어 있어야 함
+
+# =============================================================================
+# 🎯 라벨 활용 가이드
+# =============================================================================
+
+# 📊 코드 리뷰 효율성:
+# - 리뷰어가 변경 범위를 즉시 파악 가능
+# - 전문성에 따른 리뷰어 배정 용이
+# - 관련 없는 변경사항 빠른 필터링
+
+# 📈 프로젝트 관리:
+# - 기능별 개발 진행상황 추적
+# - 릴리즈 노트 자동 생성 시 활용
+# - 이슈 분류 및 우선순위 설정
+
+# 🔍 검색 및 필터링:
+# - GitHub Issues/PR에서 라벨로 필터링
+# - 특정 영역의 변경 히스토리 추적
+# - 팀 구성원별 담당 영역 파악
+
+# =============================================================================
+# 🆘 문제 해결
+# =============================================================================
+
+# ❓ 라벨이 자동으로 붙지 않을 때:
+# 1. .github/labeler.yml 파일 경로와 문법 확인
+# 2. GitHub에 해당 라벨이 생성되어 있는지 확인  
+# 3. Actions 탭에서 워크플로우 실행 로그 확인
+# 4. permissions 설정 확인 (pull-requests: write)
+
+# ❓ 잘못된 라벨이 붙을 때:
+# 1. .github/labeler.yml의 파일 경로 패턴 확인
+# 2. 더 구체적인 경로 패턴으로 수정
+# 3. 수동으로 라벨 제거 후 다시 테스트
+
+# ❓ 라벨 충돌이나 중복:
+# 1. sync-labels: true 설정으로 자동 동기화
+# 2. 라벨 이름 중복 확인 (.github/labeler.yml vs GitHub 라벨)
+# 3. 필요 시 수동으로 라벨 정리
