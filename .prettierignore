@@ -1,27 +1,33 @@
-# dependencies
+# Dependencies
 node_modules/
 
-# build outputs
+# Build outputs
 .next/
 out/
 dist/
 build/
 
-# logs
+# Logs
 *.log
 
-# environment files
+# Environment files
 .env*
 
-# package manager files
+# Package manager files
 package-lock.json
 yarn.lock
 pnpm-lock.yaml
 
-# generated files
+# Generated files
 *.tsbuildinfo
 
 # IDE/Editor files
 .vscode/
 .idea/
 .DS_Store
+
+# GitHub workflows and templates
+.github/
+
+# Documentation
+*.md
