@@ -1,0 +1,208 @@
+# =============================================================================
+# 🚀 커스텀 서버 배포 워크플로우 (옵션 2: 서버 배포)
+# 
+# 📊 배포 전략 비교:
+# 
+# 옵션 1 (정적 배포) → 별도 정적 호스팅 서비스 사용
+# ✅ 장점: 간단, 저렴, 빠름, CDN 자동 활용
+# ❌ 단점: API Routes 불가, SSR 불가, 동적 기능 제한
+# 💰 비용: 월 $1-10 (정적 호스팅 서비스)
+# 
+# 옵션 2 (서버 배포) → 이 템플릿 사용 ⭐
+# ✅ 장점: 모든 Next.js 기능, API Routes, SSR, 완전한 제어권
+# ❌ 단점: 서버 관리, 복잡성, 운영 부담
+# 💰 비용: 월 $10-50+ (서버 인스턴스 + 관리 시간)
+# 
+# 옵션 3 (Vercel) → deploy-vercel.yml.template 사용  
+# ✅ 장점: 모든 기능 + 자동 관리, 글로벌 CDN, 간편함
+# ❌ 단점: 비용 증가, 플랫폼 종속성, 제한된 커스터마이징
+# 💰 비용: 월 $0-100+ (사용량 기반)
+#
+# 🎯 선택 가이드:
+# - 단순한 랜딩페이지/포트폴리오 → 옵션 1
+# - 본격적인 웹앱 (API, 실시간 기능) → 옵션 2 또는 3
+# - 빠른 프로토타입, 스타트업 → 옵션 3
+# - 엔터프라이즈, 완전한 제어 → 옵션 2
+#
+# 활성화 방법:
+# 1. 파일명을 deploy-custom-server.yml로 변경
+# 2. 배포 방식 선택 (Docker 권장)
+# 3. GitHub Secrets 설정
+# 4. 주석 해제 후 커밋
+# =============================================================================
+
+# name: 🚀 커스텀 서버 배포
+# 
+# on:
+#   push:
+#     branches: [ main ]  # 또는 develop에서도 배포하려면 추가
+#   workflow_dispatch:     # 수동 배포 버튼 활성화
+# 
+# permissions:
+#   contents: read
+# 
+# jobs:
+#   deploy:
+#     name: 🖥️ 서버 배포
+#     runs-on: ubuntu-latest
+#     timeout-minutes: 20
+#     environment: production  # 배포 승인 과정 추가 (선택)
+#     
+#     steps:
+#       - name: 📥 코드 체크아웃
+#         uses: actions/checkout@v4
+# 
+#       - name: 🟢 Node.js 22.12.0 설정
+#         uses: actions/setup-node@v4
+#         with:
+#           node-version: '22.12.0'
+#           cache: 'npm'
+# 
+#       - name: 📦 의존성 설치
+#         run: npm ci
+# 
+#       - name: 🏗️ 프로덕션 빌드
+#         run: npm run build
+#         env:
+#           # GitHub Secrets에서 환경변수 가져오기
+#           NEXT_PUBLIC_API_URL: ${{ secrets.NEXT_PUBLIC_API_URL }}
+#           NEXT_PUBLIC_MAP_API_KEY: ${{ secrets.NEXT_PUBLIC_MAP_API_KEY }}
+#           NEXT_PUBLIC_DOMAIN: ${{ secrets.NEXT_PUBLIC_DOMAIN }}
+# 
+#       # =============================================================================
+#       # 🐳 Docker 배포 (권장 방법)
+#       # 
+#       # 왜 Docker를 추천하나?
+#       # ✅ 환경 일관성: 개발/스테이징/프로덕션 동일 환경
+#       # ✅ 쉬운 롤백: docker run old-version 한 줄로 롤백
+#       # ✅ 확장성: 여러 서버에 동일하게 배포 가능
+#       # ✅ 격리성: 호스트 시스템과 독립적 실행
+#       # =============================================================================
+#       
+#       # Step 1: Docker 이미지 빌드
+#       # - name: 🐳 Docker 이미지 빌드
+#       #   run: |
+#       #     docker build -t dongjeop-front:${{ github.sha }} .
+#       #     docker tag dongjeop-front:${{ github.sha }} dongjeop-front:latest
+#       
+#       # Step 2: 서버에 배포  
+#       # - name: 🚀 서버에 Docker 배포
+#       #   uses: appleboy/ssh-action@v0.1.5
+#       #   with:
+#       #     host: ${{ secrets.SERVER_HOST }}
+#       #     username: ${{ secrets.SERVER_USER }}
+#       #     key: ${{ secrets.SERVER_SSH_KEY }}
+#       #     port: ${{ secrets.SERVER_PORT || 22 }}
+#       #     script: |
+#       #       # 기존 컨테이너 정리
+#       #       docker stop dongjeop-front 2>/dev/null || true
+#       #       docker rm dongjeop-front 2>/dev/null || true
+#       #       
+#       #       # 새 컨테이너 실행
+#       #       docker run -d \
+#       #         --name dongjeop-front \
+#       #         -p 80:3000 \
+#       #         --restart unless-stopped \
+#       #         -e NEXT_PUBLIC_API_URL="${{ secrets.NEXT_PUBLIC_API_URL }}" \
+#       #         dongjeop-front:latest
+#       #       
+#       #       # 헬스체크
+#       #       sleep 10
+#       #       curl -f http://localhost || exit 1
+#       #       echo "✅ 배포 성공! 서비스가 정상 실행 중입니다."
+# 
+#       
+#       # =============================================================================
+#       # 📁 대안: 직접 파일 배포 (Docker 없이)
+#       # 
+#       # 언제 사용하나?
+#       # - Docker 설치가 어려운 환경
+#       # - 기존 서버 환경을 그대로 사용하고 싶을 때
+#       # - 단순한 파일 교체만 필요할 때
+#       # 
+#       # ⚠️ 주의: Node.js, PM2가 서버에 미리 설치되어 있어야 함
+#       # =============================================================================
+#       
+#       # 주석 해제하여 사용 (Docker 대신):
+#       # - name: 📁 빌드 파일 서버로 전송
+#       #   uses: burnett01/rsync-deployments@5.2  
+#       #   with:
+#       #     switches: -avzr --delete
+#       #     path: '.next/ package*.json'
+#       #     remote_path: /var/www/dongjeop-front/
+#       #     remote_host: ${{ secrets.SERVER_HOST }}
+#       #     remote_user: ${{ secrets.SERVER_USER }}
+#       #     remote_key: ${{ secrets.SERVER_SSH_KEY }}
+#       
+#       # - name: ⚡ 서비스 재시작
+#       #   uses: appleboy/ssh-action@v0.1.5
+#       #   with:
+#       #     host: ${{ secrets.SERVER_HOST }}
+#       #     username: ${{ secrets.SERVER_USER }}
+#       #     key: ${{ secrets.SERVER_SSH_KEY }}
+#       #     script: |
+#       #       cd /var/www/dongjeop-front
+#       #       npm ci --production
+#       #       pm2 restart dongjeop-front || pm2 start npm --name dongjeop-front -- start
+#       #       echo "✅ 배포 완료!"
+
+# =============================================================================
+# 📋 GitHub Secrets 설정 가이드
+# 경로: GitHub 저장소 → Settings → Secrets and variables → Actions → New secret
+# =============================================================================
+
+# 🖥️ 서버 정보 (필수):
+# SERVER_HOST: 12.34.56.78 또는 your-server.com
+# SERVER_USER: ubuntu (또는 ec2-user, root 등)  
+# SERVER_SSH_KEY: SSH 개인키 전체 내용 (-----BEGIN RSA PRIVATE KEY----- 포함)
+# SERVER_PORT: 22 (기본값, 다른 포트 사용 시 변경)
+
+# 🔐 환경변수 (프로젝트에 맞게):
+# NEXT_PUBLIC_API_URL: https://api.dongjeop.com (또는 https://your-backend.com)
+# NEXT_PUBLIC_MAP_API_KEY: Google Maps API 키
+# NEXT_PUBLIC_DOMAIN: dongjeop.com (또는 your-domain.com)
+
+# 💡 선택사항:
+# NEXT_PUBLIC_CDN_URL: CDN 사용 시
+# NEXT_PUBLIC_ANALYTICS_ID: Google Analytics 사용 시
+
+# =============================================================================
+# 📁 추가 작업 (배포 방식별)
+# =============================================================================
+
+# 🐳 Docker 사용 시 (권장):
+# 1. 프로젝트 루트에 Dockerfile 생성:
+#    ```dockerfile
+#    FROM node:20-alpine
+#    WORKDIR /app
+#    COPY package*.json ./
+#    RUN npm ci --production
+#    COPY .next ./.next  
+#    CMD ["npm", "start"]
+#    EXPOSE 3000
+#    ```
+# 2. .dockerignore 생성 (node_modules, .git 등 제외)
+
+# 📁 직접 배포 시:
+# 1. 서버에 Node.js 20+ 설치
+# 2. PM2 글로벌 설치: npm install -g pm2
+# 3. nginx 설정 (포트 3000 → 80 프록시)
+
+# =============================================================================  
+# 🚀 실제 배포 단계
+# =============================================================================
+
+# 1단계: 준비
+# ✅ 서버 준비 (클라우드 VPS 또는 자체 서버)
+# ✅ 도메인 연결 (A 레코드 설정)
+# ✅ GitHub Secrets 설정
+
+# 2단계: 활성화
+# ✅ 이 파일명을 deploy-custom-server.yml로 변경
+# ✅ Docker 방식 주석 해제 (또는 직접 배포 방식)  
+# ✅ 커밋 & 푸시 → 자동 배포 시작
+
+# 3단계: 확인
+# ✅ GitHub Actions 탭에서 배포 로그 확인
+# ✅ https://your-domain.com 접속하여 동작 확인
+# ✅ 서버에서 docker ps 또는 pm2 status로 프로세스 확인
