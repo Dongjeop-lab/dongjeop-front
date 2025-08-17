@@ -1,0 +1,109 @@
+# =============================================================================
+# GitHub Auto-Labeler 설정
+# PR에서 변경된 파일 경로에 따라 자동으로 라벨을 부여합니다.
+# =============================================================================
+
+# 🗺️ 지도 관련 기능
+map:
+  - "src/features/map/**"
+  - "src/components/**/map/**"
+  - "src/app/**/map/**"
+
+# 📱 PWA 관련
+pwa:
+  - "src/**/service-worker*"
+  - "src/**/manifest*"
+  - "public/manifest.json"
+  - "public/**/icon-*"
+
+# 🔗 API 관련
+api:
+  - "src/app/api/**"
+  - "src/lib/api/**"
+  - "src/types/api/**"
+
+# 🎨 UI 컴포넌트
+ui:
+  - "src/components/**"
+  - "src/app/**/components/**"
+  - "src/ui/**"
+
+# 📄 페이지 및 라우팅
+pages:
+  - "src/app/**/page.tsx"
+  - "src/app/**/layout.tsx"
+  - "src/app/**/loading.tsx"
+  - "src/app/**/error.tsx"
+  - "src/app/**/not-found.tsx"
+
+# 📤 업로드 관련
+upload:
+  - "src/features/upload/**"
+  - "src/components/**/upload/**"
+  - "src/lib/**/upload*"
+
+# 🎯 타입 정의
+types:
+  - "src/types/**"
+  - "**/*.d.ts"
+  - "src/**/*types.ts"
+  - "src/**/*.types.ts"
+
+# 🛠️ 유틸리티 & 라이브러리
+utils:
+  - "src/lib/**"
+  - "src/utils/**"
+  - "src/helpers/**"
+
+# 🎨 스타일링
+styles:
+  - "src/app/globals.css"
+  - "src/**/*.css"
+  - "src/**/*.scss"
+  - "src/**/*.module.*"
+  - "tailwind.config.*"
+  - "postcss.config.*"
+
+# ⚙️ 설정 파일
+config:
+  - "next.config.*"
+  - "package*.json"
+  - "tsconfig*.json"
+  - "eslint.config.*"
+  - ".env*"
+  - "!.env.example"
+
+# 📚 문서 (기존 documentation 라벨 활용)
+documentation:
+  - "README.md"
+  - "CHANGELOG*.md"
+  - "docs/**"
+  - "**/*.md"
+  - "!README-DEPLOYMENT.md"
+  - "!.github/**/*.md"
+
+# 🚀 배포 & CI/CD
+deployment:
+  - ".github/workflows/**"
+  - "Dockerfile*"
+  - "docker-compose*"
+  - "**/deploy*"
+  - "README-DEPLOYMENT.md"
+
+# 🧪 테스트
+test:
+  - "**/*.test.*"
+  - "**/*.spec.*"
+  - "**/__tests__/**"
+  - "test/**"
+  - "tests/**"
+
+# 🖼️ 정적 파일
+assets:
+  - "public/**"
+  - "src/assets/**"
+  - "**/*.svg"
+  - "**/*.png" 
+  - "**/*.jpg"
+  - "**/*.jpeg"
+  - "**/*.gif"

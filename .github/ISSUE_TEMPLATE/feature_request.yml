@@ -1,0 +1,105 @@
+name: "✨ Feature Request"
+description: 새로운 기능 제안 - 필요한 기능이나 개선사항을 제안해주세요
+title: "feat: "
+labels: [enhancement, needs-triage]
+assignees: [jyj0216jyj, hyrmzz1]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: 📝 문제 상황 및 배경
+      description: 현재 어떤 문제나 불편함이 있는지 구체적으로 설명해주세요
+      placeholder: |
+        예시:
+        - 현재 상황: 사용자가 로그인할 때마다 매번 이메일과 비밀번호를 입력해야 함
+        - 문제점: 사용성이 떨어지고 재방문률이 낮아질 수 있음
+        - 필요성: 사용자 편의성 향상과 재방문 유도
+    validations: { required: true }
+    
+  - type: dropdown
+    id: category
+    attributes:
+      label: 🏷️ 기능 카테고리
+      description: 제안하는 기능이 어떤 영역인지 선택해주세요 (Auto-Labeler와 연동)
+      options:
+        - 🎨 UI/컴포넌트 (ui)
+        - 🔗 API/데이터 (api)
+        - 📄 페이지/라우팅 (pages)
+        - 🗺️ 지도 기능 (map)
+        - 📤 업로드 기능 (upload)
+        - 🎯 타입 정의 (types)
+        - 🛠️ 유틸리티 (utils)
+        - 🎨 스타일링 (styles)
+        - ⚙️ 설정/빌드 (config)
+        - 🚀 배포 관련 (deployment)
+        - 📚 문서 (documentation)
+        - 🧪 테스트 (test)
+        - 📱 PWA 기능 (pwa)
+        - 🖼️ 정적 파일 (assets)
+        - 🔧 기타
+    validations: { required: true }
+    
+  - type: textarea
+    id: proposal
+    attributes:
+      label: 💡 제안 내용
+      description: 구체적으로 어떤 기능이나 개선사항을 원하는지 설명해주세요
+      placeholder: |
+        구체적인 기능을 설명해주세요:
+        
+        예시 (UI/컴포넌트):
+        - 다크모드 테마 전환 버튼
+        - 로딩 스피너 컴포넌트 개선
+        - 반응형 네비게이션 메뉴
+        
+        예시 (지도 기능):
+        - 현재 위치 자동 감지
+        - 지도 마커 커스터마이징
+        - 검색 결과 필터링
+        
+        예시 (성능):
+        - 이미지 지연 로딩
+        - 검색 결과 캐싱
+        - 번들 크기 최적화
+    validations: { required: true }
+    
+  - type: dropdown
+    id: priority
+    attributes:
+      label: ⭐ 우선순위
+      description: 이 기능이 프로젝트에서 얼마나 중요한지 선택해주세요
+      options:
+        - 🔥 High - 핵심 기능, 빠른 구현 필요
+        - 🟡 Medium - 중요하지만 다른 작업 후 진행 가능
+        - 🟢 Low - 있으면 좋지만 당장 급하지 않음
+        - 💭 Idea - 아이디어 단계, 추후 검토
+    validations: { required: true }
+    
+  - type: checkboxes
+    id: ac
+    attributes:
+      label: ✅ 수용 기준 (Acceptance Criteria)
+      description: 이 기능이 완성되었다고 판단할 수 있는 기준들을 체크해주세요
+      options:
+        - label: 사용자가 기능을 직관적으로 찾고 사용할 수 있다
+        - label: 기능이 의도한 대로 정확히 동작한다  
+        - label: 모바일과 데스크톱에서 모두 잘 작동한다
+        - label: TypeScript 타입이 정의되어 있다
+        - label: 성능에 부정적 영향을 주지 않는다
+        - label: 기존 기능과의 호환성이 유지된다
+        - label: 개발자 도구(npm run ci)로 검증 가능하다
+        
+  - type: textarea
+    id: additional_context
+    attributes:
+      label: 📎 추가 정보
+      description: 참고할 만한 자료, 유사한 서비스 사례, 목업 등이 있으면 공유해주세요
+      placeholder: |
+        추가로 도움이 될 정보가 있다면 공유해주세요:
+        
+        - 참고 사이트/서비스: https://example.com
+        - 관련 이슈: #123
+        - 첨부 파일: (스크린샷, 목업, 문서 등)
+        - 기술적 제약사항: 예) React 19 호환성, Next.js 15 기능 활용
+        - 구현 아이디어: 예) Tailwind CSS 클래스, React Hook 활용법
+        - 브라우저 지원: 예) Safari 호환성 고려 필요

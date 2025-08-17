@@ -1,0 +1,77 @@
+# =============================================================================
+# CODEOWNERS 파일
+# PR에서 특정 파일/폴더 변경 시 자동으로 리뷰어 할당
+# =============================================================================
+
+# 전체 기본 리뷰어 (모든 파일)
+*  @jyj0216jyj  @hyrmzz1
+
+# =============================================================================
+# 핵심 설정 파일들 (엄격한 리뷰 - 프로젝트 안정성 중요)
+# =============================================================================
+
+# 패키지 및 의존성 관리
+package*.json           @jyj0216jyj
+package-lock.json       @jyj0216jyj
+
+# TypeScript 설정
+tsconfig*.json          @jyj0216jyj
+
+# Next.js 설정  
+next.config.*           @jyj0216jyj
+
+# 린트 및 코드 품질
+eslint.config.*         @jyj0216jyj
+.eslintrc*             @jyj0216jyj
+
+# 스타일링 설정
+tailwind.config.*       @jyj0216jyj
+postcss.config.*        @jyj0216jyj
+
+# GitHub 설정 (CI/CD, 템플릿 등)
+.github/               @jyj0216jyj
+
+# 환경변수 템플릿
+.env.example           @jyj0216jyj
+
+# =============================================================================
+# 소스 코드 영역별 책임자
+# =============================================================================
+
+# 앱 라우터 및 페이지 (공동 관리)
+src/app/               @jyj0216jyj  @hyrmzz1
+
+# API 라우트 (Next.js App Router 방식)
+src/app/api/           @hyrmzz1
+
+# UI 컴포넌트 (hyrmzz1 전담)
+src/components/        @hyrmzz1
+
+# 기능별 모듈
+src/features/map/      @jyj0216jyj
+src/features/upload/   @hyrmzz1
+
+# 타입 정의
+src/types/             @jyj0216jyj  @hyrmzz1
+
+# 유틸리티 및 라이브러리
+src/lib/               @hyrmzz1
+src/utils/             @hyrmzz1
+
+# 스타일 파일들
+src/app/globals.css    @hyrmzz1
+src/**/*.css           @hyrmzz1
+
+# =============================================================================
+# 문서 및 배포 관련
+# =============================================================================
+
+# 프로젝트 문서
+README*.md             @jyj0216jyj
+CHANGELOG*.md          @jyj0216jyj
+
+# 배포 관련 문서
+README-DEPLOYMENT.md   @jyj0216jyj
+
+# 배포 워크플로우 템플릿들
+.github/workflows/deploy-*.yml.template  @jyj0216jyj
