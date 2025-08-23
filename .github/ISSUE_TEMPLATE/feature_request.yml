@@ -26,7 +26,7 @@ body:
         - 🔗 API/데이터 (api)
         - 📄 페이지/라우팅 (pages)
         - 🗺️ 지도 기능 (map)
-        - 📤 업로드 기능 (upload)
+        - 📍 장소/리뷰 기능 (places)
         - 🎯 타입 정의 (types)
         - 🛠️ 유틸리티 (utils)
         - 🎨 스타일링 (styles)

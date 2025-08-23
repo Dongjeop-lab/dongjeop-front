@@ -55,14 +55,13 @@
 | 파일 | 역할 | 주요 기능 |
 |------|------|----------|
 | `.github/workflows/ci.yml` | 코드 품질 검사 | lint, typecheck, build 자동 실행 |
-| `.github/workflows/deploy-vercel.yml.template` | Vercel 배포 템플릿 | 간편한 서버리스 배포 |
-| `.github/workflows/deploy-custom-server.yml.template` | 커스텀 서버 배포 템플릿 | Docker/PM2 기반 서버 배포 |
+| `.github/workflows/deploy-kakao-cloud.yml.template` | 카카오 클라우드 배포 템플릿 | 간단한 서버 배포 자동화 |
 
 ### **📚 문서**
 
 | 파일 | 역할 | 주요 기능 |
 |------|------|----------|
-| `README-DEPLOYMENT.md` | 배포 가이드 | 환경별 배포 방법 및 설정 가이드 |
+| `README-DEPLOYMENT.md` | 배포 가이드 | 간단한 카카오 클라우드 배포 방법 |
 | `README-GITHUB-SETUP.md` | GitHub 설정 가이드 | 이 문서 (협업 환경 온보딩) |
 
 ---
@@ -184,26 +183,38 @@ src/features/map/** → @jyj0216jyj 자동 할당
 
 ---
 
-## 🚀 배포 옵션 및 선택 가이드
+## 🚀 배포 가이드
 
-### **배포 방식 비교**
+### **카카오 클라우드 배포 구조**
 
-| 옵션 | 적합한 경우 | 장점 | 단점 | 월 비용 |
-|------|------------|------|------|--------|
-| **Vercel** | 빠른 시작, 스타트업 | 간편함, 자동 최적화, PR 미리보기 | 비용 증가, 플랫폼 종속성 | $0-100+ |
-| **커스텀 서버** | 완전한 제어, 대규모 | 모든 기능, 완전한 제어권 | 복잡성, 운영 부담 | $10-50+ |
-
-### **🥇 권장: Vercel로 시작**
-```bash
-# 1. .github/workflows/deploy-vercel.yml.template 파일명 변경
-mv .github/workflows/deploy-vercel.yml.template .github/workflows/deploy-vercel.yml
-
-# 2. Vercel 계정 생성 및 프로젝트 연결
-# 3. GitHub Secrets 설정
-# 4. 주석 해제 후 커밋 & 푸시 → 자동 배포 시작
+```
+🌐 사용자 (HTTPS) → nginx (80/443) → Next.js (3000) → 카카오 클라우드
 ```
 
-자세한 배포 가이드는 **`README-DEPLOYMENT.md`** 참조
+| 환경 | 브랜치 | 도메인 | 배포 방식 |
+|------|--------|--------|----------|
+| **Dev** | `develop` | `[미정 - Dev 도메인]` | GitHub Actions 자동 배포 |
+| **Prod** | `main` | `[미정 - 도메인]` | 수동 배포 → GitHub Actions (선택) |
+
+### **🏗️ 간단한 배포 설정**
+```bash
+# 1. 서버 설정 (한 번만 실행)
+# - 카카오 클라우드 서버 준비
+# - Node.js, nginx, PM2 설치
+# - 기본 nginx 설정
+# - SSL 인증서 설정
+
+# 2. 첫 배포
+git clone → npm ci → npm run build → pm2 start
+
+# 3. 업데이트 배포  
+git pull → npm ci → npm run build → pm2 restart
+
+# 4. GitHub Actions 자동화 (선택사항)
+# - GitHub Secrets 설정 후 워크플로우 활성화
+```
+
+자세한 단계별 가이드는 **`README-DEPLOYMENT.md`** 참조
 
 ---
 
@@ -227,7 +238,7 @@ ui                 # 🎨 보라색 (#7057ff)
 api                # 🔗 파란색 (#0075ca)
 pages              # 📄 청록색 (#008672)
 map                # 🗺️ 갈색 (#8b4513)
-upload             # 📤 주황색 (#ff6b35)
+places             # 📍 초록색 (#28a745)
 types              # 🎯 회색 (#6f42c1)
 utils              # 🛠️ 진회색 (#586069)
 styles             # 🎨 분홍색 (#db61a2)
@@ -289,7 +300,8 @@ GitHub Issues에 **🔴 Critical** 긴급도로 Bug Report 생성 + 담당자 �
 ### **📚 추가 학습 자료**
 - [GitHub Actions 가이드](https://docs.github.com/en/actions)
 - [Next.js 공식 문서](https://nextjs.org/docs)  
-- [Vercel 배포 가이드](https://vercel.com/docs)
+- [카카오 클라우드 가이드](https://console.kakaocloud.com/docs)
+- [nginx 공식 문서](https://nginx.org/en/docs/)
 
 ---
 
@@ -298,7 +310,7 @@ GitHub Issues에 **🔴 Critical** 긴급도로 Bug Report 생성 + 담당자 �
 이제 **전문적이고 체계적인 GitHub 협업 환경**에서 개발할 수 있습니다!
 
 **✨ 새로운 워크플로우**: 자동화된 품질 검사 → 체계적인 리뷰 → 자동 배포  
-**🚀 다음 단계**: Vercel 배포 설정 → 실제 기능 개발 시작
+**🚀 다음 단계**: 카카오 클라우드 배포 설정 → 실제 기능 개발 시작
 
 ---
 

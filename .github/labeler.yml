@@ -36,11 +36,15 @@ pages:
   - "src/app/**/error.tsx"
   - "src/app/**/not-found.tsx"
 
-# 📤 업로드 관련
-upload:
-  - "src/features/upload/**"
-  - "src/components/**/upload/**"
-  - "src/lib/**/upload*"
+# 📤 장소 및 리뷰 관련
+places:
+  - "src/features/places/**"
+  - "src/components/**/places/**"
+  - "src/app/places/**"
+  - "src/app/**/review/**"
+  - "src/lib/**/places*"
+  - "src/types/place*"
+  - "src/types/review*"
 
 # 🎯 타입 정의
 types:

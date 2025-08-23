@@ -29,8 +29,9 @@
 ### **CI/CD & Deployment**
 - **CI/CD**: [GitHub Actions](https://github.com/features/actions)
 - **Quality Gates**: Lint + TypeCheck + Build 검증
-- **Deployment**: Vercel (예정) / Custom Server 옵션
-- **Environment**: Development, Staging, Production
+e- **Deployment**: 카카오 클라우드 + nginx + Next.js
+- **Environment**: Development, Dev, Prod
+- **SSL**: Let's Encrypt 자동 갱신
 
 ## ⚡ 빠른 시작
 
@@ -61,18 +62,44 @@ npm run dev
 
 ## 🔧 개발 환경 설정
 
-### **환경변수**
-`.env.example` 파일을 참조하여 환경변수를 설정하세요:
+### **환경변수 파일 구조**
+
+프로젝트는 **극도로 단순한 환경변수 시스템**을 사용합니다:
+
+| 파일명 | 용도 | Git 추적 |
+|--------|------|----------|
+| `.env.local` | 🔒 개인별 설정 (API 키, 백엔드 URL 등) | ❌ 제외됨 |
+| `.env.example` | 📋 개인 설정 가이드 템플릿 | ✅ 커밋됨 |
+
+💡 **기본값들은 Next.js가 자동으로 제공합니다** (localhost:3000, NODE_ENV=development)
+
+### **환경변수 설정 방법**
+
+```bash
+# 개인 환경변수 파일 생성 (필수)
+cp .env.example .env.local
+
+# .env.local 파일을 열어서 개인 설정들 입력:
+# - NEXT_PUBLIC_API_URL=http://localhost:3001 (백엔드 URL)  
+# - NEXT_PUBLIC_MAP_API_KEY=발급받은_API_키 (지도 서비스 키)
+# - 기타 개인별 필요한 설정들
+
+# 그 외 기본값들 (별도 설정 불필요):
+# - localhost:3000 (Next.js 기본 포트)
+# - NODE_ENV=development (npm run dev에서 자동 설정)
+```
+
+### **실제 환경변수 예시**
 
 ```bash
 # 클라이언트 접근 가능 (NEXT_PUBLIC_ 접두사)
-NEXT_PUBLIC_API_URL=http://localhost:3001         # 백엔드 API URL
-NEXT_PUBLIC_MAP_API_KEY=your_map_api_key         # 지도 API 키
-NEXT_PUBLIC_DOMAIN=localhost:3000                # 현재 도메인
+NEXT_PUBLIC_API_URL=[미정 - 백엔드 개발 후 설정] (예: http://localhost:3001)
+NEXT_PUBLIC_MAP_API_KEY=[미정 - 지도 서비스 결정 후 발급] (예: Google Maps API Key)
+NEXT_PUBLIC_DOMAIN=localhost:3000                # 개발환경 고정값
 
 # 서버 전용 (민감한 정보)
-# DATABASE_URL=your_database_url                 # DB 연결 문자열 (향후)
-# UPLOAD_SECRET_KEY=your_upload_secret           # 파일 업로드 시크릿 (향후)
+# DATABASE_URL=[미정 - 데이터베이스 설정 후 작성] (예: postgresql://...)
+# REVIEW_SECRET_KEY=[미정 - 보안 키 생성 후 설정] (예: random-secret-key)
 ```
 
 ### **개발 스크립트**
@@ -110,7 +137,7 @@ dongjeop-front/
 │   │   └── map/              # 지도 관련 컴포넌트
 │   ├── features/             # 기능별 모듈 (향후)
 │   │   ├── map/             # 지도 기능
-│   │   └── upload/          # 이미지 업로드 기능
+│   │   └── places/          # 장소 및 리뷰 기능 (이미지 업로드 포함)
 │   ├── lib/                 # 라이브러리 및 유틸리티 (향후)
 │   ├── types/               # TypeScript 타입 정의 (향후)
 │   └── utils/               # 헬퍼 함수 (향후)
@@ -124,18 +151,22 @@ dongjeop-front/
 
 ## 🚀 배포
 
-### **배포 옵션**
-1. **Vercel** (권장): 간편한 배포, 자동 최적화, PR 미리보기
-2. **Custom Server**: Docker 기반, 완전한 제어권
+### **배포 환경**
+1. **Prod**: nginx + Next.js 서버 (카카오 클라우드)
+2. **Dev**: 개발 테스트용 환경 (develop 브랜치 자동 배포)
+3. **무중단 배포**: Blue-Green 방식으로 서비스 중단 없는 업데이트
 
 ### **배포 프로세스**
 ```bash
 # 배포 전 품질 검사
 npm run ci
 
-# 환경별 배포
-main 브랜치 → 프로덕션 배포
-develop 브랜치 → 스테이징 배포 (향후)
+# 환경별 자동 배포
+develop 브랜치 push → [미정 - Dev 도메인] (예: dev.dongjeop.com) 자동 배포
+main 브랜치 push → [미정 - Prod 도메인] (예: dongjeop.com) 자동 배포
+
+# 서버 구성
+nginx (80/443) → Next.js 서버 (3000/3001) → [미정 - 카카오 클라우드 서버]
 ```
 
 자세한 배포 가이드는 **[README-DEPLOYMENT.md](./README-DEPLOYMENT.md)**를 참조하세요.
@@ -144,11 +175,11 @@ develop 브랜치 → 스테이징 배포 (향후)
 
 ### **API 연동 계획**
 ```bash
-# 예정된 API 엔드포인트들
+# 예정된 API 엔드포인트들 (백엔드 개발 후 확정)
 GET    /api/places              # 장소 목록 조회
 POST   /api/places              # 새 장소 정보 추가
 GET    /api/places/:id          # 특정 장소 상세 조회
-POST   /api/places/:id/images   # 장소 이미지 업로드
+POST   /api/places/:id/reviews  # 장소 리뷰 등록 (이미지 포함)
 GET    /api/accessibility       # 접근성 정보 조회
 ```
 
@@ -157,7 +188,7 @@ GET    /api/accessibility       # 접근성 정보 조회
 ## 📚 관련 문서
 
 - **[GitHub 협업 가이드](./README-GITHUB-SETUP.md)**: 팀 온보딩, 이슈/PR 템플릿, 자동화 시스템
-- **[배포 가이드](./README-DEPLOYMENT.md)**: 환경별 배포 방법, Vercel/Custom Server 설정
+- **[배포 가이드](./README-DEPLOYMENT.md)**: 카카오 클라우드 + nginx 배포 설정, 무중단 배포
 - **[환경변수 가이드](./.env.example)**: 개발/프로덕션 환경변수 템플릿
 
 ## 🤝 기여하기
