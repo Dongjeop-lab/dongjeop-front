@@ -1,118 +1,234 @@
-# 🚀 배포 가이드
+# 🚀 카카오 클라우드 배포 가이드
+
+> **동접 프로젝트를 카카오 클라우드 서버에 배포하는 방법**
 
 ## 📋 현재 상태
-- ✅ 환경변수 템플릿 설정 완료 (`.env.example`)
-- ✅ Next.js 15 배포 최적화 설정 완료 (`next.config.ts`)
+- ✅ 환경변수 시스템 완료 (`.env.example` + `.env.local`)
+- ✅ Next.js 15 최적화 설정 완료 (`next.config.ts`)
 - ✅ GitHub Actions CI/CD 워크플로우 준비 완료
-- ✅ 자동 라벨링, Issue/PR 템플릿 설정 완료
-- ✅ 배포 옵션 준비 완료 (Vercel + 커스텀 서버)
+- ⏳ 카카오 클라우드 서버 발급 대기 중
+- ⏳ 도메인 구매 대기 중
 
-## 🛠️ 배포 준비 단계
 
-### 1. 환경변수 설정
-```bash
-# .env.example을 복사하여 실제 환경변수 파일 생성
-cp .env.example .env.local        # 개발환경
-cp .env.example .env.production   # 프로덕션환경 (배포 시)
+```
+🌐 사용자 (HTTPS)
+    ↓
+📦 nginx (80/443) → Next.js (3000) → 카카오 클라우드
 ```
 
-각 파일에서 실제 값들을 채워넣으세요.
+## 🛠️ 서버 설정 (한 번만 실행)
 
-### 2. 배포 방식 선택
-
-**🎯 2가지 배포 옵션 중 선택:**
-
-| 옵션 | 적합한 경우 | 장점 | 단점 | 월 비용 |
-|------|------------|------|------|--------|
-| **Vercel** | 빠른 시작, 스타트업 | 간편함, 자동 최적화, PR 미리보기 | 비용 증가, 플랫폼 종속성 | $0-100+ |
-| **커스텀 서버** | 완전한 제어, 대규모 | 모든 기능, 완전한 제어권 | 복잡성, 운영 부담 | $10-50+ |
-
-#### A) Vercel 배포 (권장)
+### 1. 기본 패키지 설치
 ```bash
-# 1. 워크플로우 활성화
-mv .github/workflows/deploy-vercel.yml.template .github/workflows/deploy-vercel.yml
+# 서버 접속
+ssh ubuntu@[카카오클라우드서버IP]
 
-# 2. 파일 내용에서 주석 해제
-
-# 3. GitHub Secrets 추가 필요:
-# - VERCEL_TOKEN
-# - VERCEL_ORG_ID  
-# - VERCEL_PROJECT_ID
-# - NEXT_PUBLIC_API_URL
-# - NEXT_PUBLIC_MAP_API_KEY
+# 기본 업데이트 및 패키지 설치
+sudo apt update && sudo apt upgrade -y
+curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -
+sudo apt install -y nodejs nginx git
+sudo npm install -g pm2
 ```
 
-#### B) 커스텀 서버 배포
+### 2. nginx 기본 설정
 ```bash
-# 백엔드 팀과 협의 후 결정
-mv .github/workflows/deploy-custom-server.yml.template .github/workflows/deploy-custom-server.yml
+# nginx 설정 파일 생성
+sudo nano /etc/nginx/sites-available/dongjeop
 ```
 
-## 🔧 환경별 설정
+```nginx
+server {
+    listen 80;
+    server_name [미정 - 도메인]; # 예: dongjeop.com
 
-### 개발 환경
-- **실행**: `npm run dev` (Turbopack 활성화)
-- **환경변수**: `.env.local`
-- **API**: `http://localhost:3001` (백엔드 개발서버)
-- **포트**: `http://localhost:3000`
-
-### 스테이징 환경 (추후)
-- **환경변수**: GitHub Secrets
-- **API**: `https://staging-api.dongjeop.com`
-- **Git Flow**: `chore/github-setup` → `develop` → 스테이징 자동 배포
-
-### 프로덕션 환경
-- **환경변수**: GitHub Secrets  
-- **API**: `https://api.dongjeop.com`
-- **Git Flow**: `develop` → `main` → 프로덕션 자동 배포
-
-## ⚠️ 주의사항
-
-1. **환경변수 보안**
-   - `.env.local`, `.env.production` 파일은 절대 커밋하지 마세요
-   - GitHub Secrets를 통해서만 민감한 정보를 관리하세요
-
-2. **빌드 및 품질 검사**
-   ```bash
-   # 전체 CI 검사 (권장)
-   npm run ci
-   
-   # 또는 개별 실행
-   npm run lint        # ESLint 검사
-   npm run typecheck   # TypeScript 검사
-   npm run build       # 프로덕션 빌드
-   npm run preview     # 빌드 결과 미리보기
-   
-   # 캐시 문제 시
-   npm run clean       # 캐시 정리
-   ```
-
-3. **브랜치 보호 및 Git Flow**
-   - **develop**: 개발 통합 브랜치 (모든 기능 머지)
-   - **main**: 프로덕션 배포 브랜치 (CI 통과 후에만 머지)
-   - 배포 전 반드시 스테이징에서 테스트
-
-4. **GitHub Actions 설정**
-   - ✅ CI 워크플로우: 모든 PR에 대해 자동 검사
-   - ✅ Auto-Labeler: 파일 변경에 따른 자동 라벨링
-   - ⏳ 배포 워크플로우: 배포 방식 결정 후 활성화
-
-## 🛠️ 개발 도구
-
-### 유용한 npm 스크립트들
-```bash
-npm run dev          # 개발 서버 (Turbopack)
-npm run build        # 프로덕션 빌드
-npm run typecheck    # TypeScript 타입 검사
-npm run lint         # ESLint 코드 검사
-npm run ci           # 전체 CI 검사 (lint + typecheck + build)
-npm run preview      # 빌드 후 미리보기
-npm run clean        # 캐시 및 빌드 파일 정리
+    location / {
+        proxy_pass http://localhost:3000;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection 'upgrade';
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_cache_bypass $http_upgrade;
+    }
+}
 ```
 
+```bash
+# 설정 활성화
+sudo ln -s /etc/nginx/sites-available/dongjeop /etc/nginx/sites-enabled/
+sudo rm /etc/nginx/sites-enabled/default
+sudo nginx -t
+sudo systemctl restart nginx
+sudo systemctl enable nginx
+```
+
+### 3. SSL 인증서 설정 (도메인 확정 후)
+```bash
+# Certbot 설치 및 SSL 인증서 발급
+sudo apt install certbot python3-certbot-nginx -y
+sudo certbot --nginx -d [미정-도메인]  # 예: dongjeop.com
+
+# 자동 갱신 설정
+sudo crontab -e
+# 다음 줄 추가: 0 2 * * * /usr/bin/certbot renew --quiet
+```
+
+## 🚀 배포 과정
+
+### 첫 배포
+```bash
+# 1. 프로젝트 클론
+cd /var/www
+sudo mkdir dongjeop-front
+sudo chown ubuntu:ubuntu dongjeop-front
+git clone https://github.com/Dongjeop-lab/dongjeop-front.git dongjeop-front
+cd dongjeop-front
+
+# 2. 환경변수 설정
+cp .env.example .env.local
+nano .env.local
+# NEXT_PUBLIC_API_URL, NEXT_PUBLIC_MAP_API_KEY 등 실제 값으로 설정
+
+# 3. 빌드 및 실행
+npm ci
+npm run build
+pm2 start npm --name "dongjeop" -- start
+
+# 4. 자동 시작 설정
+pm2 save
+pm2 startup
+```
+
+### 업데이트 배포
+```bash
+# 1. 최신 코드 가져오기
+cd /var/www/dongjeop-front
+git pull origin main
+
+# 2. 의존성 업데이트 및 빌드
+npm ci
+npm run build
+
+# 3. 서버 재시작
+pm2 restart dongjeop
+```
+
+## ⚙️ GitHub Actions 자동 배포
+
+GitHub Secrets에 다음 정보 추가:
+```bash
+# 🖥️ 서버 정보
+KAKAO_SERVER_HOST=서버IP
+KAKAO_SERVER_USER=ubuntu  
+KAKAO_SERVER_SSH_KEY=SSH개인키
+
+# 🌐 환경별 설정
+NEXT_PUBLIC_API_URL_PROD=API주소         # main 브랜치용
+NEXT_PUBLIC_API_URL_DEV=개발API주소      # develop 브랜치용
+NEXT_PUBLIC_DOMAIN_PROD=dongjeop.com
+NEXT_PUBLIC_DOMAIN_DEV=dev.dongjeop.com
+
+# 🗺️ 공통 설정
+NEXT_PUBLIC_MAP_API_KEY=지도API키
+```
+
+워크플로우 활성화:
+```bash
+mv .github/workflows/deploy-kakao-cloud.yml.template .github/workflows/deploy-kakao-cloud.yml
+# 파일 내 주석 해제 후 커밋
+```
+
+## 🔀 Dev 환경 배포 (develop 브랜치)
+
+> **참고**: 기본 가이드는 Prod 환경 기준입니다. Dev 환경은 GitHub Actions로 자동 배포됩니다.
+
+### Dev 환경 특이사항
+```bash
+# 포트: 3001 (Prod는 3000)
+# 디렉토리: /var/www/dongjeop-front/dev
+# PM2 앱명: dongjeop-dev
+# 도메인: dev.dongjeop.com
+
+# Dev 환경 수동 배포 (필요시)
+cd /var/www/dongjeop-front/dev
+git pull origin develop
+npm ci && npm run build
+pm2 restart dongjeop-dev
+```
+
+### nginx 설정 (Dev 도메인 추가 시)
+```nginx
+# /etc/nginx/sites-available/dongjeop에 추가
+server {
+    listen 80;
+    server_name dev.dongjeop.com;
+    location / {
+        proxy_pass http://localhost:3001;  # Dev 포트
+        # ... (나머지 설정은 동일)
+    }
+}
+```
+
+## 🔧 기본 관리 명령어
+
+```bash
+# 서버 상태 확인
+pm2 status
+pm2 logs dongjeop          # Prod 환경 로그
+pm2 logs dongjeop-dev      # Dev 환경 로그
+
+# nginx 상태 확인  
+sudo systemctl status nginx
+sudo nginx -t
+
+# 재시작
+pm2 restart dongjeop       # Prod 환경
+pm2 restart dongjeop-dev   # Dev 환경  
+sudo systemctl restart nginx
+
+# SSL 인증서 갱신
+sudo certbot renew --dry-run
+```
+
+## ⚠️ 문제 해결
+
+### 서비스 접속 안 될 때
+```bash
+# 1. PM2 상태 확인
+pm2 status
+
+# 2. nginx 설정 확인
+sudo nginx -t
+sudo systemctl status nginx
+
+# 3. 포트 확인
+sudo netstat -tulpn | grep :3000    # Prod 환경
+sudo netstat -tulpn | grep :3001    # Dev 환경
+sudo netstat -tulpn | grep :80
+```
+
+### 로그 확인
+```bash
+# Next.js 로그
+pm2 logs dongjeop          # Prod 환경
+pm2 logs dongjeop-dev      # Dev 환경
+
+# nginx 로그
+sudo tail -f /var/log/nginx/access.log
+sudo tail -f /var/log/nginx/error.log
+```
 
 ---
 
-> 📅 **최종 업데이트**: 2024년 12월  
-> 👥 **문서 작성**: @jyj0216jyj  
-> 🔗 **연관 문서**: README-GITHUB-SETUP.md
+## 📝 주의사항
+
+- **도메인 설정**: DNS A 레코드를 서버 IP로 설정
+- **방화벽**: 카카오 클라우드에서 80, 443, 22 포트 열기
+- **백업**: 중요한 변경 전에는 `pm2 save` 실행
+- **환경변수**: `.env.local` 파일에 실제 API 키 설정 필요
+
+> 📅 **업데이트**: 2024년 12월  
+> 🎯 **대상**: 초기 개발 단계의 간단한 배포  
+> 🔗 **관련 문서**: README.md, README-GITHUB-SETUP.md
