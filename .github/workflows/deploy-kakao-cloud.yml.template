@@ -1,0 +1,152 @@
+# =============================================================================
+# 🚀 카카오 클라우드 환경별 배포
+# 
+# 🎯 배포 환경:
+# - develop 브랜치 → Dev (dev.dongjeop.com, 포트 3001)
+# - main 브랜치 → Prod (dongjeop.com, 포트 3000)
+# 
+# 🏗️ 구조: nginx (80/443) → Next.js (3000/3001) → 카카오 클라우드
+# 📋 과정: 코드 품질 검사 → 빌드 → SSH 배포 → PM2 재시작
+#
+# 활성화 방법:
+# 1. 파일명을 deploy-kakao-cloud.yml로 변경
+# 2. GitHub Secrets 설정 (아래 참조)  
+# 3. 주석 해제 후 커밋 & 푸시
+# =============================================================================
+
+# name: 🚀 카카오 클라우드 배포
+# 
+# on:
+#   push:
+#     branches: [ main, develop ]
+#   workflow_dispatch:     # 수동 배포 버튼
+# 
+# permissions:
+#   contents: read
+# 
+# jobs:
+#   deploy:
+#     name: 🖥️ 배포 (${{ github.ref_name }} → ${{ github.ref_name == 'main' && 'Prod' || 'Dev' }})
+#     runs-on: ubuntu-latest
+#     timeout-minutes: 10
+#     
+#     steps:
+#       - name: 📥 코드 체크아웃
+#         uses: actions/checkout@v4
+# 
+#       - name: 🟢 Node.js 20 설정
+#         uses: actions/setup-node@v4
+#         with:
+#           node-version: '20'
+#           cache: 'npm'
+# 
+#       - name: 📦 의존성 설치
+#         run: npm ci
+# 
+#       - name: 🔍 코드 품질 검사
+#         run: |
+#           npm run lint
+#           npm run typecheck
+# 
+#       - name: 🏗️ 프로덕션 빌드
+#         run: npm run build
+#         env:
+#           NODE_ENV: production
+#           # 환경별 환경변수 설정
+#           NEXT_PUBLIC_API_URL: ${{ github.ref_name == 'main' && secrets.NEXT_PUBLIC_API_URL_PROD || secrets.NEXT_PUBLIC_API_URL_DEV }}
+#           NEXT_PUBLIC_MAP_API_KEY: ${{ secrets.NEXT_PUBLIC_MAP_API_KEY }}
+#           NEXT_PUBLIC_DOMAIN: ${{ github.ref_name == 'main' && secrets.NEXT_PUBLIC_DOMAIN_PROD || secrets.NEXT_PUBLIC_DOMAIN_DEV }}
+# 
+#       - name: 🚀 서버 배포
+#         uses: appleboy/ssh-action@v1.0.3
+#         with:
+#           host: ${{ secrets.KAKAO_SERVER_HOST }}
+#           username: ${{ secrets.KAKAO_SERVER_USER }}
+#           key: ${{ secrets.KAKAO_SERVER_SSH_KEY }}
+#           script: |
+#             # 환경별 설정
+#             if [ "${{ github.ref_name }}" = "main" ]; then
+#               ENV_NAME="prod"
+#               APP_NAME="dongjeop-prod"
+#               PORT=3000
+#               WORK_DIR="/var/www/dongjeop-front/prod"
+#             else
+#               ENV_NAME="dev"
+#               APP_NAME="dongjeop-dev"
+#               PORT=3001
+#               WORK_DIR="/var/www/dongjeop-front/dev"
+#             fi
+#             
+#             echo "🚀 Starting $ENV_NAME deployment..."
+#             
+#             # 작업 디렉토리로 이동 (없으면 생성)
+#             sudo mkdir -p $WORK_DIR
+#             sudo chown -R $USER:$USER $WORK_DIR
+#             cd $WORK_DIR
+#             
+#             # 최신 코드 가져오기
+#             if [ -d ".git" ]; then
+#               git pull origin ${{ github.ref_name }}
+#             else
+#               git clone https://github.com/Dongjeop-lab/dongjeop-front.git .
+#               git checkout ${{ github.ref_name }}
+#             fi
+#             
+#             # 의존성 업데이트 및 빌드  
+#             npm ci
+#             npm run build
+#             
+#             # PM2로 서버 재시작
+#             pm2 restart $APP_NAME || pm2 start npm --name "$APP_NAME" -- start
+#             
+#             # 헬스체크
+#             sleep 5
+#             curl -f http://localhost:$PORT || exit 1
+#             
+#             echo "✅ $ENV_NAME 배포 완료!"
+
+# =============================================================================
+# 📋 GitHub Secrets 설정 (7개)
+# 경로: GitHub 저장소 → Settings → Secrets and variables → Actions → New secret
+# =============================================================================
+
+# 🖥️ 서버 정보 (공통):
+# KAKAO_SERVER_HOST=123.45.67.89 (카카오 클라우드 서버 IP)
+# KAKAO_SERVER_USER=ubuntu
+# KAKAO_SERVER_SSH_KEY=-----BEGIN OPENSSH PRIVATE KEY----- (SSH 개인키)
+
+# 🌐 Prod 환경변수:
+# NEXT_PUBLIC_API_URL_PROD=https://api.dongjeop.com 
+# NEXT_PUBLIC_DOMAIN_PROD=dongjeop.com
+
+# 🧪 Dev 환경변수:
+# NEXT_PUBLIC_API_URL_DEV=https://dev-api.dongjeop.com
+# NEXT_PUBLIC_DOMAIN_DEV=dev.dongjeop.com
+
+# 🗺️ 공통 환경변수:
+# NEXT_PUBLIC_MAP_API_KEY=your-map-api-key (지도 API 키)
+
+# =============================================================================
+# 🚀 사용 방법
+# =============================================================================
+
+# 1단계: 서버 준비
+# - README-DEPLOYMENT.md 가이드에 따라 서버 설정 완료
+# - nginx 설정에서 prod(3000), dev(3001) 포트 설정
+# - 서버에 환경별 디렉토리 생성:
+#   sudo mkdir -p /var/www/dongjeop-front/{prod,dev}
+#   sudo chown -R ubuntu:ubuntu /var/www/dongjeop-front
+
+# 2단계: 워크플로우 활성화  
+# - 이 파일명을 deploy-kakao-cloud.yml로 변경
+# - 위의 GitHub Secrets 설정 (7개)
+# - 주석 해제 후 커밋
+
+# 3단계: 배포 실행
+# - develop 브랜치 push → dev 자동 배포 (포트 3001)
+# - main 브랜치 push → prod 자동 배포 (포트 3000)
+# - 또는 GitHub Actions 탭에서 수동 실행
+
+# ⚠️ 주의: 
+# - nginx 설정에서 dev.dongjeop.com → 3001, dongjeop.com → 3000 포트 설정 필요
+# - 자세한 nginx 설정법은 README-DEPLOYMENT.md 참조
