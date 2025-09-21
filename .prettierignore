@@ -31,3 +31,4 @@ pnpm-lock.yaml
 
 # Documentation
 *.md
+.coderabbit.yaml
