@@ -18,7 +18,7 @@ export default function RootLayout({
       lang='ko'
       className={pretendard.className}
     >
-      <body>{children}</body>
+      <body className='text-16-regular'>{children}</body>
     </html>
   );
 }
