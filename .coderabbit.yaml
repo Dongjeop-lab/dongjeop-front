@@ -1,0 +1,103 @@
+language: ko-KR
+
+reviews:
+  profile: balanced
+  request_changes_workflow: false
+  high_level_summary: true
+  review_status: true
+  
+  path_filters:
+    - '!**/README.md'
+    - '!**/*.md'
+    - '!**/package-lock.json'
+    - '!**/yarn.lock'
+    - '!**/pnpm-lock.yaml'
+    - '!**/.next/**'
+    - '!**/dist/**'
+    - '!**/build/**'
+    - '!**/coverage/**'
+    - '!**/.turbo/**'
+    - '!**/node_modules/**'
+    - '!**/.git/**'
+    - '!**/.vscode/**'
+    - '!**/.idea/**'
+  
+  # 리뷰 시 지켜야 할 기본 원칙 (모든 파일 공통)
+  rules:
+    - 불필요한 추측이나 가정은 하지 않고, 명확한 근거가 있는 제안만 한다.
+    - 사과, 이해 여부 언급, 불필요한 요약, 확인 요청은 하지 않는다.
+    - 공백이나 들여쓰기 등 포맷팅 관련 제안은 하지 않는다. (프로젝트 내 Prettier/ESLint 규칙을 따른다)
+    - 기존 코드 스타일과 일관성을 유지한다.
+    - 실제로 수정이 필요한 경우에만 변경을 제안한다. (불필요한 변경 금지)
+
+  path_instructions:
+    - path: '**/*.{js,jsx,ts,tsx}'
+      instructions: >
+        ✅ Clean Code와 성능 최적화에 집중하여 리뷰해주세요:
+
+        **코드 품질**
+        - React Hooks 규칙(`react-hooks/recommended`) 위반 여부 확인
+        - import/export 순서(`simple-import-sort`)가 지켜졌는지 검토
+        - 사용하지 않는 import/변수(`unused-imports`) 존재 여부 확인
+        - TypeScript에서 불필요한 any 사용을 줄이고 있는지 확인
+        - 컴포넌트는 단일 책임 원칙을 따르고, 100줄을 넘지 않도록 권장
+
+        **React/UI 관련**
+        - 커스텀 훅은 use로 시작하고, 적절한 의존성 배열을 갖는지 확인
+        - JSX에서 속성이 한 줄에 하나씩(`singleAttributePerLine`) 지켜졌는지 확인
+        - 접근성(a11y): aria-* 속성, alt 텍스트 누락 여부
+        - Tailwind CSS 클래스 순서가 정렬(`prettier-plugin-tailwindcss`)에 맞는지 검토
+
+        **아키텍처**
+        - 컴포넌트 재사용성 및 props 타입 정의 적절성
+        - 상태 관리 패턴 일관성 (useState, useReducer, 전역 상태)
+        - API 호출 시 에러 핸들링과 로딩 상태 관리 적절성
+        - 모듈화와 코드 분리가 잘 되어 있는지 검토
+
+    - path: '**/*.test.{js,jsx,ts,tsx}'
+      instructions: >
+        - 테스트가 명확히 성공/실패 조건을 드러내는지 확인
+        - 불필요한 snapshot 테스트는 없는지 검토
+        - mocking이 과도하지 않고 실제 동작과 구분되는지 확인
+        - 테스트 커버리지가 핵심 비즈니스 로직을 포함하는지 검토
+        - describe, it 블록의 명명이 명확한지 확인
+
+    - path: '**/*.{css,scss,sass}'
+      instructions: >
+        - CSS 속성 순서가 일관되는지 확인
+        - 불필요한 중복 스타일 제거
+        - CSS 변수 활용도 검토
+        - 반응형 디자인 브레이크포인트 일관성
+        - 성능에 영향을 주는 CSS 속성 사용 여부
+
+    - path: '**/package.json'
+      instructions: >
+        - 의존성 버전 호환성 검토
+        - 사용하지 않는 패키지 확인
+        - 보안 취약점이 있는 패키지 체크
+        - devDependencies와 dependencies 분류 적절성
+        - 스크립트 명령어 명명 일관성
+
+    - path: '**/*.{json,yaml,yml}'
+      instructions: >
+        - 설정 파일의 구조와 네이밍 일관성 확인
+        - 민감한 정보 노출 여부 검토
+        - 환경별 설정 분리 적절성
+
+  auto_review:
+    enabled: true
+    auto_incremental_review: true
+    ignore_title_keywords: [WIP, draft, "do not review", "skip review"]
+
+abort_on_close: true
+
+tools:
+  markdownlint:
+    enabled: true
+  yamllint:
+    enabled: true
+  gitleaks:
+    enabled: true
+  github-checks:
+    enabled: true
+    timeout_ms: 120000
