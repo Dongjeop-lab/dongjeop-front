@@ -29,7 +29,7 @@ const Item = ({
         role='option'
         aria-selected={selected}
         className={cn(
-          'flex w-full items-center justify-between rounded-xl border p-2.5 pr-5',
+          'flex w-full cursor-pointer items-center justify-between rounded-xl border p-2.5 pr-5',
           selected ? 'border-[#3491FF]' : 'border-[#00000010]',
           className
         )}
