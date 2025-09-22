@@ -5,6 +5,12 @@ import { extendTailwindMerge } from 'tailwind-merge';
 export const extendTwMerge = extendTailwindMerge({
   extend: {
     classGroups: {
+      'font-size': [
+        'text-26-bold',
+        'text-18-semibold',
+        'text-18-medium',
+        'text-16-regular',
+      ],
       'text-color': [
         'text-primary',
         'text-primary-foreground',
