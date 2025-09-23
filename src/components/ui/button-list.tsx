@@ -37,7 +37,7 @@ const Item = ({
         <div className='flex items-center gap-2.5 p-2.5'>
           <h1
             className={cn(
-              'text-#292929',
+              'text-[#292929]',
               selected ? 'font-bold' : 'font-medium'
             )}
           >
