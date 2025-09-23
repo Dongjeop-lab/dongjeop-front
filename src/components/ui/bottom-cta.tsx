@@ -23,7 +23,7 @@ interface BottomCTAButtonProps extends ClassName, PropsWithChildren {
 }
 
 const BOTTOM_CTA_CLASSNAME = 'fixed right-0 bottom-0 left-0';
-const BOTTOM_CTA_INNER_CLASSNAME = 'mx-auto h-14 w-full';
+const BOTTOM_CTA_INNER_CLASSNAME = 'flex mx-auto h-14 w-full';
 const BUTTON_WIDTHS = {
   '1:1': ['w-1/2', 'w-1/2'],
   '1:2': ['w-1/3', 'w-2/3'],
@@ -39,10 +39,14 @@ const BottomCTA = ({ ratio = '1:1', children, className }: BottomCTAProps) => {
     <footer className={BOTTOM_CTA_CLASSNAME}>
       <div className={cn(BOTTOM_CTA_INNER_CLASSNAME, className)}>
         {validButtons.map((button, index) => {
-          let widthClassName = 'w-full';
+          let widthClassName: string;
 
-          if (buttonCount === 2) {
+          if (buttonCount === 1) {
+            widthClassName = 'w-full';
+          } else if (buttonCount === 2) {
             widthClassName = BUTTON_WIDTHS[ratio][index];
+          } else {
+            widthClassName = 'flex-1';
           }
 
           return cloneElement(button, {
