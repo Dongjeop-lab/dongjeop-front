@@ -24,6 +24,10 @@ interface BottomCTAButtonProps extends ClassName, PropsWithChildren {
 
 const BOTTOM_CTA_CLASSNAME = 'fixed right-0 bottom-0 left-0';
 const BOTTOM_CTA_INNER_CLASSNAME = 'mx-auto h-14 w-full';
+const BUTTON_WIDTHS = {
+  '1:1': ['w-1/2', 'w-1/2'], // [왼쪽 버튼 너비, 오른쪽 버튼 너비]
+  '1:2': ['w-1/3', 'w-2/3'], // [왼쪽 버튼 너비, 오른쪽 버튼 너비]
+} as const;
 
 const BottomCTA = ({ ratio = '1:1', children, className }: BottomCTAProps) => {
   const validButtons = Children.toArray(children).filter(child =>
@@ -38,11 +42,7 @@ const BottomCTA = ({ ratio = '1:1', children, className }: BottomCTAProps) => {
           let widthClassName = 'w-full';
 
           if (buttonCount === 2) {
-            if (index === 0) {
-              widthClassName = ratio === '1:1' ? 'w-1/2' : 'w-1/3';
-            } else {
-              widthClassName = ratio === '1:1' ? 'w-1/2' : 'w-2/3';
-            }
+            widthClassName = BUTTON_WIDTHS[ratio][index];
           }
 
           return cloneElement(button, {
