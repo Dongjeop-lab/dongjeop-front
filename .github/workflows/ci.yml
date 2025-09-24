@@ -2,7 +2,7 @@ name: 🔍 코드 품질 검사
 
 on:
   push:
-    branches: [ main, develop ]  # Git Flow에 맞게 develop 사용
+    branches: [ main, develop ]
   pull_request:
     types: [opened, synchronize, reopened]
 
@@ -21,35 +21,24 @@ jobs:
       - name: 📥 코드 체크아웃
         uses: actions/checkout@v4
 
-      - name: 🟢 Node.js 22.12.0 설정
+      - name: 🟢 Node.js 22 설정
         uses: actions/setup-node@v4
         with:
-          node-version: '22.12.0'
+          node-version: '22'
           cache: 'npm'
-          cache-dependency-path: 'package-lock.json'
 
-      - name: 📦 의존성 설치
-        run: npm ci
-
-      - name: 🔍 린트 검사
-        run: npm run lint
-
-      - name: 🎯 타입 검사  
-        run: npm run typecheck
-
-      - name: 🏗️ 빌드 검사
-        run: npm run build
+      - name: 📦 의존성 설치 및 품질 검사
+        run: |
+          npm ci
+          npm run ci
         env:
           NODE_ENV: production
 
       - name: 📊 검사 결과 요약
         if: always()
         run: |
-          echo "## 🔍 CI 검사 결과" >> $GITHUB_STEP_SUMMARY
-          echo "- ✅ 의존성 설치 완료" >> $GITHUB_STEP_SUMMARY
-          echo "- ✅ 린트 검사 완료" >> $GITHUB_STEP_SUMMARY  
-          echo "- ✅ 타입 검사 완료" >> $GITHUB_STEP_SUMMARY
-          echo "- ✅ 빌드 검사 완료" >> $GITHUB_STEP_SUMMARY
+          echo "## 🔍 품질 검사 완료" >> $GITHUB_STEP_SUMMARY
+          echo "- ✅ 코드 품질 검사 통과 (lint + typecheck + build)" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          echo "**Next.js 버전:** $(npx next --version)" >> $GITHUB_STEP_SUMMARY
-          echo "**Node.js 버전:** $(node --version)" >> $GITHUB_STEP_SUMMARY
+          echo "**Node.js:** $(node --version)" >> $GITHUB_STEP_SUMMARY
+          echo "**Next.js:** $(npx next --version)" >> $GITHUB_STEP_SUMMARY
