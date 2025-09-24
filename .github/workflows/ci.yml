@@ -31,8 +31,6 @@ jobs:
         run: |
           npm ci
           npm run ci
-        env:
-          NODE_ENV: production
 
       - name: 📊 검사 결과 요약
         if: always()
