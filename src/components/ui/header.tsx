@@ -17,14 +17,16 @@ const Header = ({ onBack, onClose }: HeaderProps) => {
             height={24}
           />
         </button>
-        <button onClick={onClose}>
-          <Image
-            src='/icons/navigation-close.svg'
-            alt='닫기'
-            width={24}
-            height={24}
-          />
-        </button>
+        {onClose && (
+          <button onClick={onClose}>
+            <Image
+              src='/icons/navigation-close.svg'
+              alt='닫기'
+              width={24}
+              height={24}
+            />
+          </button>
+        )}
       </header>
       <div className='h-11' />
     </>
