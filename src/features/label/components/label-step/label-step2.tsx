@@ -24,13 +24,15 @@ export const LabelStep2 = () => {
   const handleSelect = (value: string) => {
     if (selectedValue.includes(value)) {
       setSelectedValue(prev => prev.filter(v => v !== value));
-    } else {
-      if (value === 'not_sure') {
-        setSelectedValue(['not_sure']);
-      } else {
-        setSelectedValue(prev => [...prev, value]);
-      }
+      return;
     }
+
+    if (value === 'not_sure') {
+      setSelectedValue(['not_sure']);
+      return;
+    }
+
+    setSelectedValue(prev => [...prev, value]);
   };
 
   return (
