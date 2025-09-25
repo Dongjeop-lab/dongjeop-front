@@ -64,20 +64,20 @@ class ApiClient {
    * 백엔드 서버 상태 확인
    */
   async healthCheck(): Promise<ApiResponse<HealthCheckResponse>> {
-    return this.request<HealthCheckResponse>('/health');
+    return this.request<HealthCheckResponse>('/api/health');
   }
 
   /**
-   * 테스트 API 호출
+   * 현재 시간 API 호출
    */
-  async getTestData(): Promise<
-    ApiResponse<{ message: string; timestamp: string }>
+  async getNowData(): Promise<
+    ApiResponse<{ message: string; timestamp: string; now?: string }>
   > {
-    return this.request('/api/test');
+    return this.request('/api/now');
   }
 }
 
 export const apiClient = new ApiClient();
 
 export const healthCheck = () => apiClient.healthCheck();
-export const getTestData = () => apiClient.getTestData();
+export const getNowData = () => apiClient.getNowData();

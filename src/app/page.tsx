@@ -13,13 +13,13 @@ interface TestResult {
 export default function Home() {
   const [tests, setTests] = useState<TestResult[]>([
     { name: 'Health Check', status: 'loading' },
-    { name: 'Test API', status: 'loading' },
+    { name: 'Now API', status: 'loading' },
   ]);
 
   const runTests = async () => {
     setTests([
       { name: 'Health Check', status: 'loading' },
-      { name: 'Test API', status: 'loading' },
+      { name: 'Now API', status: 'loading' },
     ]);
 
     // Health Check 테스트
@@ -50,9 +50,9 @@ export default function Home() {
       );
     }
 
-    // Test API 테스트
+    // Now API 테스트
     try {
-      const result = await apiClient.getTestData();
+      const result = await apiClient.getNowData();
       setTests(prev =>
         prev.map((test, i) =>
           i === 1
