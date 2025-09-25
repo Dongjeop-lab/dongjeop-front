@@ -37,6 +37,7 @@ const BottomCTA = ({ ratio = '1:1', children, className }: BottomCTAProps) => {
   const buttonCount = validButtons.length;
   return (
     <footer className={BOTTOM_CTA_CLASSNAME}>
+      <div className='absolute top-0 right-0 bottom-0 left-0 -z-10 bg-white' />
       <div className={cn(BOTTOM_CTA_INNER_CLASSNAME, className)}>
         {validButtons.map((button, index) => {
           let widthClassName: string;
