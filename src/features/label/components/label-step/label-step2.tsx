@@ -10,12 +10,14 @@ import { TOTAL_LABELING_STEPS } from '@/lib/constants';
 import { labelOption } from '../../types/label-option';
 import LabelStepLayout from '../label-step-layout';
 
+const NOT_SURE_VALUE = 'not_sure';
+
 const LABEL_STEP_2_OPTIONS: labelOption[] = [
   { title: '낮은 이동식 의자', value: 'low_movable_chair' },
   { title: '높은 이동식 의자', value: 'high_movable_chair' },
   { title: '좌식 의자', value: 'floor_chair' },
   { title: '고정식 의자', value: 'fixed_chair' },
-  { title: '잘 모르겠어요', value: 'not_sure' },
+  { title: '잘 모르겠어요', value: NOT_SURE_VALUE },
 ];
 
 export const LabelStep2 = () => {
@@ -27,8 +29,8 @@ export const LabelStep2 = () => {
       return;
     }
 
-    if (value === 'not_sure') {
-      setSelectedValue(['not_sure']);
+    if (value === NOT_SURE_VALUE) {
+      setSelectedValue([NOT_SURE_VALUE]);
       return;
     }
 
