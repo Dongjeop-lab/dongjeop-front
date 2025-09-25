@@ -18,7 +18,7 @@ const LabelStepLayout = ({
   totalSteps,
 }: LabelStepLayoutProps) => {
   return (
-    <main className='flex flex-col items-center gap-8 px-5'>
+    <main className='flex flex-col items-center gap-8 px-5 pb-5'>
       <div className='flex flex-col items-center gap-3'>
         <span className='text-18-semibold text-primary'>
           {currentStep}/{totalSteps}
