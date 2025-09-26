@@ -1,16 +1,30 @@
-# 동접 프론트엔드 Docker Compose
+# =============================================================================
+# 🐳 동접 프론트엔드 Docker Compose 설정
+# 개발/테스트용 Multi-Architecture 지원
+# =============================================================================
+
+version: '3.8'
 
 services:
-  dongjeop-frontend:
-    build: .
+  # 프론트엔드 애플리케이션
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        NODE_ENV: production
+        NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-http://localhost:8082}
+      # Multi-arch 빌드 설정
+      platforms:
+        - linux/amd64
+        - linux/arm64
+    image: dongjeop-frontend:latest
     container_name: dongjeop-frontend
     ports:
       - '3000:3000'
     environment:
-      - NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL:-http://localhost:8000}
-      - NODE_ENV=${NODE_ENV:-production}
-      - PORT=3000
-      - HOSTNAME=0.0.0.0
+      - NODE_ENV=production
+      - NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL:-http://localhost:8082}
     restart: unless-stopped
     healthcheck:
       test:
@@ -20,9 +34,23 @@ services:
           '--no-verbose',
           '--tries=1',
           '--spider',
-          'http://127.0.0.1:3000',
+          'http://localhost:3000',
         ]
       interval: 30s
       timeout: 10s
       retries: 3
-      start_period: 40s
+      start_period: 10s
+    labels:
+      - 'com.dongjeop.service=frontend'
+      - 'com.dongjeop.version=latest'
+
+# 네트워크 설정
+networks:
+  default:
+    name: dongjeop-network
+    driver: bridge
+
+# 볼륨 설정 (캐시용)
+volumes:
+  buildx-cache:
+    driver: local

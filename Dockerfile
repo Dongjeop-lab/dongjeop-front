@@ -20,6 +20,10 @@ RUN npm ci --only=production --silent
 FROM node:22-alpine AS builder
 WORKDIR /app
 
+# 🌍 빌드 시점 환경변수 주입
+ARG NODE_ENV=production
+ARG NEXT_PUBLIC_API_URL
+
 # 개발 의존성 포함 설치
 RUN apk add --no-cache libc6-compat && \
     corepack enable && \
@@ -34,6 +38,10 @@ COPY . .
 # Next.js 텔레메트리 비활성화 (빌드 성능 향상)
 ENV NEXT_TELEMETRY_DISABLED=1
 
+# 🚀 환경변수를 ENV로 설정 (빌드 시점에 반영)
+ENV NODE_ENV=$NODE_ENV
+ENV NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL
+
 # 프로덕션 빌드 실행
 RUN npm run build
 
@@ -47,8 +55,9 @@ ENV NEXT_TELEMETRY_DISABLED=1
 ENV PORT=3000
 ENV HOSTNAME=0.0.0.0
 
-# 시스템 사용자 생성 (보안 강화)
-RUN addgroup --system --gid 1001 nodejs && \
+# wget 설치 (헬스체크용) + 시스템 사용자 생성 (보안 강화)
+RUN apk add --no-cache wget && \
+    addgroup --system --gid 1001 nodejs && \
     adduser --system --uid 1001 nextjs
 
 # Next.js 실행에 필요한 파일들만 복사
@@ -66,13 +75,13 @@ EXPOSE 3000
 
 # Health check (컨테이너 상태 모니터링)
 HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
-    CMD wget --no-verbose --tries=1 --spider http://127.0.0.1:3000 || exit 1
+CMD wget --no-verbose --tries=1 --spider http://127.0.0.1:3000 || exit 1
 
 # 애플리케이션 실행
 CMD ["node", "server.js"]
 
 # =============================================================================
 # 빌드 명령어 예시:
-# docker build -t dongjeop-front .
+# docker build --build-arg NEXT_PUBLIC_API_URL="http://61.109.238.45:8082" -t dongjeop-front .
 # docker run -p 3000:3000 --name dongjeop-front dongjeop-front
 # =============================================================================

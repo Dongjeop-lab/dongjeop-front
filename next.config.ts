@@ -137,7 +137,7 @@ const nextConfig: NextConfig = {
     return [
       {
         source: '/api-proxy/:path*',
-        destination: 'http://61.109.238.45:8082/:path*',
+        destination: 'http://61.109.238.45:8082/:path*', // 로컬 개발용 프록시
       },
     ];
   },

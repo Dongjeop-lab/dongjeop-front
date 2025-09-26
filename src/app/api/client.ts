@@ -1,5 +1,9 @@
+// 환경별 API 설정
 const API_BASE_URL =
-  process.env.NEXT_PUBLIC_API_URL || 'http://61.109.238.45:8082';
+  process.env.NEXT_PUBLIC_API_URL ||
+  (process.env.NODE_ENV === 'development'
+    ? 'http://61.109.238.45:8082' // 로컬 개발: 원격 백엔드
+    : 'http://localhost:8082'); // 도커 배포: 호스트 네트워크
 
 // 개발 환경에서 CORS 문제 해결을 위한 프록시 사용
 const USE_PROXY = process.env.NODE_ENV === 'development';
