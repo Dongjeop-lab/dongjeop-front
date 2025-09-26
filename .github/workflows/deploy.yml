@@ -73,6 +73,8 @@ jobs:
           build-args: |
             NODE_ENV=production
             NEXT_PUBLIC_API_URL=${{ secrets.NEXT_PUBLIC_API_URL }}
+          # 빌드 최적화 옵션
+          provenance: false
 
       - name: 🖥️ 카카오 클라우드 서버 무중단 배포
         uses: appleboy/ssh-action@v1.0.3

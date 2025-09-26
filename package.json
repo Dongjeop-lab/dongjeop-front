@@ -14,7 +14,11 @@
     "fix": "npm run format && npm run lint:fix",
     "preview": "npm run build && npm run start",
     "clean": "rm -rf .next out node_modules/.cache",
-    "ci": "npm run format:check && npm run lint && npm run typecheck && npm run build"
+    "ci": "npm run format:check && npm run lint && npm run typecheck && npm run build",
+    "docker:build": "docker build -t dongjeop-frontend .",
+    "docker:build:arm64": "docker buildx build --platform linux/arm64 --tag dongjeop-frontend:arm64 --load .",
+    "docker:run": "docker run --rm -p 3000:3000 dongjeop-frontend",
+    "docker:clean": "docker system prune -f"
   },
   "dependencies": {
     "next": "15.4.6",

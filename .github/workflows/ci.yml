@@ -31,6 +31,11 @@ jobs:
         run: |
           npm ci
           npm run ci
+        env:
+          # Next.js 빌드 최적화 (메모리 부족 방지)
+          NODE_OPTIONS: --max-old-space-size=4096
+          # API URL (빌드 시 필요)
+          NEXT_PUBLIC_API_URL: http://61.109.238.45:8082
 
       - name: 📊 검사 결과 요약
         if: always()

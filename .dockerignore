@@ -50,6 +50,7 @@ coverage
 # ----- 캐시 파일 -----
 *.tsbuildinfo
 .eslintcache
+.buildx-cache
 
 # ----- 로그 파일 -----
 *.log
@@ -62,6 +63,7 @@ coverage
 docker-compose*.yml
 Dockerfile*
 .dockerignore
+dongjeop-frontend*.tar
 
 # ----- 개발 전용 스크립트 -----
 scripts/dev*
