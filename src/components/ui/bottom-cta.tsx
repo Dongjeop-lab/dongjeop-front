@@ -12,6 +12,8 @@ import { ClassName } from '@/types/common';
 
 interface BottomCTAProps extends ClassName, PropsWithChildren {
   ratio?: '1:1' | '1:2';
+  hasAnimation?: boolean;
+  animationDelay?: number;
 }
 
 interface BottomCTAButtonProps extends ClassName, PropsWithChildren {
@@ -29,14 +31,23 @@ const BUTTON_WIDTHS = {
   '1:2': ['w-1/3', 'w-2/3'],
 } as const;
 
-const BottomCTA = ({ ratio = '1:1', children, className }: BottomCTAProps) => {
+const BottomCTA = ({
+  children,
+  className,
+  ratio = '1:1',
+  hasAnimation = false,
+  animationDelay = 0,
+}: BottomCTAProps) => {
   const validButtons = Children.toArray(children).filter(child =>
     isValidElement(child)
   ) as ReactElement<BottomCTAButtonProps>[];
 
   const buttonCount = validButtons.length;
   return (
-    <footer className={BOTTOM_CTA_CLASSNAME}>
+    <footer
+      className={cn(BOTTOM_CTA_CLASSNAME, hasAnimation && 'animate-cta-in')}
+      style={hasAnimation ? { animationDelay: `${animationDelay}s` } : {}}
+    >
       <div className='absolute top-0 right-0 bottom-0 left-0 -z-10 bg-white' />
       <div className={cn(BOTTOM_CTA_INNER_CLASSNAME, className)}>
         {validButtons.map((button, index) => {
