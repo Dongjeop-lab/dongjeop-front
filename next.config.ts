@@ -60,7 +60,7 @@ const nextConfig: NextConfig = {
 
   // Docker 컨테이너 배포를 위한 standalone 모드
   output: 'standalone',
-  
+
   // 정적 내보내기 설정 (필요 시 활성화)
   // output: 'export',
   // trailingSlash: true,
@@ -127,6 +127,19 @@ const nextConfig: NextConfig = {
   experimental: {
     // PPR (부분 프리렌더링) - Next.js 15의 새 기능
     // ppr: true, // 안정화되면 활성화 고려
+  },
+
+  // =============================================================================
+  // API 프록시 설정 (CORS 문제 해결)
+  // =============================================================================
+
+  async rewrites() {
+    return [
+      {
+        source: '/api-proxy/:path*',
+        destination: 'http://61.109.238.45:8082/:path*',
+      },
+    ];
   },
 };
 

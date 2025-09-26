@@ -1,4 +1,9 @@
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+const API_BASE_URL =
+  process.env.NEXT_PUBLIC_API_URL || 'http://61.109.238.45:8082';
+
+// 개발 환경에서 CORS 문제 해결을 위한 프록시 사용
+const USE_PROXY = process.env.NODE_ENV === 'development';
+const PROXY_BASE_URL = '/api-proxy';
 
 export interface ApiResponse<T = unknown> {
   success: boolean;
@@ -18,7 +23,8 @@ class ApiClient {
   private baseURL: string;
 
   constructor(baseURL: string = API_BASE_URL) {
-    this.baseURL = baseURL;
+    // 개발 환경에서는 프록시 사용, 프로덕션에서는 직접 연결
+    this.baseURL = USE_PROXY ? PROXY_BASE_URL : baseURL;
   }
 
   private async request<T>(
@@ -29,8 +35,16 @@ class ApiClient {
       const url = `${this.baseURL}${endpoint}`;
 
       const response = await fetch(url, {
+        // 프록시 사용 시에는 same-origin, 직접 연결 시에는 cors 모드
+        mode: USE_PROXY ? 'same-origin' : 'cors',
+        credentials: 'omit',
         headers: {
-          'Content-Type': 'application/json',
+          // Accept 헤더를 제거하고 */*로 변경 (CORS 문제 해결)
+          Accept: '*/*',
+          // GET 요청에서는 Content-Type이 불필요하므로 조건부 설정
+          ...(options.method && options.method !== 'GET'
+            ? { 'Content-Type': 'application/json' }
+            : {}),
           ...options.headers,
         },
         ...options,
@@ -64,20 +78,18 @@ class ApiClient {
    * 백엔드 서버 상태 확인
    */
   async healthCheck(): Promise<ApiResponse<HealthCheckResponse>> {
-    return this.request<HealthCheckResponse>('/health');
+    return this.request<HealthCheckResponse>('/api/health');
   }
 
   /**
-   * 테스트 API 호출
+   * 현재 시간 조회 API
    */
-  async getTestData(): Promise<
-    ApiResponse<{ message: string; timestamp: string }>
-  > {
-    return this.request('/api/test');
+  async getNow(): Promise<ApiResponse<{ now: string; timestamp: string }>> {
+    return this.request('/api/now');
   }
 }
 
 export const apiClient = new ApiClient();
 
 export const healthCheck = () => apiClient.healthCheck();
-export const getTestData = () => apiClient.getTestData();
+export const getNow = () => apiClient.getNow();
