@@ -6,6 +6,7 @@ import ButtonList from '@/components/ui/button-list';
 import { TOTAL_LABELING_STEPS } from '@/lib/constants';
 
 import { labelOption } from '../../types/label-option';
+import { LabelStepProps } from '../../types/label-step';
 import LabelStepLayout from '../label-step-layout';
 
 const LABEL_STEP_3_OPTIONS: labelOption[] = [
@@ -34,7 +35,7 @@ const LABEL_STEP_3_OPTIONS: labelOption[] = [
   },
 ];
 
-export const LabelStep3 = () => {
+export const LabelStep3 = ({}: LabelStepProps) => {
   const [selectedValue, setSelectedValue] = useState<string | null>(null);
   return (
     <LabelStepLayout

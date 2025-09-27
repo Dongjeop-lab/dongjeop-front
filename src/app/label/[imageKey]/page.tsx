@@ -43,7 +43,7 @@ const LabelPage = () => {
       case 2:
         return <LabelStep2 onNext={handleNextStep} />;
       case 3:
-        return <LabelStep3 />;
+        return <LabelStep3 onNext={handleNextStep} />;
       default:
         return <LabelStep1 onNext={handleNextStep} />;
     }
