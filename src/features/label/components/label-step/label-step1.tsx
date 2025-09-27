@@ -24,7 +24,7 @@ const LABEL_STEP_1_OPTIONS: labelOption[] = [
   },
 ];
 
-export const LabelStep1 = ({}: LabelStepProps) => {
+export const LabelStep1 = ({ onNext }: LabelStepProps) => {
   const [selectedValue, setSelectedValue] = useState<string | null>(null);
 
   return (
@@ -41,7 +41,10 @@ export const LabelStep1 = ({}: LabelStepProps) => {
               key={title}
               title={title}
               selected={selectedValue === value}
-              onClick={() => setSelectedValue(value)}
+              onClick={() => {
+                setSelectedValue(value);
+                onNext();
+              }}
             />
           ))}
         </ButtonList>

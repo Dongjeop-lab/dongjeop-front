@@ -20,7 +20,7 @@ const LABEL_STEP_2_OPTIONS: labelOption[] = [
   { title: '잘 모르겠어요', value: NOT_SURE_VALUE },
 ];
 
-export const LabelStep2 = ({}: LabelStepProps) => {
+export const LabelStep2 = ({ onNext }: LabelStepProps) => {
   const [selectedValue, setSelectedValue] = useState<string[]>([]);
 
   const handleSelect = (value: string) => {
@@ -59,10 +59,11 @@ export const LabelStep2 = ({}: LabelStepProps) => {
           </ButtonList>
         }
       />
-      <BottomCTA>
+      <BottomCTA hasAnimation>
         <BottomCTA.Button
           disabled={selectedValue.length === 0}
           variant='primary'
+          onClick={onNext}
         >
           다음
         </BottomCTA.Button>

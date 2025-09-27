@@ -35,7 +35,7 @@ const LABEL_STEP_3_OPTIONS: labelOption[] = [
   },
 ];
 
-export const LabelStep3 = ({}: LabelStepProps) => {
+export const LabelStep3 = ({ onNext }: LabelStepProps) => {
   const [selectedValue, setSelectedValue] = useState<string | null>(null);
   return (
     <LabelStepLayout
@@ -52,7 +52,10 @@ export const LabelStep3 = ({}: LabelStepProps) => {
               title={title}
               subTitle={subtitle}
               selected={selectedValue === value}
-              onClick={() => setSelectedValue(value)}
+              onClick={() => {
+                setSelectedValue(value);
+                onNext();
+              }}
             />
           ))}
         </ButtonList>
