@@ -1,103 +1,203 @@
-import Image from 'next/image';
+'use client';
 
-export default function Home() {
+import { useState } from 'react';
+
+import {
+  apiClient,
+  ApiResponse,
+  HealthCheckResponse,
+  NowApiResponse,
+} from './api/client';
+
+export default function TestPage() {
+  const [healthStatus, setHealthStatus] = useState<ApiResponse | null>(null);
+  const [nowData, setNowData] = useState<ApiResponse | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const testHealthCheck = async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const result = await apiClient.get<HealthCheckResponse>('/api/health');
+
+      setHealthStatus(result);
+    } catch (err) {
+      setError(
+        'Health check 요청 실패: ' +
+          (err instanceof Error ? err.message : '알 수 없는 오류')
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const testNowAPI = async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const result = await apiClient.get<NowApiResponse>('/api/now');
+      setNowData(result);
+    } catch (err) {
+      setError(
+        'Now API 요청 실패: ' +
+          (err instanceof Error ? err.message : '알 수 없는 오류')
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const clearResults = () => {
+    setHealthStatus(null);
+    setNowData(null);
+    setError(null);
+  };
+
   return (
-    <div className='grid min-h-screen grid-rows-[20px_1fr_20px] items-center justify-items-center gap-16 p-8 pb-20 font-sans sm:p-20'>
-      <main className='row-start-2 flex flex-col items-center gap-[32px] sm:items-start'>
-        <Image
-          className='dark:invert'
-          src='/images/next.svg'
-          alt='Next.js logo'
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className='list-inside list-decimal text-center font-mono text-sm/6 sm:text-left'>
-          <li className='mb-2 tracking-[-.01em]'>
-            Get started by editing{' '}
-            <code className='rounded bg-black/[.05] px-1 py-0.5 font-mono font-semibold dark:bg-white/[.06]'>
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li className='tracking-[-.01em]'>
-            Save and see your changes instantly.
-          </li>
-        </ol>
+    <div className='min-h-screen bg-gray-50 py-8'>
+      <div className='mx-auto max-w-4xl px-4'>
+        <div className='rounded-lg bg-white p-6 shadow-lg'>
+          <h1 className='mb-8 text-center text-3xl font-bold text-gray-900'>
+            백엔드 API 테스트 페이지
+          </h1>
 
-        <div className='flex flex-col items-center gap-4 sm:flex-row'>
-          <a
-            className='bg-foreground text-background flex h-10 items-center justify-center gap-2 rounded-full border border-solid border-transparent px-4 text-sm font-medium transition-colors hover:bg-[#383838] sm:h-12 sm:w-auto sm:px-5 sm:text-base dark:hover:bg-[#ccc]'
-            href='https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app'
-            target='_blank'
-            rel='noopener noreferrer'
-          >
-            <Image
-              className='dark:invert'
-              src='/images/vercel.svg'
-              alt='Vercel logomark'
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className='flex h-10 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-4 text-sm font-medium transition-colors hover:border-transparent hover:bg-[#f2f2f2] sm:h-12 sm:w-auto sm:px-5 sm:text-base md:w-[158px] dark:border-white/[.145] dark:hover:bg-[#1a1a1a]'
-            href='https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app'
-            target='_blank'
-            rel='noopener noreferrer'
-          >
-            Read our docs
-          </a>
+          {/* API 엔드포인트 정보 */}
+          <div className='mb-8 rounded-lg border border-blue-200 bg-blue-50 p-4'>
+            <h2 className='mb-2 text-lg font-semibold text-blue-800'>
+              테스트 가능한 엔드포인트:
+            </h2>
+            <ul className='space-y-1 text-blue-700'>
+              <li>
+                •{' '}
+                <code className='rounded bg-blue-100 px-2 py-1'>
+                  GET /api/health
+                </code>{' '}
+                - 서버 상태 확인
+              </li>
+              <li>
+                •{' '}
+                <code className='rounded bg-blue-100 px-2 py-1'>
+                  GET /api/now
+                </code>{' '}
+                - 현재 시간 조회
+              </li>
+            </ul>
+            <p className='mt-2 text-sm text-blue-600'>
+              백엔드 서버:{' '}
+              <code className='rounded bg-blue-100 px-2 py-1'>
+                {process.env.NEXT_PUBLIC_API_URL}
+              </code>
+            </p>
+          </div>
+
+          {/* 버튼 영역 */}
+          <div className='mb-8 flex flex-wrap gap-4'>
+            <button
+              onClick={testHealthCheck}
+              disabled={loading}
+              className='cursor-pointer rounded-lg bg-green-500 px-6 py-3 font-medium text-white transition-colors hover:bg-green-600 disabled:bg-gray-400'
+            >
+              {loading ? '요청 중...' : 'Health Check 테스트'}
+            </button>
+
+            <button
+              onClick={testNowAPI}
+              disabled={loading}
+              className='cursor-pointer rounded-lg bg-blue-500 px-6 py-3 font-medium text-white transition-colors hover:bg-blue-600 disabled:bg-gray-400'
+            >
+              {loading ? '요청 중...' : 'Now API 테스트'}
+            </button>
+
+            <button
+              onClick={clearResults}
+              disabled={loading}
+              className='cursor-pointer rounded-lg bg-gray-500 px-6 py-3 font-medium text-white transition-colors hover:bg-gray-600 disabled:bg-gray-400'
+            >
+              결과 지우기
+            </button>
+          </div>
+
+          {/* 에러 메시지 */}
+          {error && (
+            <div className='mb-6 rounded-lg border border-red-200 bg-red-50 p-4'>
+              <h3 className='mb-2 font-semibold text-red-800'>❌ 오류 발생</h3>
+              <p className='text-red-700'>{error}</p>
+            </div>
+          )}
+
+          {/* 결과 영역 */}
+          <div className='grid gap-6 md:grid-cols-2'>
+            {/* Health Check 결과 */}
+            <div className='rounded-lg bg-gray-50 p-6'>
+              <h3 className='mb-4 text-lg font-semibold text-gray-800'>
+                🏥 Health Check 결과
+              </h3>
+              {healthStatus ? (
+                <div className='space-y-2'>
+                  <div
+                    className={`inline-block rounded-full px-3 py-1 text-sm font-medium ${
+                      healthStatus.success
+                        ? 'bg-green-100 text-green-800'
+                        : 'bg-red-100 text-red-800'
+                    }`}
+                  >
+                    {healthStatus.success ? '✅ 성공' : '❌ 실패'}
+                  </div>
+                  <pre className='overflow-x-auto rounded-lg bg-gray-800 p-4 text-sm text-green-400'>
+                    {JSON.stringify(healthStatus, null, 2)}
+                  </pre>
+                </div>
+              ) : (
+                <p className='text-gray-500'>아직 테스트하지 않았습니다.</p>
+              )}
+            </div>
+
+            {/* Now API 결과 */}
+            <div className='rounded-lg bg-gray-50 p-6'>
+              <h3 className='mb-4 text-lg font-semibold text-gray-800'>
+                ⏰ Now API 결과
+              </h3>
+              {nowData ? (
+                <div className='space-y-2'>
+                  <div
+                    className={`inline-block rounded-full px-3 py-1 text-sm font-medium ${
+                      nowData.success
+                        ? 'bg-green-100 text-green-800'
+                        : 'bg-red-100 text-red-800'
+                    }`}
+                  >
+                    {nowData.success ? '✅ 성공' : '❌ 실패'}
+                  </div>
+                  <pre className='overflow-x-auto rounded-lg bg-gray-800 p-4 text-sm text-green-400'>
+                    {JSON.stringify(nowData, null, 2)}
+                  </pre>
+                </div>
+              ) : (
+                <p className='text-gray-500'>아직 테스트하지 않았습니다.</p>
+              )}
+            </div>
+          </div>
+
+          {/* 사용법 안내 */}
+          <div className='mt-8 rounded-lg border border-yellow-200 bg-yellow-50 p-4'>
+            <h3 className='mb-2 font-semibold text-yellow-800'>📝 사용법</h3>
+            <ol className='space-y-1 text-yellow-700'>
+              <li>
+                1. 백엔드 서버가{' '}
+                <code className='rounded bg-yellow-100 px-1'>
+                  localhost:8082
+                </code>
+                에서 실행 중인지 확인하세요.
+              </li>
+              <li>
+                2. 위의 버튼들을 클릭하여 각 API 엔드포인트를 테스트하세요.
+              </li>
+              <li>3. 응답 결과가 JSON 형태로 표시됩니다.</li>
+            </ol>
+          </div>
         </div>
-      </main>
-      <footer className='row-start-3 flex flex-wrap items-center justify-center gap-[24px]'>
-        <a
-          className='flex items-center gap-2 hover:underline hover:underline-offset-4'
-          href='https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app'
-          target='_blank'
-          rel='noopener noreferrer'
-        >
-          <Image
-            aria-hidden
-            src='/images/file.svg'
-            alt='File icon'
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className='flex items-center gap-2 hover:underline hover:underline-offset-4'
-          href='https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app'
-          target='_blank'
-          rel='noopener noreferrer'
-        >
-          <Image
-            aria-hidden
-            src='/images/window.svg'
-            alt='Window icon'
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className='flex items-center gap-2 hover:underline hover:underline-offset-4'
-          href='https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app'
-          target='_blank'
-          rel='noopener noreferrer'
-        >
-          <Image
-            aria-hidden
-            src='/images/globe.svg'
-            alt='Globe icon'
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+      </div>
     </div>
   );
 }

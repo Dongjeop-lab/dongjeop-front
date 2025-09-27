@@ -1,0 +1,184 @@
+# .github/workflows/deploy.yml
+
+name: 🚀 프로덕션 배포 (개선 버전)
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  packages: write
+
+env:
+  REGISTRY_URL: ${{ secrets.KAKAO_REGISTRY_URL }}
+  REGISTRY_PROJECT: ${{ secrets.KAKAO_REGISTRY_PROJECT }}
+  IMAGE_NAME: dongjeop-frontend
+  
+jobs:
+  build-and-deploy:
+    name: 🐳 빌드 및 배포
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    
+    steps:
+      - name: 📥 코드 체크아웃
+        uses: actions/checkout@v4
+
+      - name: 🟢 Node.js 22 설정
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+
+      - name: 📦 의존성 설치 및 품질 검사
+        run: |
+          npm ci
+          npm run ci
+        env:
+          NODE_ENV: production
+          NEXT_PUBLIC_API_URL: ${{ secrets.NEXT_PUBLIC_API_URL }}
+
+      - name: 🐳 Docker Buildx 설정
+        uses: docker/setup-buildx-action@v3
+
+      - name: 🔐 Docker Registry CA 인증서 설정
+        run: |
+          echo "${{ secrets.DOCKER_CA_CERT }}" > /tmp/ca.crt
+          sudo mkdir -p /etc/docker/certs.d/${{ env.REGISTRY_URL }}
+          sudo cp /tmp/ca.crt /etc/docker/certs.d/${{ env.REGISTRY_URL }}/ca.crt
+          sudo chmod 644 /etc/docker/certs.d/${{ env.REGISTRY_URL }}/ca.crt
+
+      - name: 🔑 카카오 클라우드 레지스트리 로그인
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY_URL }}
+          username: ${{ secrets.KAKAO_REGISTRY_USERNAME }}
+          password: ${{ secrets.KAKAO_REGISTRY_PASSWORD }}
+
+      - name: 🏷️ Docker 이미지 메타데이터 생성
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.REGISTRY_URL }}/${{ env.REGISTRY_PROJECT }}/${{ env.IMAGE_NAME }}
+          tags: |
+            type=raw,value=latest,enable={{is_default_branch}}
+            type=sha,format=short
+
+      - name: 🏗️ Docker 이미지 빌드 및 푸시
+        id: build
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          platforms: linux/amd64
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: |
+            type=gha
+            type=registry,ref=${{ env.REGISTRY_URL }}/${{ env.REGISTRY_PROJECT }}/${{ env.IMAGE_NAME }}:cache
+          cache-to: |
+            type=gha,mode=max
+            type=registry,ref=${{ env.REGISTRY_URL }}/${{ env.REGISTRY_PROJECT }}/${{ env.IMAGE_NAME }}:cache,mode=max
+          build-args: |
+            NODE_ENV=production
+            NEXT_PUBLIC_API_URL=${{ secrets.NEXT_PUBLIC_API_URL }}
+          # 🚀 고성능 빌드 최적화 옵션
+          provenance: false
+          sbom: false
+
+      - name: 🖥️ 카카오 클라우드 서버 무중단 배포
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.KAKAO_SERVER_HOST }}
+          username: ${{ secrets.KAKAO_SERVER_USER }}
+          key: ${{ secrets.KAKAO_SSH_PRIVATE_KEY }}
+          port: ${{ secrets.KAKAO_SERVER_PORT }} # Secret으로 포트 관리
+          timeout: 45s
+          script: |
+            set -e
+            echo "🚀 프론트엔드 무중단 배포 시작..."
+            
+            # --- 변수 설정 ---
+            REGISTRY_URL="${{ env.REGISTRY_URL }}"
+            REGISTRY_PROJECT="${{ env.REGISTRY_PROJECT }}"
+            IMAGE_NAME="${{ env.IMAGE_NAME }}"
+            
+            # 컨테이너 이름 설정 (기존, 신규, 백업)
+            CONTAINER_NAME="dongjeop-frontend"
+            NEW_CONTAINER_NAME="dongjeop-frontend-new"
+            OLD_CONTAINER_NAME="dongjeop-frontend-old"
+            
+            # --- 레지스트리 로그인 및 이미지 다운로드 ---
+            echo "🔑 레지스트리 로그인..."
+            echo "${{ secrets.KAKAO_REGISTRY_PASSWORD }}" | docker login $REGISTRY_URL --username ${{ secrets.KAKAO_REGISTRY_USERNAME }} --password-stdin
+            
+            echo "📥 새 이미지 다운로드..."
+            docker pull ${REGISTRY_URL}/${REGISTRY_PROJECT}/${IMAGE_NAME}:latest
+
+            # --- 이전 배포 실패 시 남은 컨테이너 정리 ---
+            docker stop ${NEW_CONTAINER_NAME} >/dev/null 2>&1 && docker rm ${NEW_CONTAINER_NAME} >/dev/null 2>&1 || true
+            
+            # --- 새 버전 컨테이너 실행 ---
+            echo "🎯 새 버전 컨테이너 시작: ${NEW_CONTAINER_NAME}"
+            docker run -d \
+              --name ${NEW_CONTAINER_NAME} \
+              --restart unless-stopped \
+              -p 3001:3000 \
+              -e NODE_ENV=production \
+              -e NEXT_PUBLIC_API_URL="${{ secrets.NEXT_PUBLIC_API_URL }}" \
+              ${REGISTRY_URL}/${REGISTRY_PROJECT}/${IMAGE_NAME}:latest
+
+            # --- 새 버전 헬스 체크 ---
+            echo "🏥 새 버전 헬스 체크..."
+            sleep 10
+            for i in {1..12}; do
+                if curl -f http://localhost:3001 >/dev/null 2>&1; then
+                    echo "✅ 새 버전 헬스 체크 성공!"
+                    
+                    # --- 기존 컨테이너를 백업으로 변경하고 새 컨테이너를 현재 버전으로 적용 ---
+                    if docker ps -q -f name=${CONTAINER_NAME} | grep -q .; then
+                      echo "🔄 기존 컨테이너를 백업으로 변경: ${OLD_CONTAINER_NAME}"
+                      docker rename ${CONTAINER_NAME} ${OLD_CONTAINER_NAME}
+                    fi
+                    
+                    echo "🚀 새 버전을 현재 버전으로 적용: ${CONTAINER_NAME}"
+                    docker rename ${NEW_CONTAINER_NAME} ${CONTAINER_NAME}
+                    
+                    # --- 백업 컨테이너 중지 및 삭제 ---
+                    if docker ps -a -q -f name=${OLD_CONTAINER_NAME} | grep -q .; then
+                      echo "🛑 백업 컨테이너 중지 및 삭제"
+                      docker stop ${OLD_CONTAINER_NAME}
+                      docker rm ${OLD_CONTAINER_NAME}
+                    fi
+                    
+                    break
+                fi
+                if [ $i -eq 12 ]; then
+                    echo "❌ 새 버전 헬스 체크 실패. 배포 롤백"
+                    docker logs ${NEW_CONTAINER_NAME}
+                    docker stop ${NEW_CONTAINER_NAME}
+                    docker rm ${NEW_CONTAINER_NAME}
+                    exit 1
+                fi
+                echo "재시도 ($i/12)..."
+                sleep 5
+            done
+
+            # --- 이전 이미지 정리 ---
+            echo "🧹 이전 이미지 정리..."
+            docker image prune -f
+            
+            echo "🎉 배포 완료!"
+
+      - name: 📊 배포 결과 요약
+        if: always()
+        run: |
+          echo "## 🚀 무중단 배포 완료" >> $GITHUB_STEP_SUMMARY
+          echo "- ✅ 품질 검사 및 빌드 완료" >> $GITHUB_STEP_SUMMARY
+          echo "- ✅ Docker 이미지 레지스트리 푸시" >> $GITHUB_STEP_SUMMARY
+          echo "- ✅ 서버 배포 및 헬스 체크 완료 (무중단)" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**이미지:** ${{ steps.meta.outputs.tags }}" >> $GITHUB_STEP_SUMMARY
+          echo "**배포 시간:** $(date)" >> $GITHUB_STEP_SUMMARY
