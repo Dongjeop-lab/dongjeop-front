@@ -75,13 +75,18 @@ jobs:
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
+          cache-from: |
+            type=gha
+            type=registry,ref=${{ env.REGISTRY_URL }}/${{ env.REGISTRY_PROJECT }}/${{ env.IMAGE_NAME }}:cache
+          cache-to: |
+            type=gha,mode=max
+            type=registry,ref=${{ env.REGISTRY_URL }}/${{ env.REGISTRY_PROJECT }}/${{ env.IMAGE_NAME }}:cache,mode=max
           build-args: |
             NODE_ENV=production
             NEXT_PUBLIC_API_URL=${{ secrets.NEXT_PUBLIC_API_URL }}
-          # 빌드 최적화 옵션
+          # 🚀 고성능 빌드 최적화 옵션
           provenance: false
+          sbom: false
 
       - name: 🖥️ 카카오 클라우드 서버 무중단 배포
         uses: appleboy/ssh-action@v1.0.3

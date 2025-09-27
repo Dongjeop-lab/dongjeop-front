@@ -11,6 +11,10 @@ permissions:
   pull-requests: write    # PR 댓글 권한
   checks: write          # 체크 상태 업데이트 권한
 
+env:
+  # 🔐 환경변수 중앙 관리 (하드코딩 방지)
+  NEXT_PUBLIC_API_URL: ${{ vars.NEXT_PUBLIC_API_URL || 'http://localhost:8082' }}
+
 jobs:
   # 🔍 코드 품질 검사 (빠른 피드백)
   quality-check:
@@ -50,7 +54,7 @@ jobs:
         run: npm run build
         env:
           NODE_OPTIONS: --max-old-space-size=4096
-          NEXT_PUBLIC_API_URL: http://61.109.238.45:8082
+          NEXT_PUBLIC_API_URL: ${{ env.NEXT_PUBLIC_API_URL }}
 
   # 🐳 Docker 빌드 테스트 (병렬 실행)
   docker-test:
@@ -62,24 +66,43 @@ jobs:
       - name: 📥 코드 체크아웃
         uses: actions/checkout@v4
 
-      - name: 🐳 Docker 빌드 테스트
-        run: |
-          echo "🏗️ Docker 빌드 테스트 시작..."
-          docker build \
-            --build-arg NEXT_PUBLIC_API_URL="http://61.109.238.45:8082" \
-            -t dongjeop-frontend:ci-test .
-          echo "✅ Docker 빌드 테스트 성공!"
+      - name: 🐳 Docker Buildx 설정 (고성능)
+        uses: docker/setup-buildx-action@v3
 
-      - name: 🧪 Docker 컨테이너 테스트 (선택사항)
+      - name: 🚀 고성능 Docker 빌드 테스트 (캐시 활용)
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          push: false
+          tags: dongjeop-frontend:ci-test
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          build-args: |
+            NEXT_PUBLIC_API_URL=${{ env.NEXT_PUBLIC_API_URL }}
+
+      - name: 🧪 고성능 컨테이너 실행 테스트
         run: |
-          echo "🧪 컨테이너 실행 테스트..."
+          echo "🧪 컨테이너 실행 및 헬스체크 테스트..."
           docker run --rm -d --name test-container \
             -p 3000:3000 dongjeop-frontend:ci-test
-          sleep 5
-          # 간단한 헬스체크
-          curl -f http://localhost:3000 || exit 1
+          
+          # 향상된 헬스체크 (더 빠른 피드백)
+          echo "⏳ 컨테이너 준비 대기..."
+          for i in {1..30}; do
+            if curl -f http://localhost:3000 >/dev/null 2>&1; then
+              echo "✅ 컨테이너 헬스체크 성공! ($i초 소요)"
+              break
+            fi
+            if [ $i -eq 30 ]; then
+              echo "❌ 헬스체크 실패: 30초 초과"
+              docker logs test-container
+              exit 1
+            fi
+            sleep 1
+          done
+          
           docker stop test-container
-          echo "✅ 컨테이너 실행 테스트 성공!"
+          echo "🎉 컨테이너 실행 테스트 완료!"
 
   # 📊 결과 종합 및 PR 코멘트
   ci-summary:
