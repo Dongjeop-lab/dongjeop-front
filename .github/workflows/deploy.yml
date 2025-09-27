@@ -1,6 +1,6 @@
 # .github/workflows/deploy.yml
 
-name: 🚀 프로덕션 배포 (개선 버전)
+name: 🚀 프로덕션 배포
 
 on:
   push:
@@ -25,20 +25,6 @@ jobs:
     steps:
       - name: 📥 코드 체크아웃
         uses: actions/checkout@v4
-
-      - name: 🟢 Node.js 22 설정
-        uses: actions/setup-node@v4
-        with:
-          node-version: '22'
-          cache: 'npm'
-
-      - name: 📦 의존성 설치 및 품질 검사
-        run: |
-          npm ci
-          npm run ci
-        env:
-          NODE_ENV: production
-          NEXT_PUBLIC_API_URL: ${{ secrets.NEXT_PUBLIC_API_URL }}
 
       - name: 🐳 Docker Buildx 설정
         uses: docker/setup-buildx-action@v3
