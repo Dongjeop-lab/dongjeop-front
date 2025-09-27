@@ -1,5 +1,8 @@
 language: ko-KR
 
+base_branches:
+  - '*'
+
 reviews:
   profile: balanced
   request_changes_workflow: false
