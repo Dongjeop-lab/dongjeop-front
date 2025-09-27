@@ -3,7 +3,6 @@
 import { useState } from 'react';
 
 import ButtonList from '@/components/ui/button-list';
-import Header from '@/components/ui/header';
 import { TOTAL_LABELING_STEPS } from '@/lib/constants';
 
 import { labelOption } from '../../types/label-option';
@@ -38,28 +37,25 @@ const LABEL_STEP_3_OPTIONS: labelOption[] = [
 export const LabelStep3 = () => {
   const [selectedValue, setSelectedValue] = useState<string | null>(null);
   return (
-    <>
-      <Header onBack={() => null} />
-      <LabelStepLayout
-        title='통로 폭을 알려주세요'
-        description={`통로가 많다면 가장 많이 보이는\n폭을 선택해주세요`}
-        currentStep={3}
-        totalSteps={TOTAL_LABELING_STEPS}
-        imageKey='/images/dummy-label-image.png'
-        labelingOptions={
-          <ButtonList className='w-full'>
-            {LABEL_STEP_3_OPTIONS.map(({ title, subtitle, value }) => (
-              <ButtonList.Item
-                key={title}
-                title={title}
-                subTitle={subtitle}
-                selected={selectedValue === value}
-                onClick={() => setSelectedValue(value)}
-              />
-            ))}
-          </ButtonList>
-        }
-      />
-    </>
+    <LabelStepLayout
+      title='통로 폭을 알려주세요'
+      description={`통로가 많다면 가장 많이 보이는\n폭을 선택해주세요`}
+      currentStep={3}
+      totalSteps={TOTAL_LABELING_STEPS}
+      imageKey='/images/dummy-label-image.png'
+      labelingOptions={
+        <ButtonList className='w-full'>
+          {LABEL_STEP_3_OPTIONS.map(({ title, subtitle, value }) => (
+            <ButtonList.Item
+              key={title}
+              title={title}
+              subTitle={subtitle}
+              selected={selectedValue === value}
+              onClick={() => setSelectedValue(value)}
+            />
+          ))}
+        </ButtonList>
+      }
+    />
   );
 };

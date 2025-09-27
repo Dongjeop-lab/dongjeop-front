@@ -4,10 +4,10 @@ import { useState } from 'react';
 
 import BottomCTA from '@/components/ui/bottom-cta';
 import ButtonList from '@/components/ui/button-list';
-import Header from '@/components/ui/header';
 import { TOTAL_LABELING_STEPS } from '@/lib/constants';
 
 import { labelOption } from '../../types/label-option';
+import { LabelStepProps } from '../../types/label-step';
 import LabelStepLayout from '../label-step-layout';
 
 const NOT_SURE_VALUE = 'not_sure';
@@ -20,7 +20,7 @@ const LABEL_STEP_2_OPTIONS: labelOption[] = [
   { title: '잘 모르겠어요', value: NOT_SURE_VALUE },
 ];
 
-export const LabelStep2 = () => {
+export const LabelStep2 = ({}: LabelStepProps) => {
   const [selectedValue, setSelectedValue] = useState<string[]>([]);
 
   const handleSelect = (value: string) => {
@@ -39,7 +39,6 @@ export const LabelStep2 = () => {
 
   return (
     <>
-      <Header onBack={() => null} />
       <LabelStepLayout
         title='어떤 의자가 있는지 알려주세요'
         description={`사진에 보이는 의자에 대해\n모두 선택해주세요`}
