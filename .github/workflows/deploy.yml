@@ -3,17 +3,15 @@
 name: 🚀 프로덕션 배포
 
 on:
+  # 🧪 임시: feat/ci-cd-test 브랜치에서도 테스트 (나중에 제거)
   push:
-    branches: [ main ]
-  workflow_dispatch:
+    branches: [ main, feat/ci-cd-test ]
 
 permissions:
   contents: read
   packages: write
 
 env:
-  REGISTRY_URL: ${{ secrets.KAKAO_REGISTRY_URL }}
-  REGISTRY_PROJECT: ${{ secrets.KAKAO_REGISTRY_PROJECT }}
   IMAGE_NAME: dongjeop-frontend
   
 jobs:
@@ -26,20 +24,38 @@ jobs:
       - name: 📥 코드 체크아웃
         uses: actions/checkout@v4
 
-      - name: 🐳 Docker Buildx 설정
-        uses: docker/setup-buildx-action@v3
-
       - name: 🔐 Docker Registry CA 인증서 설정
         run: |
+          echo "🔒 CA 인증서 설정 중..."
+          
+          # CA 인증서 파일 생성
           echo "${{ secrets.DOCKER_CA_CERT }}" > /tmp/ca.crt
-          sudo mkdir -p /etc/docker/certs.d/${{ env.REGISTRY_URL }}
-          sudo cp /tmp/ca.crt /etc/docker/certs.d/${{ env.REGISTRY_URL }}/ca.crt
-          sudo chmod 644 /etc/docker/certs.d/${{ env.REGISTRY_URL }}/ca.crt
+          
+          # Docker certs.d 디렉토리 설정
+          sudo mkdir -p /etc/docker/certs.d/${{ secrets.KAKAO_REGISTRY_URL }}
+          sudo cp /tmp/ca.crt /etc/docker/certs.d/${{ secrets.KAKAO_REGISTRY_URL }}/ca.crt
+          sudo chmod 644 /etc/docker/certs.d/${{ secrets.KAKAO_REGISTRY_URL }}/ca.crt
+          
+          # 시스템 CA 인증서 스토어에도 추가
+          sudo cp /tmp/ca.crt /usr/local/share/ca-certificates/docker-registry.crt
+          sudo update-ca-certificates
+          
+          # Docker 데몬 재시작 (buildx 컨테이너 재생성)
+          sudo systemctl restart docker || true
+          sleep 3
+          
+          # 설정 확인
+          echo "📋 CA 인증서 설정 확인:"
+          ls -la /etc/docker/certs.d/${{ secrets.KAKAO_REGISTRY_URL }}/
+          echo "✅ CA 인증서 설정 완료"
+
+      - name: 🐳 Docker Buildx 설정 (CA 인증서 설정 후)
+        uses: docker/setup-buildx-action@v3
 
       - name: 🔑 카카오 클라우드 레지스트리 로그인
         uses: docker/login-action@v3
         with:
-          registry: ${{ env.REGISTRY_URL }}
+          registry: ${{ secrets.KAKAO_REGISTRY_URL }}
           username: ${{ secrets.KAKAO_REGISTRY_USERNAME }}
           password: ${{ secrets.KAKAO_REGISTRY_PASSWORD }}
 
@@ -47,7 +63,7 @@ jobs:
         id: meta
         uses: docker/metadata-action@v5
         with:
-          images: ${{ env.REGISTRY_URL }}/${{ env.REGISTRY_PROJECT }}/${{ env.IMAGE_NAME }}
+          images: ${{ secrets.KAKAO_REGISTRY_URL }}/${{ secrets.KAKAO_REGISTRY_PROJECT }}/${{ env.IMAGE_NAME }}
           tags: |
             type=raw,value=latest,enable={{is_default_branch}}
             type=sha,format=short
@@ -63,10 +79,10 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: |
             type=gha
-            type=registry,ref=${{ env.REGISTRY_URL }}/${{ env.REGISTRY_PROJECT }}/${{ env.IMAGE_NAME }}:cache
+            type=registry,ref=${{ secrets.KAKAO_REGISTRY_URL }}/${{ secrets.KAKAO_REGISTRY_PROJECT }}/${{ env.IMAGE_NAME }}:cache
           cache-to: |
             type=gha,mode=max
-            type=registry,ref=${{ env.REGISTRY_URL }}/${{ env.REGISTRY_PROJECT }}/${{ env.IMAGE_NAME }}:cache,mode=max
+            type=registry,ref=${{ secrets.KAKAO_REGISTRY_URL }}/${{ secrets.KAKAO_REGISTRY_PROJECT }}/${{ env.IMAGE_NAME }}:cache,mode=max
           build-args: |
             NODE_ENV=production
             NEXT_PUBLIC_API_URL=${{ secrets.NEXT_PUBLIC_API_URL }}
@@ -87,8 +103,8 @@ jobs:
             echo "🚀 프론트엔드 무중단 배포 시작..."
             
             # --- 변수 설정 ---
-            REGISTRY_URL="${{ env.REGISTRY_URL }}"
-            REGISTRY_PROJECT="${{ env.REGISTRY_PROJECT }}"
+            REGISTRY_URL="${{ secrets.KAKAO_REGISTRY_URL }}"
+            REGISTRY_PROJECT="${{ secrets.KAKAO_REGISTRY_PROJECT }}"
             IMAGE_NAME="${{ env.IMAGE_NAME }}"
             
             # 컨테이너 이름 설정 (기존, 신규, 백업)
