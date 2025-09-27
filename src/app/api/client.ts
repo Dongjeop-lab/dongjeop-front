@@ -8,10 +8,12 @@ export interface ApiResponse<T = unknown> {
 }
 
 export interface HealthCheckResponse {
-  status: 'healthy' | 'unhealthy';
-  timestamp: string;
-  version?: string;
-  uptime?: number;
+  status: string;
+}
+
+export interface NowApiResponse {
+  now: string;
+  readable: string;
 }
 
 class ApiClient {
@@ -28,11 +30,35 @@ class ApiClient {
     try {
       const url = `${this.baseURL}${endpoint}`;
 
+      // GET 요청에는 Content-Type 헤더 불필요 (Preflight 방지)
+      const headers: Record<string, string> = {};
+
+      // options.headers를 안전하게 처리
+      if (options.headers) {
+        if (options.headers instanceof Headers) {
+          options.headers.forEach((value, key) => {
+            headers[key] = value;
+          });
+        } else if (typeof options.headers === 'object') {
+          Object.entries(options.headers).forEach(([key, value]) => {
+            if (typeof value === 'string') {
+              headers[key] = value;
+            }
+          });
+        }
+      }
+
+      // POST/PUT 등 body가 있는 요청에만 Content-Type 추가
+      if (
+        options.method &&
+        options.method !== 'GET' &&
+        options.method !== 'HEAD'
+      ) {
+        headers['Content-Type'] = 'application/json';
+      }
+
       const response = await fetch(url, {
-        headers: {
-          'Content-Type': 'application/json',
-          ...options.headers,
-        },
+        headers,
         ...options,
       });
 
@@ -61,23 +87,57 @@ class ApiClient {
   }
 
   /**
-   * 백엔드 서버 상태 확인
+   * GET 요청
    */
-  async healthCheck(): Promise<ApiResponse<HealthCheckResponse>> {
-    return this.request<HealthCheckResponse>('/api/health');
+  async get<T = unknown>(endpoint: string): Promise<ApiResponse<T>> {
+    return this.request<T>(endpoint, { method: 'GET' });
   }
 
   /**
-   * 현재 시간 API 호출
+   * POST 요청
    */
-  async getNowData(): Promise<
-    ApiResponse<{ message: string; timestamp: string; now?: string }>
-  > {
-    return this.request('/api/now');
+  async post<T = unknown>(
+    endpoint: string,
+    body?: unknown
+  ): Promise<ApiResponse<T>> {
+    return this.request<T>(endpoint, {
+      method: 'POST',
+      body: body ? JSON.stringify(body) : undefined,
+    });
+  }
+
+  /**
+   * PATCH 요청
+   */
+  async patch<T = unknown>(
+    endpoint: string,
+    body?: unknown
+  ): Promise<ApiResponse<T>> {
+    return this.request<T>(endpoint, {
+      method: 'PATCH',
+      body: body ? JSON.stringify(body) : undefined,
+    });
+  }
+
+  /**
+   * PUT 요청
+   */
+  async put<T = unknown>(
+    endpoint: string,
+    body?: unknown
+  ): Promise<ApiResponse<T>> {
+    return this.request<T>(endpoint, {
+      method: 'PUT',
+      body: body ? JSON.stringify(body) : undefined,
+    });
+  }
+
+  /**
+   * DELETE 요청
+   */
+  async delete<T = unknown>(endpoint: string): Promise<ApiResponse<T>> {
+    return this.request<T>(endpoint, { method: 'DELETE' });
   }
 }
 
 export const apiClient = new ApiClient();
-
-export const healthCheck = () => apiClient.healthCheck();
-export const getNowData = () => apiClient.getNowData();

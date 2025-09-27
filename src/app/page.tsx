@@ -2,7 +2,12 @@
 
 import { useState } from 'react';
 
-import { ApiResponse, getNowData, healthCheck } from './api/client';
+import {
+  apiClient,
+  ApiResponse,
+  HealthCheckResponse,
+  NowApiResponse,
+} from './api/client';
 
 export default function TestPage() {
   const [healthStatus, setHealthStatus] = useState<ApiResponse | null>(null);
@@ -14,7 +19,8 @@ export default function TestPage() {
     setLoading(true);
     setError(null);
     try {
-      const result = await healthCheck();
+      const result = await apiClient.get<HealthCheckResponse>('/api/health');
+
       setHealthStatus(result);
     } catch (err) {
       setError(
@@ -30,7 +36,7 @@ export default function TestPage() {
     setLoading(true);
     setError(null);
     try {
-      const result = await getNowData();
+      const result = await apiClient.get<NowApiResponse>('/api/now');
       setNowData(result);
     } catch (err) {
       setError(
@@ -90,7 +96,7 @@ export default function TestPage() {
             <button
               onClick={testHealthCheck}
               disabled={loading}
-              className='rounded-lg bg-green-500 px-6 py-3 font-medium text-white transition-colors hover:bg-green-600 disabled:bg-gray-400'
+              className='cursor-pointer rounded-lg bg-green-500 px-6 py-3 font-medium text-white transition-colors hover:bg-green-600 disabled:bg-gray-400'
             >
               {loading ? '요청 중...' : 'Health Check 테스트'}
             </button>
@@ -98,7 +104,7 @@ export default function TestPage() {
             <button
               onClick={testNowAPI}
               disabled={loading}
-              className='rounded-lg bg-blue-500 px-6 py-3 font-medium text-white transition-colors hover:bg-blue-600 disabled:bg-gray-400'
+              className='cursor-pointer rounded-lg bg-blue-500 px-6 py-3 font-medium text-white transition-colors hover:bg-blue-600 disabled:bg-gray-400'
             >
               {loading ? '요청 중...' : 'Now API 테스트'}
             </button>
@@ -106,7 +112,7 @@ export default function TestPage() {
             <button
               onClick={clearResults}
               disabled={loading}
-              className='rounded-lg bg-gray-500 px-6 py-3 font-medium text-white transition-colors hover:bg-gray-600 disabled:bg-gray-400'
+              className='cursor-pointer rounded-lg bg-gray-500 px-6 py-3 font-medium text-white transition-colors hover:bg-gray-600 disabled:bg-gray-400'
             >
               결과 지우기
             </button>
@@ -188,9 +194,6 @@ export default function TestPage() {
                 2. 위의 버튼들을 클릭하여 각 API 엔드포인트를 테스트하세요.
               </li>
               <li>3. 응답 결과가 JSON 형태로 표시됩니다.</li>
-              <li>
-                4. 오류가 발생하면 빨간색 박스에 오류 메시지가 표시됩니다.
-              </li>
             </ol>
           </div>
         </div>

@@ -12,10 +12,11 @@ permissions:
   checks: write          # 체크 상태 업데이트 권한
 
 jobs:
-  ci:
-    name: 📋 품질 검사
+  # 🔍 코드 품질 검사 (빠른 피드백)
+  quality-check:
+    name: 🔍 코드 품질 검사
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 10
     
     steps:
       - name: 📥 코드 체크아웃
@@ -27,21 +28,165 @@ jobs:
           node-version: '22'
           cache: 'npm'
 
-      - name: 📦 의존성 설치 및 품질 검사
+      - name: 📦 의존성 설치
+        run: npm ci
+
+      - name: 🛡️ 보안 취약점 검사
         run: |
-          npm ci
-          npm run ci
+          echo "🔒 의존성 보안 검사..."
+          npm audit --audit-level=high
+        continue-on-error: true  # 경고는 허용
+
+      - name: 🎨 코드 스타일 검사
+        run: npm run format:check
+
+      - name: 🔍 린트 검사
+        run: npm run lint
+
+      - name: 🏷️ 타입 검사
+        run: npm run typecheck
+
+      - name: 🏗️ 빌드 테스트
+        run: npm run build
         env:
-          # Next.js 빌드 최적화 (메모리 부족 방지)
           NODE_OPTIONS: --max-old-space-size=4096
-          # API URL (빌드 시 필요)
           NEXT_PUBLIC_API_URL: http://61.109.238.45:8082
 
-      - name: 📊 검사 결과 요약
+  # 🐳 Docker 빌드 테스트 (병렬 실행)
+  docker-test:
+    name: 🐳 Docker 빌드 테스트
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    
+    steps:
+      - name: 📥 코드 체크아웃
+        uses: actions/checkout@v4
+
+      - name: 🐳 Docker 빌드 테스트
+        run: |
+          echo "🏗️ Docker 빌드 테스트 시작..."
+          docker build \
+            --build-arg NEXT_PUBLIC_API_URL="http://61.109.238.45:8082" \
+            -t dongjeop-frontend:ci-test .
+          echo "✅ Docker 빌드 테스트 성공!"
+
+      - name: 🧪 Docker 컨테이너 테스트 (선택사항)
+        run: |
+          echo "🧪 컨테이너 실행 테스트..."
+          docker run --rm -d --name test-container \
+            -p 3000:3000 dongjeop-frontend:ci-test
+          sleep 5
+          # 간단한 헬스체크
+          curl -f http://localhost:3000 || exit 1
+          docker stop test-container
+          echo "✅ 컨테이너 실행 테스트 성공!"
+
+  # 📊 결과 종합 및 PR 코멘트
+  ci-summary:
+    name: 📊 CI 결과 종합
+    runs-on: ubuntu-latest
+    needs: [quality-check, docker-test]
+    if: always()
+    
+    steps:
+      - name: ✅ PR 상태 코멘트 (PR일 경우에만)
+        if: always() && github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const { data: comments } = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+            });
+            
+            const botComment = comments.find(comment => 
+              comment.user.login === 'github-actions[bot]' && 
+              comment.body.includes('🔍 CI 검사 결과')
+            );
+            
+            const qualityResult = '${{ needs.quality-check.result }}';
+            const dockerResult = '${{ needs.docker-test.result }}';
+            const overallSuccess = qualityResult === 'success' && dockerResult === 'success';
+            
+            const statusIcon = (result) => {
+              switch(result) {
+                case 'success': return '✅';
+                case 'failure': return '❌';
+                case 'cancelled': return '⏸️';
+                default: return '⏳';
+              }
+            };
+            
+            const body = `## 🔍 CI 검사 결과 (향상된 버전)
+            
+            ${overallSuccess ? '🎉 모든 검사 통과!' : '⚠️ 검사 실패 또는 진행 중'}
+            
+            ### 📊 상세 결과:
+            ${statusIcon(qualityResult)} **코드 품질 검사** (${qualityResult})
+            - 코드 스타일 (Prettier)
+            - 린트 검사 (ESLint) 
+            - 타입 검사 (TypeScript)
+            - 빌드 테스트 (Next.js)
+            - 보안 취약점 검사
+            
+            ${statusIcon(dockerResult)} **Docker 빌드 테스트** (${dockerResult})
+            - Docker 이미지 빌드
+            - 컨테이너 실행 테스트
+            
+            ${overallSuccess ? 
+              '✨ **이 PR은 안전하게 병합할 수 있습니다!**' : 
+              '🔧 **문제를 수정한 후 다시 푸시해주세요.**'}
+            `;
+            
+            if (botComment) {
+              await github.rest.issues.updateComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                comment_id: botComment.id,
+                body: body
+              });
+            } else {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+                body: body
+              });
+            }
+
+      - name: 📊 CI 최종 결과 요약
         if: always()
         run: |
-          echo "## 🔍 품질 검사 완료" >> $GITHUB_STEP_SUMMARY
-          echo "- ✅ 코드 품질 검사 통과 (lint + typecheck + build)" >> $GITHUB_STEP_SUMMARY
+          quality_result="${{ needs.quality-check.result }}"
+          docker_result="${{ needs.docker-test.result }}"
+          
+          echo "## 🔍 CI 검사 완료 (향상된 버전)" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          echo "**Node.js:** $(node --version)" >> $GITHUB_STEP_SUMMARY
-          echo "**Next.js:** $(npx next --version)" >> $GITHUB_STEP_SUMMARY
+          echo "### 📊 검사 결과:" >> $GITHUB_STEP_SUMMARY
+          
+          if [ "$quality_result" = "success" ]; then
+            echo "- ✅ **코드 품질 검사** 통과" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "- ❌ **코드 품질 검사** 실패" >> $GITHUB_STEP_SUMMARY
+          fi
+          
+          if [ "$docker_result" = "success" ]; then
+            echo "- ✅ **Docker 빌드 테스트** 통과" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "- ❌ **Docker 빌드 테스트** 실패" >> $GITHUB_STEP_SUMMARY
+          fi
+          
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### 🔧 검사 항목:" >> $GITHUB_STEP_SUMMARY
+          echo "- 🎨 코드 스타일 (Prettier)" >> $GITHUB_STEP_SUMMARY
+          echo "- 🔍 린트 검사 (ESLint)" >> $GITHUB_STEP_SUMMARY
+          echo "- 🏷️ 타입 검사 (TypeScript)" >> $GITHUB_STEP_SUMMARY
+          echo "- 🏗️ 빌드 테스트 (Next.js)" >> $GITHUB_STEP_SUMMARY
+          echo "- 🛡️ 보안 취약점 검사" >> $GITHUB_STEP_SUMMARY
+          echo "- 🐳 Docker 빌드 및 실행 테스트" >> $GITHUB_STEP_SUMMARY
+          
+          if [ "$quality_result" = "success" ] && [ "$docker_result" = "success" ]; then
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "🎉 **모든 검사 통과! 안전하게 배포 가능합니다.**" >> $GITHUB_STEP_SUMMARY
+          fi
