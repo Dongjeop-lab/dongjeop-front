@@ -12,8 +12,8 @@ permissions:
   checks: write          # 체크 상태 업데이트 권한
 
 env:
-  # 🔐 환경변수 중앙 관리 (하드코딩 방지)
-  NEXT_PUBLIC_API_URL: ${{ vars.NEXT_PUBLIC_API_URL || 'http://localhost:8082' }}
+  # 🔐 환경변수 중앙 관리 (CD와 일관성 유지)
+  NEXT_PUBLIC_API_URL: ${{ secrets.NEXT_PUBLIC_API_URL }}
 
 jobs:
   # 🔍 코드 품질 검사 (빠른 피드백)
@@ -56,59 +56,13 @@ jobs:
           NODE_OPTIONS: --max-old-space-size=4096
           NEXT_PUBLIC_API_URL: ${{ env.NEXT_PUBLIC_API_URL }}
 
-  # 🐳 Docker 빌드 테스트 (병렬 실행)
-  docker-test:
-    name: 🐳 Docker 빌드 테스트
-    runs-on: ubuntu-latest
-    timeout-minutes: 10
-    
-    steps:
-      - name: 📥 코드 체크아웃
-        uses: actions/checkout@v4
+  # ✅ CI는 코드 품질에만 집중 (Docker 빌드는 CD에서 처리)
 
-      - name: 🐳 Docker Buildx 설정 (고성능)
-        uses: docker/setup-buildx-action@v3
-
-      - name: 🚀 고성능 Docker 빌드 테스트 (캐시 활용)
-        uses: docker/build-push-action@v5
-        with:
-          context: .
-          push: false
-          tags: dongjeop-frontend:ci-test
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
-          build-args: |
-            NEXT_PUBLIC_API_URL=${{ env.NEXT_PUBLIC_API_URL }}
-
-      - name: 🧪 고성능 컨테이너 실행 테스트
-        run: |
-          echo "🧪 컨테이너 실행 및 헬스체크 테스트..."
-          docker run --rm -d --name test-container \
-            -p 3000:3000 dongjeop-frontend:ci-test
-          
-          # 향상된 헬스체크 (더 빠른 피드백)
-          echo "⏳ 컨테이너 준비 대기..."
-          for i in {1..30}; do
-            if curl -f http://localhost:3000 >/dev/null 2>&1; then
-              echo "✅ 컨테이너 헬스체크 성공! ($i초 소요)"
-              break
-            fi
-            if [ $i -eq 30 ]; then
-              echo "❌ 헬스체크 실패: 30초 초과"
-              docker logs test-container
-              exit 1
-            fi
-            sleep 1
-          done
-          
-          docker stop test-container
-          echo "🎉 컨테이너 실행 테스트 완료!"
-
-  # 📊 결과 종합 및 PR 코멘트
+  # 📊 결과 종합 및 PR 코멘트  
   ci-summary:
     name: 📊 CI 결과 종합
     runs-on: ubuntu-latest
-    needs: [quality-check, docker-test]
+    needs: [quality-check]
     if: always()
     
     steps:
@@ -129,8 +83,7 @@ jobs:
             );
             
             const qualityResult = '${{ needs.quality-check.result }}';
-            const dockerResult = '${{ needs.docker-test.result }}';
-            const overallSuccess = qualityResult === 'success' && dockerResult === 'success';
+            const overallSuccess = qualityResult === 'success';
             
             const statusIcon = (result) => {
               switch(result) {
@@ -141,25 +94,23 @@ jobs:
               }
             };
             
-            const body = `## 🔍 CI 검사 결과 (향상된 버전)
+            const body = `## 🔍 CI 코드 품질 검사 결과
             
-            ${overallSuccess ? '🎉 모든 검사 통과!' : '⚠️ 검사 실패 또는 진행 중'}
+            ${overallSuccess ? '🎉 모든 검사 통과!' : '⚠️ 검사 실패'}
             
-            ### 📊 상세 결과:
+            ### 📊 검사 결과:
             ${statusIcon(qualityResult)} **코드 품질 검사** (${qualityResult})
-            - 코드 스타일 (Prettier)
-            - 린트 검사 (ESLint) 
-            - 타입 검사 (TypeScript)
-            - 빌드 테스트 (Next.js)
-            - 보안 취약점 검사
-            
-            ${statusIcon(dockerResult)} **Docker 빌드 테스트** (${dockerResult})
-            - Docker 이미지 빌드
-            - 컨테이너 실행 테스트
+            - 🎨 코드 스타일 (Prettier)
+            - 🔍 린트 검사 (ESLint) 
+            - 🏷️ 타입 검사 (TypeScript)
+            - 🏗️ 빌드 테스트 (Next.js)
+            - 🛡️ 보안 취약점 검사
             
             ${overallSuccess ? 
-              '✨ **이 PR은 안전하게 병합할 수 있습니다!**' : 
+              '✨ **코드 품질 검사 통과! 안전하게 병합 가능합니다.**' : 
               '🔧 **문제를 수정한 후 다시 푸시해주세요.**'}
+              
+            💡 **참고:** Docker 빌드는 main 브랜치 배포 시 자동으로 진행됩니다.
             `;
             
             if (botComment) {
@@ -178,13 +129,12 @@ jobs:
               });
             }
 
-      - name: 📊 CI 최종 결과 요약
+      - name: 📊 CI 코드 품질 검사 요약
         if: always()
         run: |
           quality_result="${{ needs.quality-check.result }}"
-          docker_result="${{ needs.docker-test.result }}"
           
-          echo "## 🔍 CI 검사 완료 (향상된 버전)" >> $GITHUB_STEP_SUMMARY
+          echo "## 🔍 CI 코드 품질 검사 완료" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "### 📊 검사 결과:" >> $GITHUB_STEP_SUMMARY
           
@@ -194,12 +144,6 @@ jobs:
             echo "- ❌ **코드 품질 검사** 실패" >> $GITHUB_STEP_SUMMARY
           fi
           
-          if [ "$docker_result" = "success" ]; then
-            echo "- ✅ **Docker 빌드 테스트** 통과" >> $GITHUB_STEP_SUMMARY
-          else
-            echo "- ❌ **Docker 빌드 테스트** 실패" >> $GITHUB_STEP_SUMMARY
-          fi
-          
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "### 🔧 검사 항목:" >> $GITHUB_STEP_SUMMARY
           echo "- 🎨 코드 스타일 (Prettier)" >> $GITHUB_STEP_SUMMARY
@@ -207,9 +151,10 @@ jobs:
           echo "- 🏷️ 타입 검사 (TypeScript)" >> $GITHUB_STEP_SUMMARY
           echo "- 🏗️ 빌드 테스트 (Next.js)" >> $GITHUB_STEP_SUMMARY
           echo "- 🛡️ 보안 취약점 검사" >> $GITHUB_STEP_SUMMARY
-          echo "- 🐳 Docker 빌드 및 실행 테스트" >> $GITHUB_STEP_SUMMARY
           
-          if [ "$quality_result" = "success" ] && [ "$docker_result" = "success" ]; then
+          if [ "$quality_result" = "success" ]; then
             echo "" >> $GITHUB_STEP_SUMMARY
-            echo "🎉 **모든 검사 통과! 안전하게 배포 가능합니다.**" >> $GITHUB_STEP_SUMMARY
+            echo "🎉 **코드 품질 검사 통과! 안전하게 배포 가능합니다.**" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "💡 **참고:** Docker 빌드는 main 브랜치 배포 시 자동으로 진행됩니다." >> $GITHUB_STEP_SUMMARY
           fi
