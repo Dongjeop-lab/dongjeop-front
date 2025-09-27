@@ -14,6 +14,10 @@ const LabelStepPage = async ({
   const { step: originalStep, imageKey } = await params;
   const step = Number(originalStep);
 
+  if (isNaN(step) || step < 1 || step > 3) {
+    redirect(`/label/${imageKey}/1`, RedirectType.replace);
+  }
+
   switch (step) {
     case 1:
       return <LabelStep1 />;
@@ -22,8 +26,7 @@ const LabelStepPage = async ({
     case 3:
       return <LabelStep3 />;
     default:
-      redirect(`/label/${imageKey}/1`, RedirectType.replace);
-      return;
+      return null;
   }
 };
 
