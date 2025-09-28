@@ -73,7 +73,9 @@ const LabelPage = () => {
   return (
     <>
       <Header onBack={handleBack} />
-      <AnimatePresence mode='wait'>{renderStep()}</AnimatePresence>
+      <div className='relative'>
+        <AnimatePresence>{renderStep()}</AnimatePresence>
+      </div>
     </>
   );
 };
