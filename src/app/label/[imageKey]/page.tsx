@@ -16,7 +16,10 @@ const LabelPage = () => {
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
-  const currentStep = parseInt(searchParams.get('step') || '1', 10);
+  const stepParam = Number.parseInt(searchParams.get('step') ?? '', 10);
+  const currentStep = Number.isFinite(stepParam)
+    ? Math.min(Math.max(stepParam, 1), 3)
+    : 1;
 
   const handleNextStep = () => {
     if (currentStep === 3) {
