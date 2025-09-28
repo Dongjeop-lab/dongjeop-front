@@ -1,0 +1,76 @@
+# =============================================================================
+# 🐳 Docker 빌드 컨텍스트 최적화
+# 불필요한 파일들을 제외하여 빌드 속도 향상
+# =============================================================================
+
+# 개발 관련 파일들
+.git
+.gitignore
+README*.md
+CHANGELOG.md
+LICENSE
+
+# Node.js 관련
+node_modules
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.npm
+.yarn
+
+# Next.js 관련
+.next
+out
+.swc
+
+# 환경 설정 파일들 (보안)
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# 에디터 및 IDE
+.vscode
+.idea
+*.swp
+*.swo
+*~
+
+# OS 생성 파일들
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# 테스트 관련
+coverage
+.nyc_output
+test-results
+playwright-report
+
+# 로그 파일들
+logs
+*.log
+
+# 임시 파일들
+*.tmp
+*.temp
+.cache
+
+# Docker 관련
+Dockerfile*
+docker-compose*.yml
+.dockerignore
+
+# CI/CD 관련 (빌드에 불필요)
+.github
+.husky
+
+# 기타 개발 도구들
+.eslintcache
+.stylelintcache
+.prettiercache
