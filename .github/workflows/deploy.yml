@@ -168,24 +168,24 @@ jobs:
                     # --- 무중단 포트 전환 시작 ---
                     echo "🔄 무중단 포트 전환 시작..."
                     
-                    # 1. 기존 컨테이너 백업 및 중지 (포트 해제)
-                    if sudo docker ps -q -f name=^${CONTAINER_NAME}$ | grep -q .; then
-                      echo "📦 기존 컨테이너를 백업으로 변경: ${OLD_CONTAINER_NAME}"
-                      # 기존 백업 컨테이너가 있다면 먼저 제거
-                      sudo docker stop ${OLD_CONTAINER_NAME} >/dev/null 2>&1 && sudo docker rm ${OLD_CONTAINER_NAME} >/dev/null 2>&1 || true
-                      # 기존 컨테이너를 백업으로 이름 변경 후 중지 (포트 해제)
-                      sudo docker rename ${CONTAINER_NAME} ${OLD_CONTAINER_NAME}
-                      sudo docker stop ${OLD_CONTAINER_NAME}
-                      echo "🛑 기존 컨테이너 중지 완료 (포트 3001 해제)"
-                    fi
+                    # 1. 기존 컨테이너 완전 정리 (이름 충돌 방지)
+                    echo "🧹 기존 컨테이너 완전 정리..."
                     
-                    # 2. 새 컨테이너를 메인 포트(3001)로 재시작
-                    echo "🚀 새 컨테이너를 메인 포트로 전환: ${CONTAINER_NAME}"
+                    # 모든 관련 컨테이너 중지 및 제거 (실행 중이든 중지된 상태든)
+                    sudo docker stop ${CONTAINER_NAME} >/dev/null 2>&1 || true
+                    sudo docker rm ${CONTAINER_NAME} >/dev/null 2>&1 || true
+                    sudo docker stop ${OLD_CONTAINER_NAME} >/dev/null 2>&1 || true  
+                    sudo docker rm ${OLD_CONTAINER_NAME} >/dev/null 2>&1 || true
+                    
+                    echo "✅ 기존 컨테이너 정리 완료"
+                    
+                    # 2. 새 컨테이너를 메인 이름으로 직접 시작
+                    echo "🚀 새 컨테이너를 메인으로 시작: ${CONTAINER_NAME}"
                     sudo docker stop ${NEW_CONTAINER_NAME}
                     sudo docker rm ${NEW_CONTAINER_NAME}
                     
                     # 포트가 완전히 해제될 때까지 잠시 대기
-                    sleep 2
+                    sleep 3
                     
                     sudo docker run -d \
                       --name ${CONTAINER_NAME} \
@@ -204,25 +204,16 @@ jobs:
                         break
                       fi
                       if [ $j -eq 6 ]; then
-                        echo "❌ 메인 포트 전환 실패, 롤백 중..."
-                        # 롤백: 백업 컨테이너를 다시 메인으로
-                        sudo docker stop ${CONTAINER_NAME} >/dev/null 2>&1 && sudo docker rm ${CONTAINER_NAME} >/dev/null 2>&1 || true
-                        if sudo docker ps -a -q -f name=^${OLD_CONTAINER_NAME}$ | grep -q .; then
-                          sudo docker rename ${OLD_CONTAINER_NAME} ${CONTAINER_NAME}
-                        fi
+                        echo "❌ 메인 포트 전환 실패, 배포 실패"
+                        sudo docker stop ${CONTAINER_NAME} >/dev/null 2>&1 || true
+                        sudo docker rm ${CONTAINER_NAME} >/dev/null 2>&1 || true
                         exit 1
                       fi
                       echo "재시도 ($j/6)..."
                       sleep 3
                     done
                     
-                    # 4. 백업 컨테이너 정리 (30초 후)
-                    if sudo docker ps -a -q -f name=^${OLD_CONTAINER_NAME}$ | grep -q .; then
-                      echo "🛑 백업 컨테이너 정리 (30초 대기 후)"
-                      sleep 30
-                      sudo docker stop ${OLD_CONTAINER_NAME} >/dev/null 2>&1 || true
-                      sudo docker rm ${OLD_CONTAINER_NAME} >/dev/null 2>&1 || true
-                    fi
+                    echo "✅ 무중단 배포 완료!"
                     
                     break
                 fi
