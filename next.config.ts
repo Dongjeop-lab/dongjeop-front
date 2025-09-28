@@ -58,6 +58,9 @@ const nextConfig: NextConfig = {
   // 배포 환경별 설정 (필요시 활성화)
   // =============================================================================
 
+  // Docker 컨테이너 배포를 위한 standalone 모드
+  output: 'standalone',
+
   // 정적 내보내기 설정 (필요 시 활성화)
   // output: 'export',
   // trailingSlash: true,
