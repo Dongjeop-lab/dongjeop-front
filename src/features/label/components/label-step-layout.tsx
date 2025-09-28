@@ -1,7 +1,45 @@
+import { Variants } from 'motion';
+import * as motion from 'motion/react-client';
 import Image from 'next/image';
 
 import { cn } from '@/lib/utils';
 import { ClassName } from '@/types/common';
+
+const containerVariants: Variants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.1,
+    },
+  },
+  exit: {
+    opacity: 0,
+    transition: {
+      staggerChildren: 0.1,
+      staggerDirection: -1, // 나타날 때와 반대 순서로 사라짐
+    },
+  },
+};
+
+const itemVariants: Variants = {
+  hidden: { opacity: 0, y: 40 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      duration: 1,
+      ease: 'easeOut',
+    },
+  },
+  exit: {
+    opacity: 0,
+    y: -40,
+    transition: {
+      duration: 0.5,
+    },
+  },
+};
 
 interface LabelStepLayoutProps extends ClassName {
   title: string;
@@ -22,10 +60,20 @@ const LabelStepLayout = ({
   className,
 }: LabelStepLayoutProps) => {
   return (
-    <main
-      className={cn('flex flex-col items-center gap-8 px-5 pb-5', className)}
+    <motion.main
+      className={cn(
+        'absolute inset-0 flex flex-col items-center gap-8 px-5 pb-5',
+        className
+      )}
+      variants={containerVariants}
+      initial='hidden'
+      animate='visible'
+      exit='exit'
     >
-      <div className='flex flex-col items-center gap-3'>
+      <motion.div
+        className='flex flex-col items-center gap-3'
+        variants={itemVariants}
+      >
         <span className='text-18-semibold text-primary'>
           {currentStep}/{totalSteps}
         </span>
@@ -35,7 +83,7 @@ const LabelStepLayout = ({
             {description}
           </p>
         </div>
-      </div>
+      </motion.div>
       <div className='flex w-full flex-col items-center gap-6'>
         <Image
           src={imageKey} // TODO: 이미지 url로 변경 필요
@@ -46,7 +94,7 @@ const LabelStepLayout = ({
         />
         {labelingOptions}
       </div>
-    </main>
+    </motion.main>
   );
 };
 

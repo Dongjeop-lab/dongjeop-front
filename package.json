@@ -14,10 +14,16 @@
     "fix": "npm run format && npm run lint:fix",
     "preview": "npm run build && npm run start",
     "clean": "rm -rf .next out node_modules/.cache",
-    "ci": "npm run format:check && npm run lint && npm run typecheck && npm run build"
+    "ci": "npm run format:check && npm run lint && npm run typecheck && npm run build",
+    "docker:build": "docker build -t dongjeop-frontend .",
+    "docker:build:arm64": "docker buildx build --platform linux/arm64 --tag dongjeop-frontend:arm64 --load .",
+    "docker:run": "docker run --rm -p 3000:3000 dongjeop-frontend",
+    "docker:clean": "docker system prune -f"
   },
   "dependencies": {
+    "@tanstack/react-query": "^5.90.2",
     "clsx": "^2.1.1",
+    "motion": "^12.23.22",
     "next": "15.4.6",
     "react": "19.1.0",
     "react-dom": "19.1.0",

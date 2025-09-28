@@ -1,3 +1,5 @@
+import { Variants } from 'motion';
+import * as motion from 'motion/react-client';
 import {
   ButtonHTMLAttributes,
   Children,
@@ -13,6 +15,7 @@ import { ClassName } from '@/types/common';
 interface BottomCTAProps extends ClassName, PropsWithChildren {
   ratio?: '1:1' | '1:2';
   hasAnimation?: boolean;
+  animationDuration?: number;
   animationDelay?: number;
 }
 
@@ -31,11 +34,18 @@ const BUTTON_WIDTHS = {
   '1:2': ['w-1/3', 'w-2/3'],
 } as const;
 
+const ctaVariants: Variants = {
+  initial: { y: 100, opacity: 0 },
+  animate: { y: 0, opacity: 1 },
+  exit: { y: 100 },
+};
+
 const BottomCTA = ({
   children,
   className,
   ratio = '1:1',
   hasAnimation = false,
+  animationDuration = 0.5,
   animationDelay = 0,
 }: BottomCTAProps) => {
   const validButtons = Children.toArray(children).filter(child =>
@@ -44,9 +54,17 @@ const BottomCTA = ({
 
   const buttonCount = validButtons.length;
   return (
-    <footer
+    <motion.footer
       className={cn(BOTTOM_CTA_CLASSNAME, hasAnimation && 'animate-cta-in')}
-      style={hasAnimation ? { animationDelay: `${animationDelay}s` } : {}}
+      variants={hasAnimation ? ctaVariants : {}}
+      initial='initial'
+      animate='animate'
+      exit='exit'
+      transition={{
+        ease: 'easeOut',
+        duration: animationDuration,
+        delay: animationDelay,
+      }}
     >
       <div className='absolute top-0 right-0 bottom-0 left-0 -z-10 bg-white' />
       <div className={cn(BOTTOM_CTA_INNER_CLASSNAME, className)}>
@@ -66,7 +84,7 @@ const BottomCTA = ({
           });
         })}
       </div>
-    </footer>
+    </motion.footer>
   );
 };
 
