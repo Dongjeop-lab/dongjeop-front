@@ -90,6 +90,7 @@ jobs:
           build-args: |
             NODE_ENV=production
             NEXT_PUBLIC_API_URL=${{ secrets.NEXT_PUBLIC_API_URL }}
+            NEXT_PUBLIC_BUILD_ID=${{ github.sha }}
           # 🔒 보안 강화: CA 인증서 사용, insecure 모드 제거
           provenance: false
           sbom: false
@@ -144,6 +145,7 @@ jobs:
               -p ${TEMP_PORT}:3000 \
               -e NODE_ENV=production \
               -e NEXT_PUBLIC_API_URL="${{ secrets.NEXT_PUBLIC_API_URL }}" \
+              -e NEXT_PUBLIC_BUILD_ID="${{ github.sha }}" \
               ${REGISTRY_URL}/${REGISTRY_PROJECT}/${IMAGE_NAME}:latest
 
             # --- 새 버전 헬스 체크 ---
@@ -175,6 +177,7 @@ jobs:
                       -p 3001:3000 \
                       -e NODE_ENV=production \
                       -e NEXT_PUBLIC_API_URL="${{ secrets.NEXT_PUBLIC_API_URL }}" \
+                      -e NEXT_PUBLIC_BUILD_ID="${{ github.sha }}" \
                       ${REGISTRY_URL}/${REGISTRY_PROJECT}/${IMAGE_NAME}:latest
                     
                     # 3. 메인 포트 헬스 체크

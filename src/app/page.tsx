@@ -85,7 +85,7 @@ export default function TestPage() {
               <div>
                 <span className='font-medium'>버전:</span>{' '}
                 <code className='rounded bg-green-100 px-2 py-1'>
-                  v1.0.0-{new Date().getTime().toString().slice(-6)}
+                  v1.0.0-{process.env.NEXT_PUBLIC_BUILD_ID || 'dev'}
                 </code>
               </div>
               <div>
