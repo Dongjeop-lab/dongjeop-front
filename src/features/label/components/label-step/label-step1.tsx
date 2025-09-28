@@ -3,13 +3,16 @@
 import { useState } from 'react';
 
 import ButtonList from '@/components/ui/button-list';
+import useInteractionTimer from '@/hooks/use-interaction-timer';
+import useUpdateLabel from '@/hooks/use-update-label';
 import { TOTAL_LABELING_STEPS } from '@/lib/constants';
+import { HasStep } from '@/types/api/label';
 
 import { labelOption } from '../../types/label-option';
 import { LabelStepProps } from '../../types/label-step';
 import LabelStepLayout from '../label-step-layout';
 
-const LABEL_STEP_1_OPTIONS: labelOption[] = [
+const LABEL_STEP_1_OPTIONS: labelOption<HasStep>[] = [
   {
     title: '있어요',
     value: 'yes',
@@ -24,12 +27,22 @@ const LABEL_STEP_1_OPTIONS: labelOption[] = [
   },
 ];
 
-export const LabelStep1 = ({ onNext }: LabelStepProps) => {
+export const LabelStep1 = ({ imageKey, onNext }: LabelStepProps) => {
   const [selectedValue, setSelectedValue] = useState<string | null>(null);
+  const { endTimer } = useInteractionTimer();
+  const { mutate } = useUpdateLabel({
+    imageKey,
+    onSuccess: onNext,
+  });
 
-  const handleSelectItem = (value: string) => {
+  const handleSelectItem = (value: HasStep) => {
+    const interactionTime = Math.floor(endTimer() ?? 0);
     setSelectedValue(value);
-    onNext();
+    mutate({
+      has_step: value,
+      step_label_finish_duration: interactionTime,
+      finish_labeling: false,
+    });
   };
 
   return (
