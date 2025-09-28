@@ -119,47 +119,89 @@ jobs:
             NEW_CONTAINER_NAME="dongjeop-frontend-new"
             OLD_CONTAINER_NAME="dongjeop-frontend-old"
             
+            # --- 무중단 배포를 위한 이전 배포 실패 컨테이너만 정리 ---
+            echo "🧹 이전 배포 실패 시 남은 컨테이너 정리..."
+            
+            # 새 컨테이너와 백업 컨테이너만 정리 (기존 서비스는 유지)
+            sudo docker stop ${NEW_CONTAINER_NAME} >/dev/null 2>&1 && sudo docker rm ${NEW_CONTAINER_NAME} >/dev/null 2>&1 || true
+            sudo docker stop ${OLD_CONTAINER_NAME} >/dev/null 2>&1 && sudo docker rm ${OLD_CONTAINER_NAME} >/dev/null 2>&1 || true
+            
             # --- 레지스트리 로그인 및 이미지 다운로드 ---
             echo "🔑 레지스트리 로그인..."
             echo "${{ secrets.KAKAO_REGISTRY_PASSWORD }}" | sudo docker login $REGISTRY_URL --username ${{ secrets.KAKAO_REGISTRY_USERNAME }} --password-stdin
             
             echo "📥 새 이미지 다운로드..."
             sudo docker pull ${REGISTRY_URL}/${REGISTRY_PROJECT}/${IMAGE_NAME}:latest
-
-            # --- 이전 배포 실패 시 남은 컨테이너 정리 ---
-            sudo docker stop ${NEW_CONTAINER_NAME} >/dev/null 2>&1 && sudo docker rm ${NEW_CONTAINER_NAME} >/dev/null 2>&1 || true
             
-            # --- 새 버전 컨테이너 실행 ---
-            echo "🎯 새 버전 컨테이너 시작: ${NEW_CONTAINER_NAME}"
+            # --- 새 버전 컨테이너 실행 (임시 포트 사용) ---
+            TEMP_PORT=3002
+            echo "🎯 새 버전 컨테이너 시작: ${NEW_CONTAINER_NAME} (임시 포트: ${TEMP_PORT})"
             sudo docker run -d \
               --name ${NEW_CONTAINER_NAME} \
               --restart unless-stopped \
-              -p 3001:3000 \
+              -p ${TEMP_PORT}:3000 \
               -e NODE_ENV=production \
               -e NEXT_PUBLIC_API_URL="${{ secrets.NEXT_PUBLIC_API_URL }}" \
               ${REGISTRY_URL}/${REGISTRY_PROJECT}/${IMAGE_NAME}:latest
 
             # --- 새 버전 헬스 체크 ---
-            echo "🏥 새 버전 헬스 체크..."
+            echo "🏥 새 버전 헬스 체크 (포트: ${TEMP_PORT})..."
             sleep 10
             for i in {1..12}; do
-                if curl -f http://localhost:3001 >/dev/null 2>&1; then
+                if curl -f http://localhost:${TEMP_PORT} >/dev/null 2>&1; then
                     echo "✅ 새 버전 헬스 체크 성공!"
                     
-                    # --- 기존 컨테이너를 백업으로 변경하고 새 컨테이너를 현재 버전으로 적용 ---
-                    if sudo docker ps -q -f name=${CONTAINER_NAME} | grep -q .; then
-                      echo "🔄 기존 컨테이너를 백업으로 변경: ${OLD_CONTAINER_NAME}"
+                    # --- 무중단 포트 전환 시작 ---
+                    echo "🔄 무중단 포트 전환 시작..."
+                    
+                    # 1. 기존 컨테이너를 백업으로 이동 (서비스는 계속 실행)
+                    if sudo docker ps -q -f name=^${CONTAINER_NAME}$ | grep -q .; then
+                      echo "📦 기존 컨테이너를 백업으로 변경: ${OLD_CONTAINER_NAME}"
+                      # 기존 백업 컨테이너가 있다면 먼저 제거
+                      sudo docker stop ${OLD_CONTAINER_NAME} >/dev/null 2>&1 && sudo docker rm ${OLD_CONTAINER_NAME} >/dev/null 2>&1 || true
                       sudo docker rename ${CONTAINER_NAME} ${OLD_CONTAINER_NAME}
                     fi
                     
-                    echo "🚀 새 버전을 현재 버전으로 적용: ${CONTAINER_NAME}"
-                    sudo docker rename ${NEW_CONTAINER_NAME} ${CONTAINER_NAME}
+                    # 2. 새 컨테이너를 메인 포트(3001)로 재시작
+                    echo "🚀 새 컨테이너를 메인 포트로 전환: ${CONTAINER_NAME}"
+                    sudo docker stop ${NEW_CONTAINER_NAME}
+                    sudo docker rm ${NEW_CONTAINER_NAME}
                     
-                    # --- 백업 컨테이너 중지 및 삭제 ---
-                    if sudo docker ps -a -q -f name=${OLD_CONTAINER_NAME} | grep -q .; then
-                      echo "🛑 백업 컨테이너 중지 및 삭제"
-                      sudo docker stop ${OLD_CONTAINER_NAME}
-                      sudo docker rm ${OLD_CONTAINER_NAME}
+                    sudo docker run -d \
+                      --name ${CONTAINER_NAME} \
+                      --restart unless-stopped \
+                      -p 3001:3000 \
+                      -e NODE_ENV=production \
+                      -e NEXT_PUBLIC_API_URL="${{ secrets.NEXT_PUBLIC_API_URL }}" \
+                      ${REGISTRY_URL}/${REGISTRY_PROJECT}/${IMAGE_NAME}:latest
+                    
+                    # 3. 메인 포트 헬스 체크
+                    echo "🏥 메인 포트 헬스 체크..."
+                    sleep 5
+                    for j in {1..6}; do
+                      if curl -f http://localhost:3001 >/dev/null 2>&1; then
+                        echo "✅ 메인 포트 전환 성공!"
+                        break
+                      fi
+                      if [ $j -eq 6 ]; then
+                        echo "❌ 메인 포트 전환 실패, 롤백 중..."
+                        # 롤백: 백업 컨테이너를 다시 메인으로
+                        sudo docker stop ${CONTAINER_NAME} >/dev/null 2>&1 && sudo docker rm ${CONTAINER_NAME} >/dev/null 2>&1 || true
+                        if sudo docker ps -a -q -f name=^${OLD_CONTAINER_NAME}$ | grep -q .; then
+                          sudo docker rename ${OLD_CONTAINER_NAME} ${CONTAINER_NAME}
+                        fi
+                        exit 1
+                      fi
+                      echo "재시도 ($j/6)..."
+                      sleep 3
+                    done
+                    
+                    # 4. 백업 컨테이너 정리 (30초 후)
+                    if sudo docker ps -a -q -f name=^${OLD_CONTAINER_NAME}$ | grep -q .; then
+                      echo "🛑 백업 컨테이너 정리 (30초 대기 후)"
+                      sleep 30
+                      sudo docker stop ${OLD_CONTAINER_NAME} >/dev/null 2>&1 || true
+                      sudo docker rm ${OLD_CONTAINER_NAME} >/dev/null 2>&1 || true
                     fi
                     
                     break
