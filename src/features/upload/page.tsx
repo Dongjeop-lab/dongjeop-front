@@ -13,7 +13,7 @@ const guideImages = [
   '/images/upload/upload-guide-3.svg',
 ];
 
-const UploadContainer = ({ source }: UploadContainerProps) => {
+const UploadContainer = (_props: UploadContainerProps) => {
   // TODO: API 요청 시 헤더 또는 바디에 source 포함시키기
 
   return (
@@ -37,7 +37,7 @@ const UploadContainer = ({ source }: UploadContainerProps) => {
           {/* 사진 선택 터치 영역 */}
           <div className='relative'>
             <Image
-              src='/images/stairs-upload.svg'
+              src='/images/upload/stairs-upload.svg'
               alt='Image Upload Button'
               width={280}
               height={260}

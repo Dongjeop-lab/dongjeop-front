@@ -2,16 +2,15 @@ import UploadContainer from '@/features/upload/page';
 import { getSourceParam } from '@/lib/queryParams';
 
 interface UploadPageProps {
-  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
+  searchParams?: Promise<{ [key: string]: string | string[] | undefined }>;
 }
 
 const UploadPage = async ({ searchParams }: UploadPageProps) => {
-  const resolvedParams = await searchParams;
+  const resolvedParams = searchParams ? await searchParams : undefined;
+  const sourceParam = resolvedParams?.source;
 
   const params = {
-    source: Array.isArray(resolvedParams.source)
-      ? resolvedParams.source[0]
-      : resolvedParams.source,
+    source: Array.isArray(sourceParam) ? sourceParam[0] : sourceParam,
   };
 
   const source = getSourceParam(params);
