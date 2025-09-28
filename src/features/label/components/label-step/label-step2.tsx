@@ -12,7 +12,7 @@ import LabelStepLayout from '../label-step-layout';
 
 const NOT_SURE_VALUE = 'not_sure';
 
-const LABEL_STEP_2_OPTIONS: labelOption[] = [
+const LABEL_STEP_2_OPTIONS: labelOption<string>[] = [
   { title: '이동식 의자', value: 'movable_chair' },
   { title: '높은 의자', value: 'high_chair' },
   { title: '좌식 의자', value: 'floor_chair' },

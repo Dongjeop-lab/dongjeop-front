@@ -4,12 +4,13 @@ import { useState } from 'react';
 
 import ButtonList from '@/components/ui/button-list';
 import { TOTAL_LABELING_STEPS } from '@/lib/constants';
+import { WidthClass } from '@/types/api/label';
 
 import { labelOption } from '../../types/label-option';
 import { LabelStepProps } from '../../types/label-step';
 import LabelStepLayout from '../label-step-layout';
 
-const LABEL_STEP_3_OPTIONS: labelOption[] = [
+const LABEL_STEP_3_OPTIONS: labelOption<WidthClass>[] = [
   {
     title: '좁아요',
     subtitle: '2명이 동시에 지나갈 수 있어요',
