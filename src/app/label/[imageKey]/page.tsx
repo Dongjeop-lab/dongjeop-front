@@ -9,6 +9,7 @@ import {
   LabelStep2,
   LabelStep3,
 } from '@/features/label/components/label-step';
+import { BROWSER_PATH } from '@/lib/path';
 
 const LabelPage = () => {
   const router = useRouter();
@@ -29,7 +30,7 @@ const LabelPage = () => {
 
   const handleBack = () => {
     if (currentStep === 1) {
-      router.push('/label/upload');
+      router.push(BROWSER_PATH.LABEL.UPLOAD);
       return;
     }
 
