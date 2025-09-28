@@ -64,6 +64,11 @@ jobs:
           sudo cp /tmp/ca.crt /usr/local/share/ca-certificates/docker-registry.crt
           sudo update-ca-certificates
           
+          # Buildx가 인식할 수 있도록 추가 위치에도 복사
+          sudo mkdir -p /etc/ssl/certs
+          sudo cp /tmp/ca.crt /etc/ssl/certs/docker-registry.pem
+          sudo chmod 644 /etc/ssl/certs/docker-registry.pem
+          
           # Docker 데몬 재시작 (buildx 컨테이너 재생성)
           sudo systemctl restart docker || true
           sleep 3
@@ -75,6 +80,10 @@ jobs:
 
       - name: 🐳 Docker Buildx 설정 (CA 인증서 설정 후)
         uses: docker/setup-buildx-action@v3
+        with:
+          config-inline: |
+            [registry."${{ secrets.KAKAO_REGISTRY_URL }}"]
+              ca = ["/etc/ssl/certs/docker-registry.pem"]
 
       - name: 🔍 CA 인증서 적용 확인 및 Docker 재초기화
         run: |
@@ -128,11 +137,10 @@ jobs:
             sudo systemctl stop docker
             sleep 2
             
-            # Docker daemon 설정 생성
+            # Docker daemon 설정 생성 (보안 강화)
             sudo mkdir -p /etc/docker
             echo '{
               "registry-mirrors": [],
-              "insecure-registries": ["${{ secrets.KAKAO_REGISTRY_URL }}"],
               "debug": true,
               "log-level": "debug"
             }' | sudo tee /etc/docker/daemon.json
@@ -141,11 +149,10 @@ jobs:
             sudo systemctl start docker
             sleep 5
             
-            # 3. insecure 모드로 로그인 시도
-            echo "⚠️ Step 3: Insecure 모드로 로그인 시도"
+            # 3. Docker 재시작 후 재로그인 시도
+            echo "🔄 Step 3: Docker 재시작 후 재로그인 시도"
             if echo "$DOCKER_PASSWORD" | docker login ${{ secrets.KAKAO_REGISTRY_URL }} --username ${{ secrets.KAKAO_REGISTRY_USERNAME }} --password-stdin; then
-              echo "✅ Insecure 모드 로그인 성공"
-              echo "⚠️ 보안 경고: CA 인증서 문제로 인해 insecure 모드 사용 중"
+              echo "✅ Docker 재시작 후 로그인 성공"
             else
               echo "❌ 모든 로그인 방식 실패"
               echo "🔍 Docker 로그 확인:"
@@ -166,25 +173,20 @@ jobs:
             type=raw,value=latest,enable={{is_default_branch}}
             type=sha,format=short
 
-      - name: 🏗️ Docker 이미지 빌드 및 푸시
+      - name: 🏗️ Docker 이미지 빌드 및 푸시 (보안 CA 인증서 사용)
         id: build
         uses: docker/build-push-action@v5
         with:
           context: .
           platforms: linux/amd64
           push: true
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
-          cache-from: |
-            type=gha
-            type=registry,ref=${{ secrets.KAKAO_REGISTRY_URL }}/${{ secrets.KAKAO_REGISTRY_PROJECT }}/${{ env.IMAGE_NAME }}:cache
-          cache-to: |
-            type=gha,mode=max
-            type=registry,ref=${{ secrets.KAKAO_REGISTRY_URL }}/${{ secrets.KAKAO_REGISTRY_PROJECT }}/${{ env.IMAGE_NAME }}:cache,mode=max
+          tags: |
+            ${{ secrets.KAKAO_REGISTRY_URL }}/${{ secrets.KAKAO_REGISTRY_PROJECT }}/${{ env.IMAGE_NAME }}:latest
+            ${{ secrets.KAKAO_REGISTRY_URL }}/${{ secrets.KAKAO_REGISTRY_PROJECT }}/${{ env.IMAGE_NAME }}:sha-${{ github.sha }}
           build-args: |
             NODE_ENV=production
             NEXT_PUBLIC_API_URL=${{ secrets.NEXT_PUBLIC_API_URL }}
-          # 🚀 고성능 빌드 최적화 옵션
+          # 🔒 보안 강화: CA 인증서 사용, insecure 모드 제거
           provenance: false
           sbom: false
 
