@@ -1,5 +1,6 @@
 'use client';
 
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { AnimatePresence } from 'motion/react';
 import {
   useParams,
@@ -7,20 +8,34 @@ import {
   useRouter,
   useSearchParams,
 } from 'next/navigation';
+import { useEffect, useRef } from 'react';
 
+import { apiClient } from '@/app/api/client';
 import Header from '@/components/ui/header';
 import {
   LabelStep1,
   LabelStep2,
   LabelStep3,
 } from '@/features/label/components/label-step';
-import { BROWSER_PATH } from '@/lib/path';
+import { API_PATH, BROWSER_PATH } from '@/lib/path';
+import { GetLabelStatusResponse } from '@/types/api/label';
 
 const LabelPage = () => {
   const router = useRouter();
   const params = useParams<{ imageKey: string }>();
   const pathname = usePathname();
   const searchParams = useSearchParams();
+  const hasInitialRoutingRan = useRef(false);
+  const queryClient = useQueryClient();
+
+  const { data, isError, isSuccess } = useQuery({
+    queryKey: ['label', params.imageKey],
+    queryFn: () =>
+      apiClient.get<GetLabelStatusResponse>(
+        `${API_PATH.LABEL}/${params.imageKey}`
+      ),
+    staleTime: Infinity,
+  });
 
   const stepParam = Number.parseInt(searchParams.get('step') ?? '', 10);
   const currentStep = Number.isFinite(stepParam)
@@ -47,6 +62,66 @@ const LabelPage = () => {
     router.push(`${pathname}?step=${prevStep}`);
   };
 
+  const handleUpdateLabelCache = (newData: Partial<GetLabelStatusResponse>) => {
+    queryClient.setQueryData<GetLabelStatusResponse>(
+      ['label', params.imageKey],
+      oldData => {
+        if (!oldData) return;
+        return {
+          ...oldData,
+          ...newData,
+        };
+      }
+    );
+  };
+
+  useEffect(() => {
+    const getPausedStep = (data: GetLabelStatusResponse) => {
+      const {
+        has_fixed_chair,
+        has_floor_chair,
+        has_high_chair,
+        has_movable_chair,
+        is_not_sure_chair,
+      } = data;
+
+      const step2 = [
+        has_fixed_chair,
+        has_floor_chair,
+        has_high_chair,
+        has_movable_chair,
+        is_not_sure_chair,
+      ];
+
+      if (step2.some(Boolean)) {
+        return 3;
+      } else {
+        return 2;
+      }
+    };
+
+    if (isSuccess && data.data && !hasInitialRoutingRan.current) {
+      hasInitialRoutingRan.current = true;
+
+      const { service_status: serviceStatus } = data.data;
+      switch (serviceStatus) {
+        case 'init':
+          router.push(`${pathname}?step=1`);
+          break;
+        case 'doing':
+          router.push(`${pathname}?step=${getPausedStep(data.data)}`);
+        case 'finished':
+          router.push(`${pathname}/finish`);
+      }
+    }
+  }, [data?.data, isSuccess, router, pathname]);
+
+  useEffect(() => {
+    if (isError) {
+      router.push(`${pathname}?step=1`);
+    }
+  }, [isError, router, pathname]);
+
   const renderStep = () => {
     switch (currentStep) {
       case 1:
@@ -54,7 +129,9 @@ const LabelPage = () => {
           <LabelStep1
             key={1}
             imageKey={params.imageKey}
+            currentLabelData={data?.data}
             onNext={handleNextStep}
+            onUpdateCache={handleUpdateLabelCache}
           />
         );
       case 2:
@@ -62,7 +139,9 @@ const LabelPage = () => {
           <LabelStep2
             key={2}
             imageKey={params.imageKey}
+            currentLabelData={data?.data}
             onNext={handleNextStep}
+            onUpdateCache={handleUpdateLabelCache}
           />
         );
       case 3:
@@ -70,7 +149,9 @@ const LabelPage = () => {
           <LabelStep3
             key={3}
             imageKey={params.imageKey}
+            currentLabelData={data?.data}
             onNext={handleNextStep}
+            onUpdateCache={handleUpdateLabelCache}
           />
         );
       default:
@@ -78,7 +159,9 @@ const LabelPage = () => {
           <LabelStep1
             key={1}
             imageKey={params.imageKey}
+            currentLabelData={data?.data}
             onNext={handleNextStep}
+            onUpdateCache={handleUpdateLabelCache}
           />
         );
     }

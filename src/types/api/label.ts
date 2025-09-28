@@ -16,6 +16,10 @@ export interface LabelData {
   is_not_sure_chair: boolean;
 }
 
+export interface GetLabelStatusResponse extends Partial<LabelData> {
+  service_status: 'init' | 'doing' | 'finished';
+}
+
 export interface UpdateLabelRequestBody extends Partial<LabelData> {
   step_label_finish_duration?: number;
   width_label_finish_duration?: number;

@@ -1,7 +1,5 @@
 'use client';
 
-import { useState } from 'react';
-
 import ButtonList from '@/components/ui/button-list';
 import useInteractionTimer from '@/hooks/use-interaction-timer';
 import useUpdateLabel from '@/hooks/use-update-label';
@@ -38,14 +36,22 @@ const LABEL_STEP_3_OPTIONS: labelOption<WidthClass>[] = [
   },
 ];
 
-export const LabelStep3 = ({ imageKey, onNext }: LabelStepProps) => {
-  const [selectedValue, setSelectedValue] = useState<WidthClass | null>(null);
+export const LabelStep3 = ({
+  imageKey,
+  currentLabelData,
+  onNext,
+  onUpdateCache,
+}: LabelStepProps) => {
   const { endTimer } = useInteractionTimer();
   const { isPending, mutate } = useUpdateLabel({ imageKey, onSuccess: onNext });
 
+  const selectedValue = currentLabelData?.width_class;
+
   const handleSelectItem = (value: WidthClass) => {
-    setSelectedValue(value);
     const interactionTime = endTimer() ?? 0;
+    onUpdateCache({
+      width_class: value,
+    });
     mutate({
       width_class: value,
       width_label_finish_duration: interactionTime,
