@@ -9,13 +9,17 @@ import {
   LabelStep2,
   LabelStep3,
 } from '@/features/label/components/label-step';
+import { BROWSER_PATH } from '@/lib/path';
 
 const LabelPage = () => {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
-  const currentStep = parseInt(searchParams.get('step') || '1', 10);
+  const stepParam = Number.parseInt(searchParams.get('step') ?? '', 10);
+  const currentStep = Number.isFinite(stepParam)
+    ? Math.min(Math.max(stepParam, 1), 3)
+    : 1;
 
   const handleNextStep = () => {
     if (currentStep === 3) {
@@ -29,7 +33,7 @@ const LabelPage = () => {
 
   const handleBack = () => {
     if (currentStep === 1) {
-      router.push('/label/upload');
+      router.push(BROWSER_PATH.LABEL.UPLOAD);
       return;
     }
 

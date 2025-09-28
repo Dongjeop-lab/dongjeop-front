@@ -27,6 +27,11 @@ const LABEL_STEP_1_OPTIONS: labelOption[] = [
 export const LabelStep1 = ({ onNext }: LabelStepProps) => {
   const [selectedValue, setSelectedValue] = useState<string | null>(null);
 
+  const handleSelectItem = (value: string) => {
+    setSelectedValue(value);
+    onNext();
+  };
+
   return (
     <LabelStepLayout
       title='계단 또는 턱이 있나요?'
@@ -41,10 +46,7 @@ export const LabelStep1 = ({ onNext }: LabelStepProps) => {
               key={title}
               title={title}
               selected={selectedValue === value}
-              onClick={() => {
-                setSelectedValue(value);
-                onNext();
-              }}
+              onClick={() => handleSelectItem(value)}
             />
           ))}
         </ButtonList>
