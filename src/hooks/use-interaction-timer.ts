@@ -18,7 +18,7 @@ const useInteractionTimer = () => {
 
     startTimeRef.current = null;
 
-    return duration;
+    return Math.floor(duration);
   }, []);
 
   return { endTimer: end };

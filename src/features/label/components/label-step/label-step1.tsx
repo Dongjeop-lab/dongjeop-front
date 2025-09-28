@@ -36,7 +36,7 @@ export const LabelStep1 = ({ imageKey, onNext }: LabelStepProps) => {
   });
 
   const handleSelectItem = (value: HasStep) => {
-    const interactionTime = Math.floor(endTimer() ?? 0);
+    const interactionTime = endTimer() ?? 0;
     setSelectedValue(value);
     mutate({
       has_step: value,
