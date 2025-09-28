@@ -21,6 +21,7 @@
     "docker:clean": "docker system prune -f"
   },
   "dependencies": {
+    "@tanstack/react-query": "^5.90.2",
     "clsx": "^2.1.1",
     "motion": "^12.23.22",
     "next": "15.4.6",
