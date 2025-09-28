@@ -1,4 +1,6 @@
+'use client';
 import Image from 'next/image';
+import { useRef, useState } from 'react';
 
 import BottomCTA from '@/components/ui/bottom-cta';
 import { SourceType } from '@/types/common';
@@ -13,8 +15,69 @@ const guideImages = [
   '/images/upload/upload-guide-3.svg',
 ];
 
+// TODO: API 요청 시 헤더 또는 바디에 source 포함시키기
 const UploadContainer = (_props: UploadContainerProps) => {
-  // TODO: API 요청 시 헤더 또는 바디에 source 포함시키기
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [selectedImage, setSelectedImage] = useState<File | null>(null);
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
+
+  const handleImageUploadClick = () => {
+    if (imagePreview) return;
+    fileInputRef.current?.click();
+  };
+
+  const handleImageReset = (event: React.MouseEvent) => {
+    event.stopPropagation();
+
+    setSelectedImage(null);
+    setImagePreview(null);
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
+  };
+
+  // TODO: 토스트 메세지 등으로 에러 노출
+  const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    // 파일 크기 검증
+    const maxSize = 10 * 1024 * 1024; // 10MB
+    if (file.size > maxSize) {
+      console.log('파일 크기가 너무 큽니다. 10MB 이하의 파일을 선택해주세요.');
+      return;
+    }
+
+    // 이미지 파일 타입 체크
+    if (!file.type.startsWith('image/')) {
+      console.log('이미지 파일만 업로드 가능합니다.');
+      return;
+    }
+
+    setSelectedImage(file);
+
+    // FileReader 에러 처리
+    const reader = new FileReader();
+    reader.onload = e => {
+      const result = e.target?.result as string;
+      if (result) {
+        setImagePreview(result);
+      }
+    };
+
+    reader.onerror = () => {
+      console.log('이미지를 불러오는 중 오류가 발생했습니다.');
+      setSelectedImage(null);
+    };
+
+    reader.readAsDataURL(file);
+
+    console.log('Selected file:', file);
+    console.log('File size:', (file.size / 1024 / 1024).toFixed(2) + 'MB');
+
+    // input value 초기화 (같은 파일 재선택 가능하도록)
+    event.target.value = '';
+  };
 
   return (
     <div className='h-screen w-full'>
@@ -34,28 +97,64 @@ const UploadContainer = (_props: UploadContainerProps) => {
             망치를 눌러 사진을 올려주세요
           </p>
 
-          {/* 사진 선택 터치 영역 */}
-          <div className='relative'>
-            <Image
-              src='/images/upload/stairs-upload.svg'
-              alt='Image Upload Button'
-              width={280}
-              height={260}
-              className='rounded-2xl'
-            />
+          <div
+            className={`relative overflow-hidden rounded-2xl ${
+              imagePreview ? '' : 'cursor-pointer'
+            }`}
+            onClick={handleImageUploadClick}
+          >
+            {imagePreview ? (
+              <div className='relative'>
+                <img
+                  src={imagePreview}
+                  alt='선택된 사진 미리보기'
+                  className='max-w-[280px] object-cover'
+                />
+                <button
+                  type='button'
+                  className='absolute top-2 right-2 cursor-pointer'
+                  onClick={handleImageReset}
+                  aria-label='사진 선택 취소'
+                >
+                  <img
+                    src='/images/upload/close.svg'
+                    alt=''
+                    aria-hidden='true'
+                  />
+                </button>
+              </div>
+            ) : (
+              <>
+                <Image
+                  src='/images/upload/stairs-upload.svg'
+                  alt=''
+                  aria-hidden='true'
+                  width={280}
+                  height={260}
+                />
+                <div className='absolute inset-0 flex flex-col items-center justify-center'>
+                  <img
+                    src='/images/upload/icon-hammer.svg'
+                    alt=''
+                    aria-hidden='true'
+                  />
+                  <img
+                    src='/images/upload/tooltip.svg'
+                    alt=''
+                    aria-hidden='true'
+                  />
+                </div>
+              </>
+            )}
 
-            <div className='absolute inset-0 flex flex-col items-center justify-center'>
-              <img
-                src='/images/upload/icon-hammer.svg'
-                alt=''
-                aria-hidden='true'
-              />
-              <img
-                src='/images/upload/tooltip.svg'
-                alt=''
-                aria-hidden='true'
-              />
-            </div>
+            <input
+              ref={fileInputRef}
+              type='file'
+              accept='image/*'
+              onChange={handleImageChange}
+              className='hidden'
+              aria-label='사진 선택'
+            />
           </div>
         </section>
 
@@ -89,7 +188,7 @@ const UploadContainer = (_props: UploadContainerProps) => {
               <img
                 key={src}
                 src={src}
-                alt={`Guide Image ${index + 1}`}
+                alt={`가이드 이미지 ${index + 1}`}
                 className='h-full flex-1 object-contain'
               />
             ))}
@@ -98,19 +197,20 @@ const UploadContainer = (_props: UploadContainerProps) => {
       </main>
 
       {/* 하단 CTA 버튼 */}
-      {/* TODO: 이미지 등록 여부에 따라 조건부 렌더링 */}
       <BottomCTA>
-        {/* 이미지 미등록시 */}
-        <BottomCTA.Button
-          variant='secondary'
-          disabled
-          className='!bg-secondary !text-secondary-foreground'
-        >
-          1분 만에 등록하기
-        </BottomCTA.Button>
-
-        {/* 이미지 등록시 */}
-        {/* <BottomCTA.Button variant='primary'>1분 만에 등록하기</BottomCTA.Button> */}
+        {!selectedImage ? (
+          <BottomCTA.Button
+            variant='secondary'
+            disabled
+            className='!bg-secondary !text-secondary-foreground'
+          >
+            1분 만에 등록하기
+          </BottomCTA.Button>
+        ) : (
+          <BottomCTA.Button variant='primary'>
+            1분 만에 등록하기
+          </BottomCTA.Button>
+        )}
       </BottomCTA>
     </div>
   );
