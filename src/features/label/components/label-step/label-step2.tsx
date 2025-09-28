@@ -36,7 +36,7 @@ const LABEL_STEP_2_OPTIONS: labelOption<LabelStep2OptionValue>[] = [
 export const LabelStep2 = ({ imageKey, onNext }: LabelStepProps) => {
   const [selectedValue, setSelectedValue] = useState<string[]>([]);
   const { endTimer } = useInteractionTimer();
-  const { mutate } = useUpdateLabel({ imageKey, onSuccess: onNext });
+  const { isPending, mutate } = useUpdateLabel({ imageKey, onSuccess: onNext });
 
   const handleSelect = (value: string) => {
     if (selectedValue.includes(value)) {
@@ -84,6 +84,7 @@ export const LabelStep2 = ({ imageKey, onNext }: LabelStepProps) => {
             {LABEL_STEP_2_OPTIONS.map(({ title, value }) => (
               <ButtonList.Item
                 key={title}
+                disabled={isPending}
                 title={title}
                 selected={selectedValue.includes(value)}
                 onClick={() => handleSelect(value)}
@@ -94,7 +95,7 @@ export const LabelStep2 = ({ imageKey, onNext }: LabelStepProps) => {
       />
       <BottomCTA hasAnimation>
         <BottomCTA.Button
-          disabled={selectedValue.length === 0}
+          disabled={selectedValue.length === 0 || isPending}
           variant='primary'
           onClick={handleSubmitValue}
         >

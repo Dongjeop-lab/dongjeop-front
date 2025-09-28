@@ -41,7 +41,7 @@ const LABEL_STEP_3_OPTIONS: labelOption<WidthClass>[] = [
 export const LabelStep3 = ({ imageKey, onNext }: LabelStepProps) => {
   const [selectedValue, setSelectedValue] = useState<WidthClass | null>(null);
   const { endTimer } = useInteractionTimer();
-  const { mutate } = useUpdateLabel({ imageKey, onSuccess: onNext });
+  const { isPending, mutate } = useUpdateLabel({ imageKey, onSuccess: onNext });
 
   const handleSelectItem = (value: WidthClass) => {
     setSelectedValue(value);
@@ -65,6 +65,7 @@ export const LabelStep3 = ({ imageKey, onNext }: LabelStepProps) => {
           {LABEL_STEP_3_OPTIONS.map(({ title, subtitle, value }) => (
             <ButtonList.Item
               key={title}
+              disabled={isPending}
               title={title}
               subTitle={subtitle}
               selected={selectedValue === value}

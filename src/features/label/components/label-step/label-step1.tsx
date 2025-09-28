@@ -30,7 +30,7 @@ const LABEL_STEP_1_OPTIONS: labelOption<HasStep>[] = [
 export const LabelStep1 = ({ imageKey, onNext }: LabelStepProps) => {
   const [selectedValue, setSelectedValue] = useState<string | null>(null);
   const { endTimer } = useInteractionTimer();
-  const { mutate } = useUpdateLabel({
+  const { isPending, mutate } = useUpdateLabel({
     imageKey,
     onSuccess: onNext,
   });
@@ -57,6 +57,7 @@ export const LabelStep1 = ({ imageKey, onNext }: LabelStepProps) => {
           {LABEL_STEP_1_OPTIONS.map(({ title, value }) => (
             <ButtonList.Item
               key={title}
+              disabled={isPending}
               title={title}
               selected={selectedValue === value}
               onClick={() => handleSelectItem(value)}
