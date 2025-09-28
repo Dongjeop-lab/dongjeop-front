@@ -31,27 +31,11 @@ jobs:
           # CA 인증서 파일 생성
           echo "${{ secrets.DOCKER_CA_CERT }}" > /tmp/ca.crt
           
-          # 🔍 디버깅: 인증서 내용 확인
-          echo "📋 GitHub Secret에서 로드된 CA 인증서 정보:"
-          if [ -s /tmp/ca.crt ]; then
-            echo "✅ CA 인증서 파일이 존재하고 비어있지 않음"
-            echo "📏 파일 크기: $(wc -c < /tmp/ca.crt) bytes"
-            echo "📄 인증서 시작 부분:"
-            head -3 /tmp/ca.crt
-            echo "📄 인증서 끝 부분:"  
-            tail -3 /tmp/ca.crt
-            
-            # 인증서 유효성 검사
-            if openssl x509 -in /tmp/ca.crt -text -noout > /dev/null 2>&1; then
-              echo "✅ CA 인증서 형식이 올바름"
-              echo "🎯 인증서 Subject: $(openssl x509 -in /tmp/ca.crt -subject -noout)"
-            else
-              echo "❌ CA 인증서 형식 오류!"
-              exit 1
-            fi
+          # CA 인증서 유효성 검사
+          if [ -s /tmp/ca.crt ] && openssl x509 -in /tmp/ca.crt -text -noout > /dev/null 2>&1; then
+            echo "✅ CA 인증서 설정 완료"
           else
-            echo "❌ CA 인증서가 비어있거나 존재하지 않음!"
-            echo "🔍 DOCKER_CA_CERT Secret 내용 확인 필요"
+            echo "❌ CA 인증서 오류"
             exit 1
           fi
           
@@ -69,14 +53,9 @@ jobs:
           sudo cp /tmp/ca.crt /etc/ssl/certs/docker-registry.pem
           sudo chmod 644 /etc/ssl/certs/docker-registry.pem
           
-          # Docker 데몬 재시작 (buildx 컨테이너 재생성)
+          # Docker 데몬 재시작
           sudo systemctl restart docker || true
           sleep 3
-          
-          # 설정 확인
-          echo "📋 CA 인증서 설정 확인:"
-          ls -la /etc/docker/certs.d/${{ secrets.KAKAO_REGISTRY_URL }}/
-          echo "✅ CA 인증서 설정 완료"
 
       - name: 🐳 Docker Buildx 설정 (CA 인증서 설정 후)
         uses: docker/setup-buildx-action@v3
@@ -85,84 +64,12 @@ jobs:
             [registry."${{ secrets.KAKAO_REGISTRY_URL }}"]
               ca = ["/etc/ssl/certs/docker-registry.pem"]
 
-      - name: 🔍 CA 인증서 적용 확인 및 Docker 재초기화
-        run: |
-          echo "🔍 CA 인증서 적용 상태 확인..."
-          
-          # 1. 인증서 파일 존재 확인
-          if [ -f "/etc/docker/certs.d/${{ secrets.KAKAO_REGISTRY_URL }}/ca.crt" ]; then
-            echo "✅ Docker certs.d CA 인증서 존재"
-          else
-            echo "❌ Docker certs.d CA 인증서 없음"
-            exit 1
-          fi
-          
-          # 2. 시스템 CA 확인
-          if [ -f "/usr/local/share/ca-certificates/docker-registry.crt" ]; then
-            echo "✅ 시스템 CA 인증서 존재"
-          else
-            echo "❌ 시스템 CA 인증서 없음"
-          fi
-          
-          # 3. Docker buildx 완전 재초기화
-          docker buildx rm --all-inactive || true
-          docker buildx prune -f || true
-          
-          # 4. OpenSSL 연결 테스트 (최종 확인)
-          echo "🌐 Registry 연결 테스트..."
-          if openssl s_client -connect ${{ secrets.KAKAO_REGISTRY_URL }} -CAfile /etc/docker/certs.d/${{ secrets.KAKAO_REGISTRY_URL }}/ca.crt -verify_return_error -brief 2>/dev/null </dev/null; then
-            echo "✅ Registry SSL 연결 성공"
-          else
-            echo "⚠️ Registry SSL 연결 실패, 하지만 계속 진행..."
-          fi
-
-      - name: 🔑 카카오 클라우드 레지스트리 로그인 (완전 제어 방식)
-        run: |
-          echo "🔑 Registry 로그인 시도 중..."
-          
-          # 환경변수로 비밀번호 설정 (더 안전)
-          export DOCKER_PASSWORD="${{ secrets.KAKAO_REGISTRY_PASSWORD }}"
-          
-          # 1. 정상 CA 인증서로 로그인 시도  
-          echo "🎯 Step 1: CA 인증서를 사용한 정상 로그인 시도"
-          if echo "$DOCKER_PASSWORD" | docker login ${{ secrets.KAKAO_REGISTRY_URL }} --username ${{ secrets.KAKAO_REGISTRY_USERNAME }} --password-stdin 2>/dev/null; then
-            echo "✅ 정상 로그인 성공 (CA 인증서 적용됨)"
-            unset DOCKER_PASSWORD
-            exit 0
-          else
-            echo "❌ 정상 로그인 실패"
-            
-            # 2. Docker daemon 설정 강제 업데이트
-            echo "🔧 Step 2: Docker daemon 설정 강제 업데이트"
-            sudo systemctl stop docker
-            sleep 2
-            
-            # Docker daemon 설정 생성 (보안 강화)
-            sudo mkdir -p /etc/docker
-            echo '{
-              "registry-mirrors": [],
-              "debug": true,
-              "log-level": "debug"
-            }' | sudo tee /etc/docker/daemon.json
-            
-            # Docker 재시작
-            sudo systemctl start docker
-            sleep 5
-            
-            # 3. Docker 재시작 후 재로그인 시도
-            echo "🔄 Step 3: Docker 재시작 후 재로그인 시도"
-            if echo "$DOCKER_PASSWORD" | docker login ${{ secrets.KAKAO_REGISTRY_URL }} --username ${{ secrets.KAKAO_REGISTRY_USERNAME }} --password-stdin; then
-              echo "✅ Docker 재시작 후 로그인 성공"
-            else
-              echo "❌ 모든 로그인 방식 실패"
-              echo "🔍 Docker 로그 확인:"
-              sudo journalctl -u docker --no-pager --lines=10
-              exit 1
-            fi
-          fi
-          
-          # 비밀번호 환경변수 정리
-          unset DOCKER_PASSWORD
+      - name: 🔑 카카오 클라우드 레지스트리 로그인
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ secrets.KAKAO_REGISTRY_URL }}
+          username: ${{ secrets.KAKAO_REGISTRY_USERNAME }}
+          password: ${{ secrets.KAKAO_REGISTRY_PASSWORD }}
 
       - name: 🏷️ Docker 이미지 메타데이터 생성
         id: meta
@@ -214,17 +121,17 @@ jobs:
             
             # --- 레지스트리 로그인 및 이미지 다운로드 ---
             echo "🔑 레지스트리 로그인..."
-            echo "${{ secrets.KAKAO_REGISTRY_PASSWORD }}" | docker login $REGISTRY_URL --username ${{ secrets.KAKAO_REGISTRY_USERNAME }} --password-stdin
+            echo "${{ secrets.KAKAO_REGISTRY_PASSWORD }}" | sudo docker login $REGISTRY_URL --username ${{ secrets.KAKAO_REGISTRY_USERNAME }} --password-stdin
             
             echo "📥 새 이미지 다운로드..."
-            docker pull ${REGISTRY_URL}/${REGISTRY_PROJECT}/${IMAGE_NAME}:latest
+            sudo docker pull ${REGISTRY_URL}/${REGISTRY_PROJECT}/${IMAGE_NAME}:latest
 
             # --- 이전 배포 실패 시 남은 컨테이너 정리 ---
-            docker stop ${NEW_CONTAINER_NAME} >/dev/null 2>&1 && docker rm ${NEW_CONTAINER_NAME} >/dev/null 2>&1 || true
+            sudo docker stop ${NEW_CONTAINER_NAME} >/dev/null 2>&1 && sudo docker rm ${NEW_CONTAINER_NAME} >/dev/null 2>&1 || true
             
             # --- 새 버전 컨테이너 실행 ---
             echo "🎯 새 버전 컨테이너 시작: ${NEW_CONTAINER_NAME}"
-            docker run -d \
+            sudo docker run -d \
               --name ${NEW_CONTAINER_NAME} \
               --restart unless-stopped \
               -p 3001:3000 \
@@ -240,28 +147,28 @@ jobs:
                     echo "✅ 새 버전 헬스 체크 성공!"
                     
                     # --- 기존 컨테이너를 백업으로 변경하고 새 컨테이너를 현재 버전으로 적용 ---
-                    if docker ps -q -f name=${CONTAINER_NAME} | grep -q .; then
+                    if sudo docker ps -q -f name=${CONTAINER_NAME} | grep -q .; then
                       echo "🔄 기존 컨테이너를 백업으로 변경: ${OLD_CONTAINER_NAME}"
-                      docker rename ${CONTAINER_NAME} ${OLD_CONTAINER_NAME}
+                      sudo docker rename ${CONTAINER_NAME} ${OLD_CONTAINER_NAME}
                     fi
                     
                     echo "🚀 새 버전을 현재 버전으로 적용: ${CONTAINER_NAME}"
-                    docker rename ${NEW_CONTAINER_NAME} ${CONTAINER_NAME}
+                    sudo docker rename ${NEW_CONTAINER_NAME} ${CONTAINER_NAME}
                     
                     # --- 백업 컨테이너 중지 및 삭제 ---
-                    if docker ps -a -q -f name=${OLD_CONTAINER_NAME} | grep -q .; then
+                    if sudo docker ps -a -q -f name=${OLD_CONTAINER_NAME} | grep -q .; then
                       echo "🛑 백업 컨테이너 중지 및 삭제"
-                      docker stop ${OLD_CONTAINER_NAME}
-                      docker rm ${OLD_CONTAINER_NAME}
+                      sudo docker stop ${OLD_CONTAINER_NAME}
+                      sudo docker rm ${OLD_CONTAINER_NAME}
                     fi
                     
                     break
                 fi
                 if [ $i -eq 12 ]; then
                     echo "❌ 새 버전 헬스 체크 실패. 배포 롤백"
-                    docker logs ${NEW_CONTAINER_NAME}
-                    docker stop ${NEW_CONTAINER_NAME}
-                    docker rm ${NEW_CONTAINER_NAME}
+                    sudo docker logs ${NEW_CONTAINER_NAME}
+                    sudo docker stop ${NEW_CONTAINER_NAME}
+                    sudo docker rm ${NEW_CONTAINER_NAME}
                     exit 1
                 fi
                 echo "재시도 ($i/12)..."
@@ -270,7 +177,7 @@ jobs:
 
             # --- 이전 이미지 정리 ---
             echo "🧹 이전 이미지 정리..."
-            docker image prune -f
+            sudo docker image prune -f
             
             echo "🎉 배포 완료!"
 
