@@ -1,5 +1,6 @@
 'use client';
 
+import { AnimatePresence } from 'motion/react';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 
 import Header from '@/components/ui/header';
@@ -39,20 +40,40 @@ const LabelPage = () => {
   const renderStep = () => {
     switch (currentStep) {
       case 1:
-        return <LabelStep1 onNext={handleNextStep} />;
+        return (
+          <LabelStep1
+            key={1}
+            onNext={handleNextStep}
+          />
+        );
       case 2:
-        return <LabelStep2 onNext={handleNextStep} />;
+        return (
+          <LabelStep2
+            key={2}
+            onNext={handleNextStep}
+          />
+        );
       case 3:
-        return <LabelStep3 onNext={handleNextStep} />;
+        return (
+          <LabelStep3
+            key={3}
+            onNext={handleNextStep}
+          />
+        );
       default:
-        return <LabelStep1 onNext={handleNextStep} />;
+        return (
+          <LabelStep1
+            key={1}
+            onNext={handleNextStep}
+          />
+        );
     }
   };
 
   return (
     <>
       <Header onBack={handleBack} />
-      {renderStep()}
+      <AnimatePresence mode='wait'>{renderStep()}</AnimatePresence>
     </>
   );
 };
