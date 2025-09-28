@@ -1,7 +1,12 @@
 'use client';
 
 import { AnimatePresence } from 'motion/react';
-import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import {
+  useParams,
+  usePathname,
+  useRouter,
+  useSearchParams,
+} from 'next/navigation';
 
 import Header from '@/components/ui/header';
 import {
@@ -13,6 +18,7 @@ import { BROWSER_PATH } from '@/lib/path';
 
 const LabelPage = () => {
   const router = useRouter();
+  const params = useParams<{ imageKey: string }>();
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
@@ -47,6 +53,7 @@ const LabelPage = () => {
         return (
           <LabelStep1
             key={1}
+            imageKey={params.imageKey}
             onNext={handleNextStep}
           />
         );
@@ -54,6 +61,7 @@ const LabelPage = () => {
         return (
           <LabelStep2
             key={2}
+            imageKey={params.imageKey}
             onNext={handleNextStep}
           />
         );
@@ -61,6 +69,7 @@ const LabelPage = () => {
         return (
           <LabelStep3
             key={3}
+            imageKey={params.imageKey}
             onNext={handleNextStep}
           />
         );
@@ -68,6 +77,7 @@ const LabelPage = () => {
         return (
           <LabelStep1
             key={1}
+            imageKey={params.imageKey}
             onNext={handleNextStep}
           />
         );
