@@ -1,6 +1,7 @@
 import { useMutation } from '@tanstack/react-query';
 
 import { apiClient } from '@/app/api/client';
+import { API_PATH } from '@/lib/path';
 import { UpdateLabelRequestBody } from '@/types/api/label';
 
 interface UseUpdateLabelParams {
@@ -11,7 +12,7 @@ interface UseUpdateLabelParams {
 const useUpdateLabel = ({ imageKey, onSuccess }: UseUpdateLabelParams) => {
   const mutation = useMutation({
     mutationFn: (data: UpdateLabelRequestBody) =>
-      apiClient.put(`/api/v1/label/${imageKey}`, data),
+      apiClient.put(`${API_PATH.LABEL}/${imageKey}`, data),
     onSuccess,
     onError: error => {
       if (error instanceof Error) {
