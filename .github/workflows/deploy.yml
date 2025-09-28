@@ -119,12 +119,26 @@ jobs:
             NEW_CONTAINER_NAME="dongjeop-frontend-new"
             OLD_CONTAINER_NAME="dongjeop-frontend-old"
             
-            # --- 무중단 배포를 위한 이전 배포 실패 컨테이너만 정리 ---
-            echo "🧹 이전 배포 실패 시 남은 컨테이너 정리..."
+            # --- 배포 전 환경 정리 ---
+            echo "🧹 배포 전 환경 정리..."
             
-            # 새 컨테이너와 백업 컨테이너만 정리 (기존 서비스는 유지)
+            # 현재 실행 중인 프론트엔드 관련 컨테이너 확인
+            echo "📋 현재 실행 중인 프론트엔드 컨테이너:"
+            sudo docker ps --filter "name=dongjeop-frontend" --format "table {{.Names}}\t{{.Ports}}\t{{.Status}}" || true
+            
+            # 새 컨테이너와 백업 컨테이너 정리 (기존 메인 서비스는 유지)
             sudo docker stop ${NEW_CONTAINER_NAME} >/dev/null 2>&1 && sudo docker rm ${NEW_CONTAINER_NAME} >/dev/null 2>&1 || true
-            sudo docker stop ${OLD_CONTAINER_NAME} >/dev/null 2>&1 && sudo docker rm ${OLD_CONTAINER_NAME} >/dev/null 2>&1 || true
+            
+            # 만약 OLD 컨테이너가 메인 포트를 사용 중이라면 메인으로 승격
+            if sudo docker ps -q -f name=^${OLD_CONTAINER_NAME}$ | grep -q .; then
+              if ! sudo docker ps -q -f name=^${CONTAINER_NAME}$ | grep -q .; then
+                echo "🔄 백업 컨테이너를 메인으로 승격: ${OLD_CONTAINER_NAME} → ${CONTAINER_NAME}"
+                sudo docker rename ${OLD_CONTAINER_NAME} ${CONTAINER_NAME}
+              else
+                echo "🛑 중복된 백업 컨테이너 제거: ${OLD_CONTAINER_NAME}"
+                sudo docker stop ${OLD_CONTAINER_NAME} >/dev/null 2>&1 && sudo docker rm ${OLD_CONTAINER_NAME} >/dev/null 2>&1 || true
+              fi
+            fi
             
             # --- 레지스트리 로그인 및 이미지 다운로드 ---
             echo "🔑 레지스트리 로그인..."
@@ -154,18 +168,24 @@ jobs:
                     # --- 무중단 포트 전환 시작 ---
                     echo "🔄 무중단 포트 전환 시작..."
                     
-                    # 1. 기존 컨테이너를 백업으로 이동 (서비스는 계속 실행)
+                    # 1. 기존 컨테이너 백업 및 중지 (포트 해제)
                     if sudo docker ps -q -f name=^${CONTAINER_NAME}$ | grep -q .; then
                       echo "📦 기존 컨테이너를 백업으로 변경: ${OLD_CONTAINER_NAME}"
                       # 기존 백업 컨테이너가 있다면 먼저 제거
                       sudo docker stop ${OLD_CONTAINER_NAME} >/dev/null 2>&1 && sudo docker rm ${OLD_CONTAINER_NAME} >/dev/null 2>&1 || true
+                      # 기존 컨테이너를 백업으로 이름 변경 후 중지 (포트 해제)
                       sudo docker rename ${CONTAINER_NAME} ${OLD_CONTAINER_NAME}
+                      sudo docker stop ${OLD_CONTAINER_NAME}
+                      echo "🛑 기존 컨테이너 중지 완료 (포트 3001 해제)"
                     fi
                     
                     # 2. 새 컨테이너를 메인 포트(3001)로 재시작
                     echo "🚀 새 컨테이너를 메인 포트로 전환: ${CONTAINER_NAME}"
                     sudo docker stop ${NEW_CONTAINER_NAME}
                     sudo docker rm ${NEW_CONTAINER_NAME}
+                    
+                    # 포트가 완전히 해제될 때까지 잠시 대기
+                    sleep 2
                     
                     sudo docker run -d \
                       --name ${CONTAINER_NAME} \
