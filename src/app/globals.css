@@ -19,6 +19,8 @@
   --color-secondary-disabled: #f5f5f5;
   --color-secondary-disabled-foreground: #cfcfcf;
 
+  --color-muted: #727272;
+
   --animate-cta-in: cta-in 0.5s ease-out;
 
   @keyframes cta-in {

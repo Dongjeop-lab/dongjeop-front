@@ -30,7 +30,7 @@ const UploadContainer = ({ source }: UploadContainerProps) => {
             <br />
             계단을 함께 부셔요!
           </h1>
-          <p className='text-18-medium text-[#727272]'>
+          <p className='text-18-medium text-muted'>
             망치를 눌러 사진을 올려주세요
           </p>
 
