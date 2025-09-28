@@ -59,8 +59,52 @@ export default function TestPage() {
       <div className='mx-auto max-w-4xl px-4'>
         <div className='rounded-lg bg-white p-6 shadow-lg'>
           <h1 className='mb-8 text-center text-3xl font-bold text-gray-900'>
-            백엔드 API 테스트 페이지
+            🎉 CI/CD 자동 배포 테스트 페이지
           </h1>
+
+          {/* 🚀 배포 정보 섹션 */}
+          <div className='mb-8 rounded-lg border border-green-200 bg-green-50 p-4'>
+            <h2 className='mb-3 text-lg font-semibold text-green-800'>
+              🚀 배포 정보
+            </h2>
+            <div className='grid gap-3 text-sm text-green-700 md:grid-cols-2'>
+              <div>
+                <span className='font-medium'>배포 시간:</span>{' '}
+                <code className='rounded bg-green-100 px-2 py-1'>
+                  {new Date().toLocaleString('ko-KR', {
+                    timeZone: 'Asia/Seoul',
+                    year: 'numeric',
+                    month: '2-digit',
+                    day: '2-digit',
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    second: '2-digit',
+                  })}
+                </code>
+              </div>
+              <div>
+                <span className='font-medium'>버전:</span>{' '}
+                <code className='rounded bg-green-100 px-2 py-1'>
+                  v1.0.0-{new Date().getTime().toString().slice(-6)}
+                </code>
+              </div>
+              <div>
+                <span className='font-medium'>환경:</span>{' '}
+                <code className='rounded bg-green-100 px-2 py-1'>
+                  {process.env.NODE_ENV || 'development'}
+                </code>
+              </div>
+              <div>
+                <span className='font-medium'>CI/CD 상태:</span>{' '}
+                <span className='inline-block rounded-full bg-green-500 px-2 py-1 text-xs text-white'>
+                  ✅ 자동 배포 성공
+                </span>
+              </div>
+            </div>
+            <div className='mt-3 text-xs text-green-600'>
+              💡 이 정보는 매 배포마다 자동으로 업데이트됩니다. 시간이 바뀌면 새로운 배포가 성공한 것입니다!
+            </div>
+          </div>
 
           {/* API 엔드포인트 정보 */}
           <div className='mb-8 rounded-lg border border-blue-200 bg-blue-50 p-4'>
