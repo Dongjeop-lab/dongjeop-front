@@ -3,9 +3,8 @@
 name: 🚀 프로덕션 배포
 
 on:
-  # 🧪 테스트: feat/ci-cd-test 브랜치에서 테스트 후 main 적용
   push:
-    branches: [ main, feat/ci-cd-test ]
+    branches: [ main ]
 
 permissions:
   contents: read
