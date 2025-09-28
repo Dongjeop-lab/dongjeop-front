@@ -1,0 +1,28 @@
+# 동접 프론트엔드 Docker Compose
+
+services:
+  dongjeop-frontend:
+    build: .
+    container_name: dongjeop-frontend
+    ports:
+      - '3000:3000'
+    environment:
+      - NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL:-http://localhost:8000}
+      - NODE_ENV=${NODE_ENV:-production}
+      - PORT=3000
+      - HOSTNAME=0.0.0.0
+    restart: unless-stopped
+    healthcheck:
+      test:
+        [
+          'CMD',
+          'wget',
+          '--no-verbose',
+          '--tries=1',
+          '--spider',
+          'http://127.0.0.1:3000',
+        ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
