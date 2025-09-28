@@ -2,6 +2,8 @@ import './globals.css';
 
 import localFont from 'next/font/local';
 
+import TanstackQueryProvider from '@/contexts/tanstack-query-provider';
+
 const pretendard = localFont({
   src: '../../public/fonts/PretendardVariable.woff2',
   display: 'swap',
@@ -18,7 +20,9 @@ export default function RootLayout({
       lang='ko'
       className={pretendard.className}
     >
-      <body className='text-16-regular'>{children}</body>
+      <body className='text-16-regular'>
+        <TanstackQueryProvider>{children}</TanstackQueryProvider>
+      </body>
     </html>
   );
 }
