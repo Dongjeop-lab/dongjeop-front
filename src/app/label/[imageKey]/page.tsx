@@ -34,7 +34,6 @@ const LabelPage = () => {
       apiClient.get<GetLabelStatusResponse>(
         `${API_PATH.LABEL}/${params.imageKey}`
       ),
-    staleTime: Infinity,
   });
 
   const stepParam = Number.parseInt(searchParams.get('step') ?? '', 10);
