@@ -3,7 +3,7 @@
 name: 🚀 프로덕션 배포
 
 on:
-  # 🧪 임시: feat/ci-cd-test 브랜치에서도 테스트 (나중에 제거)
+  # 🧪 테스트: feat/ci-cd-test 브랜치에서 테스트 후 main 적용
   push:
     branches: [ main, feat/ci-cd-test ]
 
@@ -77,8 +77,7 @@ jobs:
         with:
           images: ${{ secrets.KAKAO_REGISTRY_URL }}/${{ secrets.KAKAO_REGISTRY_PROJECT }}/${{ env.IMAGE_NAME }}
           tags: |
-            type=raw,value=latest,enable={{is_default_branch}}
-            type=sha,format=short
+            type=raw,value=latest
 
       - name: 🏗️ Docker 이미지 빌드 및 푸시 (보안 CA 인증서 사용)
         id: build
@@ -89,7 +88,6 @@ jobs:
           push: true
           tags: |
             ${{ secrets.KAKAO_REGISTRY_URL }}/${{ secrets.KAKAO_REGISTRY_PROJECT }}/${{ env.IMAGE_NAME }}:latest
-            ${{ secrets.KAKAO_REGISTRY_URL }}/${{ secrets.KAKAO_REGISTRY_PROJECT }}/${{ env.IMAGE_NAME }}:sha-${{ github.sha }}
           build-args: |
             NODE_ENV=production
             NEXT_PUBLIC_API_URL=${{ secrets.NEXT_PUBLIC_API_URL }}
@@ -122,23 +120,14 @@ jobs:
             # --- 배포 전 환경 정리 ---
             echo "🧹 배포 전 환경 정리..."
             
-            # 현재 실행 중인 프론트엔드 관련 컨테이너 확인
-            echo "📋 현재 실행 중인 프론트엔드 컨테이너:"
+            # 현재 실행 중인 컨테이너 확인
             sudo docker ps --filter "name=dongjeop-frontend" --format "table {{.Names}}\t{{.Ports}}\t{{.Status}}" || true
             
             # 새 컨테이너와 백업 컨테이너 정리 (기존 메인 서비스는 유지)
             sudo docker stop ${NEW_CONTAINER_NAME} >/dev/null 2>&1 && sudo docker rm ${NEW_CONTAINER_NAME} >/dev/null 2>&1 || true
             
-            # 만약 OLD 컨테이너가 메인 포트를 사용 중이라면 메인으로 승격
-            if sudo docker ps -q -f name=^${OLD_CONTAINER_NAME}$ | grep -q .; then
-              if ! sudo docker ps -q -f name=^${CONTAINER_NAME}$ | grep -q .; then
-                echo "🔄 백업 컨테이너를 메인으로 승격: ${OLD_CONTAINER_NAME} → ${CONTAINER_NAME}"
-                sudo docker rename ${OLD_CONTAINER_NAME} ${CONTAINER_NAME}
-              else
-                echo "🛑 중복된 백업 컨테이너 제거: ${OLD_CONTAINER_NAME}"
-                sudo docker stop ${OLD_CONTAINER_NAME} >/dev/null 2>&1 && sudo docker rm ${OLD_CONTAINER_NAME} >/dev/null 2>&1 || true
-              fi
-            fi
+            # 기존 백업 컨테이너 정리
+            sudo docker stop ${OLD_CONTAINER_NAME} >/dev/null 2>&1 && sudo docker rm ${OLD_CONTAINER_NAME} >/dev/null 2>&1 || true
             
             # --- 레지스트리 로그인 및 이미지 다운로드 ---
             echo "🔑 레지스트리 로그인..."
@@ -168,16 +157,10 @@ jobs:
                     # --- 무중단 포트 전환 시작 ---
                     echo "🔄 무중단 포트 전환 시작..."
                     
-                    # 1. 기존 컨테이너 완전 정리 (이름 충돌 방지)
-                    echo "🧹 기존 컨테이너 완전 정리..."
-                    
-                    # 모든 관련 컨테이너 중지 및 제거 (실행 중이든 중지된 상태든)
+                    # 1. 기존 컨테이너 정리
+                    echo "🧹 기존 컨테이너 정리..."
                     sudo docker stop ${CONTAINER_NAME} >/dev/null 2>&1 || true
                     sudo docker rm ${CONTAINER_NAME} >/dev/null 2>&1 || true
-                    sudo docker stop ${OLD_CONTAINER_NAME} >/dev/null 2>&1 || true  
-                    sudo docker rm ${OLD_CONTAINER_NAME} >/dev/null 2>&1 || true
-                    
-                    echo "✅ 기존 컨테이너 정리 완료"
                     
                     # 2. 새 컨테이너를 메인 이름으로 직접 시작
                     echo "🚀 새 컨테이너를 메인으로 시작: ${CONTAINER_NAME}"
@@ -237,10 +220,8 @@ jobs:
       - name: 📊 배포 결과 요약
         if: always()
         run: |
-          echo "## 🚀 무중단 배포 완료" >> $GITHUB_STEP_SUMMARY
-          echo "- ✅ 품질 검사 및 빌드 완료" >> $GITHUB_STEP_SUMMARY
-          echo "- ✅ Docker 이미지 레지스트리 푸시" >> $GITHUB_STEP_SUMMARY
-          echo "- ✅ 서버 배포 및 헬스 체크 완료 (무중단)" >> $GITHUB_STEP_SUMMARY
+          echo "## 🚀 배포 완료" >> $GITHUB_STEP_SUMMARY
+          echo "- ✅ Docker 이미지 빌드 및 푸시" >> $GITHUB_STEP_SUMMARY
+          echo "- ✅ 서버 무중단 배포 완료" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          echo "**이미지:** ${{ steps.meta.outputs.tags }}" >> $GITHUB_STEP_SUMMARY
           echo "**배포 시간:** $(date)" >> $GITHUB_STEP_SUMMARY
