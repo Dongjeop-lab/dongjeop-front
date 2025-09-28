@@ -1,8 +1,46 @@
+import { Variants } from 'motion';
+import * as motion from 'motion/react-client';
 import Image from 'next/image';
 import { ButtonHTMLAttributes, PropsWithChildren } from 'react';
 
 import { cn } from '@/lib/utils';
 import { ClassName } from '@/types/common';
+
+const containerVariants: Variants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.1,
+    },
+  },
+  exit: {
+    opacity: 0,
+    transition: {
+      staggerChildren: 0.1,
+      staggerDirection: -1,
+    },
+  },
+};
+
+const itemVariants: Variants = {
+  hidden: { opacity: 0, y: 60 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      duration: 1,
+      ease: 'easeOut',
+    },
+  },
+  exit: {
+    opacity: 0,
+    y: -40,
+    transition: {
+      duration: 0.5,
+    },
+  },
+};
 
 interface ButtonListProps extends ClassName, PropsWithChildren {}
 interface ButtonListItemProps extends ButtonHTMLAttributes<HTMLButtonElement> {
@@ -12,7 +50,17 @@ interface ButtonListItemProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 }
 
 const ButtonList = ({ children, className }: ButtonListProps) => {
-  return <ul className={cn('flex flex-col gap-3', className)}>{children}</ul>;
+  return (
+    <motion.ul
+      className={cn('flex flex-col gap-3', className)}
+      variants={containerVariants}
+      initial='hidden'
+      animate='visible'
+      exit='exit'
+    >
+      {children}
+    </motion.ul>
+  );
 };
 
 const Item = ({
@@ -23,7 +71,7 @@ const Item = ({
   ...props
 }: ButtonListItemProps) => {
   return (
-    <li>
+    <motion.li variants={itemVariants}>
       <button
         {...props}
         role='option'
@@ -57,7 +105,7 @@ const Item = ({
           />
         )}
       </button>
-    </li>
+    </motion.li>
   );
 };
 
