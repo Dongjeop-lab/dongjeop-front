@@ -19,7 +19,7 @@ const LabelPage = () => {
 
   const handleNextStep = () => {
     if (currentStep === 3) {
-      router.push('/label/finish');
+      router.push(`${pathname}/finish`);
       return;
     }
 
