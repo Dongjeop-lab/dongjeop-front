@@ -49,7 +49,7 @@ export const LabelStep3 = ({ imageKey, onNext }: LabelStepProps) => {
     mutate({
       width_class: value,
       width_label_finish_duration: interactionTime,
-      finish_labeling: false,
+      finish_labeling: true,
     });
   };
 
