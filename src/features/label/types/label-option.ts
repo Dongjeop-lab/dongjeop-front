@@ -1,5 +1,5 @@
-export interface labelOption {
+export interface labelOption<V> {
   title: string;
   subtitle?: string;
-  value: string;
+  value: V;
 }
