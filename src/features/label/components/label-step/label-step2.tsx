@@ -4,24 +4,39 @@ import { useState } from 'react';
 
 import BottomCTA from '@/components/ui/bottom-cta';
 import ButtonList from '@/components/ui/button-list';
+import useInteractionTimer from '@/hooks/use-interaction-timer';
+import useUpdateLabel from '@/hooks/use-update-label';
 import { TOTAL_LABELING_STEPS } from '@/lib/constants';
+import { UpdateLabelRequestBody } from '@/types/api/label';
 
 import { labelOption } from '../../types/label-option';
 import { LabelStepProps } from '../../types/label-step';
 import LabelStepLayout from '../label-step-layout';
 
+type LabelStep2OptionValue =
+  | keyof Pick<
+      UpdateLabelRequestBody,
+      | 'has_movable_chair'
+      | 'has_high_chair'
+      | 'has_floor_chair'
+      | 'has_fixed_chair'
+    >
+  | 'not_sure';
+
 const NOT_SURE_VALUE = 'not_sure';
 
-const LABEL_STEP_2_OPTIONS: labelOption[] = [
-  { title: '이동식 의자', value: 'movable_chair' },
-  { title: '높은 의자', value: 'high_chair' },
-  { title: '좌식 의자', value: 'floor_chair' },
-  { title: '고정식 의자', value: 'fixed_chair' },
+const LABEL_STEP_2_OPTIONS: labelOption<LabelStep2OptionValue>[] = [
+  { title: '이동식 의자', value: 'has_movable_chair' },
+  { title: '높은 의자', value: 'has_high_chair' },
+  { title: '좌식 의자', value: 'has_floor_chair' },
+  { title: '고정식 의자', value: 'has_fixed_chair' },
   { title: '잘 모르겠어요', value: NOT_SURE_VALUE },
 ];
 
-export const LabelStep2 = ({ onNext }: LabelStepProps) => {
+export const LabelStep2 = ({ imageKey, onNext }: LabelStepProps) => {
   const [selectedValue, setSelectedValue] = useState<string[]>([]);
+  const { endTimer } = useInteractionTimer();
+  const { isPending, mutate } = useUpdateLabel({ imageKey, onSuccess: onNext });
 
   const handleSelect = (value: string) => {
     if (selectedValue.includes(value)) {
@@ -35,6 +50,24 @@ export const LabelStep2 = ({ onNext }: LabelStepProps) => {
     }
 
     setSelectedValue(prev => [...prev, value]);
+  };
+
+  const handleSubmitValue = () => {
+    const interactionTime = endTimer() ?? 0;
+    const updateValeus: Omit<UpdateLabelRequestBody, 'finish_labeling'> =
+      selectedValue.includes(NOT_SURE_VALUE)
+        ? { is_not_sure_chair: true }
+        : selectedValue.reduce(
+            (acc, value) => {
+              return { ...acc, [value]: true };
+            },
+            {} as Omit<UpdateLabelRequestBody, 'finish_labeling'>
+          );
+    mutate({
+      ...updateValeus,
+      chair_label_finish_duration: interactionTime,
+      finish_labeling: false,
+    });
   };
 
   return (
@@ -51,6 +84,7 @@ export const LabelStep2 = ({ onNext }: LabelStepProps) => {
             {LABEL_STEP_2_OPTIONS.map(({ title, value }) => (
               <ButtonList.Item
                 key={title}
+                disabled={isPending}
                 title={title}
                 selected={selectedValue.includes(value)}
                 onClick={() => handleSelect(value)}
@@ -61,9 +95,9 @@ export const LabelStep2 = ({ onNext }: LabelStepProps) => {
       />
       <BottomCTA hasAnimation>
         <BottomCTA.Button
-          disabled={selectedValue.length === 0}
+          disabled={selectedValue.length === 0 || isPending}
           variant='primary'
-          onClick={onNext}
+          onClick={handleSubmitValue}
         >
           다음
         </BottomCTA.Button>

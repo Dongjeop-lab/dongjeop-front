@@ -3,13 +3,16 @@
 import { useState } from 'react';
 
 import ButtonList from '@/components/ui/button-list';
+import useInteractionTimer from '@/hooks/use-interaction-timer';
+import useUpdateLabel from '@/hooks/use-update-label';
 import { TOTAL_LABELING_STEPS } from '@/lib/constants';
+import { WidthClass } from '@/types/api/label';
 
 import { labelOption } from '../../types/label-option';
 import { LabelStepProps } from '../../types/label-step';
 import LabelStepLayout from '../label-step-layout';
 
-const LABEL_STEP_3_OPTIONS: labelOption[] = [
+const LABEL_STEP_3_OPTIONS: labelOption<WidthClass>[] = [
   {
     title: '좁아요',
     subtitle: '2명이 동시에 지나갈 수 있어요',
@@ -35,8 +38,21 @@ const LABEL_STEP_3_OPTIONS: labelOption[] = [
   },
 ];
 
-export const LabelStep3 = ({ onNext }: LabelStepProps) => {
-  const [selectedValue, setSelectedValue] = useState<string | null>(null);
+export const LabelStep3 = ({ imageKey, onNext }: LabelStepProps) => {
+  const [selectedValue, setSelectedValue] = useState<WidthClass | null>(null);
+  const { endTimer } = useInteractionTimer();
+  const { isPending, mutate } = useUpdateLabel({ imageKey, onSuccess: onNext });
+
+  const handleSelectItem = (value: WidthClass) => {
+    setSelectedValue(value);
+    const interactionTime = endTimer() ?? 0;
+    mutate({
+      width_class: value,
+      width_label_finish_duration: interactionTime,
+      finish_labeling: true,
+    });
+  };
+
   return (
     <LabelStepLayout
       title='통로 폭을 알려주세요'
@@ -49,13 +65,11 @@ export const LabelStep3 = ({ onNext }: LabelStepProps) => {
           {LABEL_STEP_3_OPTIONS.map(({ title, subtitle, value }) => (
             <ButtonList.Item
               key={title}
+              disabled={isPending}
               title={title}
               subTitle={subtitle}
               selected={selectedValue === value}
-              onClick={() => {
-                setSelectedValue(value);
-                onNext();
-              }}
+              onClick={() => handleSelectItem(value)}
             />
           ))}
         </ButtonList>
