@@ -1,4 +1,8 @@
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+const API_BASE_URL =
+  process.env.NEXT_PUBLIC_API_URL ||
+  (process.env.NODE_ENV === 'development'
+    ? 'http://localhost:3000' // 개발환경: 고정 3000 포트 (프록시 처리됨)
+    : 'http://localhost:8000'); // 프로덕션환경: 직접 API 서버로 요청
 
 export interface ApiResponse<T = unknown> {
   success: boolean;
