@@ -4,7 +4,19 @@ name: 🚀 프로덕션 배포
 
 on:
   push:
-    branches: [ main ]
+    branches: [ main, develop, chore/ci-cd-button ]
+  workflow_dispatch:
+    inputs:
+      force_rebuild:
+        description: '강제 리빌드 (캐시 무시)'
+        required: false
+        type: boolean
+        default: false
+      deploy_message:
+        description: '배포 메시지 (선택사항)'
+        required: false
+        type: string
+        default: '자동 배포'
 
 permissions:
   contents: read
@@ -15,7 +27,7 @@ env:
   
 jobs:
   build-and-deploy:
-    name: 🐳 빌드 및 배포
+    name: 🐳 빌드 및 배포 (${{ github.ref == 'refs/heads/main' && 'production' || 'staging' }})
     runs-on: ubuntu-latest
     timeout-minutes: 20
     
@@ -59,7 +71,7 @@ jobs:
       - name: 🐳 Docker Buildx 설정 (CA 인증서 설정 후)
         uses: docker/setup-buildx-action@v3
         with:
-          config-inline: |
+          buildkitd-config-inline: |
             [registry."${{ secrets.KAKAO_REGISTRY_URL }}"]
               ca = ["/etc/ssl/certs/docker-registry.pem"]
 
@@ -76,7 +88,13 @@ jobs:
         with:
           images: ${{ secrets.KAKAO_REGISTRY_URL }}/${{ secrets.KAKAO_REGISTRY_PROJECT }}/${{ env.IMAGE_NAME }}
           tags: |
-            type=raw,value=latest
+            # 브랜치별 태그
+            type=raw,value=latest,enable=${{ github.ref == 'refs/heads/main' }}
+            type=raw,value=staging,enable=${{ github.ref == 'refs/heads/develop' }}
+            # 수동 배포 시 타임스탬프 태그 추가
+            type=raw,value=manual-{{date 'YYYYMMDD-HHmmss'}},enable=${{ github.event_name == 'workflow_dispatch' }}
+            # 커밋 SHA 태그
+            type=sha,format=short
 
       - name: 🏗️ Docker 이미지 빌드 및 푸시 (보안 CA 인증서 사용)
         id: build
@@ -85,12 +103,16 @@ jobs:
           context: .
           platforms: linux/amd64
           push: true
-          tags: |
-            ${{ secrets.KAKAO_REGISTRY_URL }}/${{ secrets.KAKAO_REGISTRY_PROJECT }}/${{ env.IMAGE_NAME }}:latest
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
           build-args: |
             NODE_ENV=production
-            NEXT_PUBLIC_API_URL=${{ secrets.NEXT_PUBLIC_API_URL }}
             NEXT_PUBLIC_BUILD_ID=${{ github.sha }}
+            DEPLOY_MESSAGE=${{ github.event.inputs.deploy_message || '수동 배포' }}
+            BUILD_ENV=${{ github.ref == 'refs/heads/main' && 'production' || 'staging' }}
+          # 캐시 설정 (강제 리빌드 옵션 적용)
+          cache-from: ${{ github.event.inputs.force_rebuild == 'true' && '' || 'type=gha' }}
+          cache-to: type=gha,mode=max
           # 🔒 보안 강화: CA 인증서 사용, insecure 모드 제거
           provenance: false
           sbom: false
@@ -144,8 +166,8 @@ jobs:
               --restart unless-stopped \
               -p ${TEMP_PORT}:3000 \
               -e NODE_ENV=production \
-              -e NEXT_PUBLIC_API_URL="${{ secrets.NEXT_PUBLIC_API_URL }}" \
               -e NEXT_PUBLIC_BUILD_ID="${{ github.sha }}" \
+              -e BUILD_ENV="${{ github.ref == 'refs/heads/main' && 'production' || 'staging' }}" \
               ${REGISTRY_URL}/${REGISTRY_PROJECT}/${IMAGE_NAME}:latest
 
             # --- 새 버전 헬스 체크 ---
@@ -176,8 +198,8 @@ jobs:
                       --restart unless-stopped \
                       -p 3001:3000 \
                       -e NODE_ENV=production \
-                      -e NEXT_PUBLIC_API_URL="${{ secrets.NEXT_PUBLIC_API_URL }}" \
                       -e NEXT_PUBLIC_BUILD_ID="${{ github.sha }}" \
+                      -e BUILD_ENV="${{ github.ref == 'refs/heads/main' && 'production' || 'staging' }}" \
                       ${REGISTRY_URL}/${REGISTRY_PROJECT}/${IMAGE_NAME}:latest
                     
                     # 3. 메인 포트 헬스 체크
@@ -226,4 +248,19 @@ jobs:
           echo "- ✅ Docker 이미지 빌드 및 푸시" >> $GITHUB_STEP_SUMMARY
           echo "- ✅ 서버 무중단 배포 완료" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
+          
+          # 배포 정보
+          echo "**배포 환경:** ${{ github.ref == 'refs/heads/main' && 'production' || 'staging' }}" >> $GITHUB_STEP_SUMMARY
+          echo "**배포 방식:** ${{ github.event_name == 'workflow_dispatch' && '🔘 수동 배포' || '🔄 자동 배포' }}" >> $GITHUB_STEP_SUMMARY
+          
+          # 수동 배포 시 추가 정보
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            echo "**배포 메시지:** ${{ github.event.inputs.deploy_message }}" >> $GITHUB_STEP_SUMMARY
+            echo "**강제 리빌드:** ${{ github.event.inputs.force_rebuild == 'true' && '✅ 활성화' || '❌ 비활성화' }}" >> $GITHUB_STEP_SUMMARY
+          fi
+          
           echo "**배포 시간:** $(date)" >> $GITHUB_STEP_SUMMARY
+          echo "**커밋 SHA:** ${{ github.sha }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**이미지 태그들:**" >> $GITHUB_STEP_SUMMARY
+          echo "${{ steps.meta.outputs.tags }}" | sed 's/^/- /' >> $GITHUB_STEP_SUMMARY

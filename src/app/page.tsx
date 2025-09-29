@@ -2,6 +2,8 @@
 
 import { useState } from 'react';
 
+import { API_PATH } from '@/lib/path';
+
 import {
   apiClient,
   ApiResponse,
@@ -19,7 +21,7 @@ export default function TestPage() {
     setLoading(true);
     setError(null);
     try {
-      const result = await apiClient.get<HealthCheckResponse>('/api/health');
+      const result = await apiClient.get<HealthCheckResponse>(API_PATH.HEALTH);
 
       setHealthStatus(result);
     } catch (err) {
@@ -36,7 +38,7 @@ export default function TestPage() {
     setLoading(true);
     setError(null);
     try {
-      const result = await apiClient.get<NowApiResponse>('/api/now');
+      const result = await apiClient.get<NowApiResponse>(API_PATH.NOW);
       setNowData(result);
     } catch (err) {
       setError(

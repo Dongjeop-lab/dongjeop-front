@@ -4,8 +4,10 @@ export const BROWSER_PATH = {
   },
 } as const;
 
-const DEFAULT_API_ENDPOINT = '/api/v1';
+const DEFAULT_API_ENDPOINT = '/v1';
 
 export const API_PATH = {
   LABEL: `${DEFAULT_API_ENDPOINT}/label`,
+  NOW: `/now`,
+  HEALTH: `/health`,
 } as const;

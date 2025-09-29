@@ -1,4 +1,13 @@
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+const getApiBaseUrl = () => {
+  // 환경변수가 설정되어 있으면 그대로 사용 (로컬 개발용)
+  if (process.env.NODE_ENV === 'development') {
+    return process.env.NEXT_PUBLIC_API_URL || 'http://61.109.238.45:6789';
+  }
+
+  return '/api';
+};
+
+const API_BASE_URL = getApiBaseUrl();
 
 export interface ApiResponse<T = unknown> {
   success: boolean;
