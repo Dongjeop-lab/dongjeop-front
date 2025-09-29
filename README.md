@@ -80,7 +80,7 @@ npm run dev
 cp .env.example .env.local
 
 # .env.local 파일을 열어서 개인 설정들 입력:
-# - NEXT_PUBLIC_API_URL=http://localhost:3001 (백엔드 URL)  
+# - NEXT_PUBLIC_API_URL=http://localhost:6789 (로컬 개발 시에만 필요, 프로덕션에서는 자동으로 /api 사용)  
 # - NEXT_PUBLIC_MAP_API_KEY=발급받은_API_키 (지도 서비스 키)
 # - 기타 개인별 필요한 설정들
 
@@ -93,7 +93,7 @@ cp .env.example .env.local
 
 ```bash
 # 클라이언트 접근 가능 (NEXT_PUBLIC_ 접두사)
-NEXT_PUBLIC_API_URL=[미정 - 백엔드 개발 후 설정] (예: http://localhost:3001)
+NEXT_PUBLIC_API_URL=http://61.109.238.45:6789 (로컬 개발용, 프로덕션에서는 설정 불필요)
 NEXT_PUBLIC_MAP_API_KEY=[미정 - 지도 서비스 결정 후 발급] (예: Google Maps API Key)
 NEXT_PUBLIC_DOMAIN=localhost:3000                # 개발환경 고정값
 

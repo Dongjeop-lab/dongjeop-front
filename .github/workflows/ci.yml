@@ -11,10 +11,6 @@ permissions:
   pull-requests: write    # PR 댓글 권한
   checks: write          # 체크 상태 업데이트 권한
 
-env:
-  # 🔐 환경변수 중앙 관리 (CD와 일관성 유지)
-  NEXT_PUBLIC_API_URL: ${{ secrets.NEXT_PUBLIC_API_URL }}
-
 jobs:
   # 🔍 코드 품질 검사 (빠른 피드백)
   quality-check:
@@ -54,7 +50,6 @@ jobs:
         run: npm run build
         env:
           NODE_OPTIONS: --max-old-space-size=4096
-          NEXT_PUBLIC_API_URL: ${{ env.NEXT_PUBLIC_API_URL }}
 
   # ✅ CI는 코드 품질에만 집중 (Docker 빌드는 CD에서 처리)
 
