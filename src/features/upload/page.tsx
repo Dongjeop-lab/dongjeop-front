@@ -1,12 +1,12 @@
 'use client';
 import Image from 'next/image';
-import { useRef, useState } from 'react';
+import { useRef } from 'react';
 
 import BottomCTA from '@/components/ui/bottom-cta';
-import { API_PATH } from '@/lib/path';
 import { SourceType } from '@/types/common';
 
 import UploadGuide from './components/UploadGuide';
+import { useImageUpload } from './hooks/useImageUpload';
 
 interface UploadContainerProps {
   source: SourceType;
@@ -15,92 +15,17 @@ interface UploadContainerProps {
 // TODO: API 요청 시 헤더 또는 바디에 source 포함시키기
 const UploadContainer = (_props: UploadContainerProps) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const [selectedImage, setSelectedImage] = useState<File | null>(null);
-  const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const {
+    selectedImage,
+    imagePreview,
+    handleImageChange,
+    handleImageReset,
+    handleImageUpload,
+  } = useImageUpload();
 
   const openImagePicker = () => {
     if (imagePreview) return;
     fileInputRef.current?.click();
-  };
-
-  const handleImageReset = (event: React.MouseEvent) => {
-    event.stopPropagation();
-
-    setSelectedImage(null);
-    setImagePreview(null);
-    if (fileInputRef.current) {
-      fileInputRef.current.value = '';
-    }
-  };
-
-  // TODO: 토스트 메세지 등으로 에러 노출
-  const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (!file) return;
-
-    // 파일 크기 검증 (10MB 제한)
-    const maxSize = 10 * 1024 * 1024;
-    if (file.size > maxSize) {
-      console.log('파일 크기가 너무 큽니다. 10MB 이하의 파일을 선택해주세요.');
-      return;
-    }
-
-    // 이미지 파일 타입 체크
-    if (!file.type.startsWith('image/')) {
-      console.log('이미지 파일만 업로드 가능합니다.');
-      return;
-    }
-
-    setSelectedImage(file);
-
-    const reader = new FileReader();
-
-    reader.onload = e => {
-      const result = e.target?.result as string;
-      if (result) {
-        setImagePreview(result);
-      }
-    };
-
-    reader.onerror = () => {
-      console.log('이미지를 불러오는 중 오류가 발생했습니다.');
-      setSelectedImage(null);
-    };
-
-    reader.readAsDataURL(file);
-
-    console.log('Selected file:', file);
-    console.log('File size:', (file.size / 1024 / 1024).toFixed(2) + 'MB');
-
-    // input value 초기화 (같은 파일 재선택 가능하도록)
-    event.target.value = '';
-  };
-
-  const handleImageUpload = async () => {
-    if (!selectedImage) return;
-
-    try {
-      const formData = new FormData();
-      formData.append('image_file', selectedImage!);
-      formData.append('source_type', '1'); // TODO: 추후 변경
-      formData.append('file_name', selectedImage!.name);
-
-      const response = await fetch(`${API_PATH.UPLOAD}`, {
-        method: 'POST',
-        body: formData,
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        console.error('업로드 실패:', data);
-        return;
-      }
-
-      console.log('업로드 성공, image_key:', data.image_key);
-    } catch (error) {
-      console.log(error, '업로드 실패');
-    }
   };
 
   return (
