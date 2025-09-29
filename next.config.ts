@@ -114,10 +114,11 @@ const nextConfig: NextConfig = {
   async rewrites() {
     // 개발 환경에서만 프록시 설정 활성화
     if (process.env.NODE_ENV === 'development') {
+      const apiProxyTarget = process.env.DEV_API_PROXY_TARGET;
       return [
         {
           source: '/api/:path*',
-          destination: 'http://61.109.238.45:6789/api/:path*',
+          destination: `${apiProxyTarget}/api/:path*`,
         },
       ];
     }
