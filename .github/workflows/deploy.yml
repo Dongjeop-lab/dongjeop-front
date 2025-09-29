@@ -5,6 +5,27 @@ name: 🚀 프로덕션 배포
 on:
   push:
     branches: [ main ]
+  
+  # 🎯 수동 배포 트리거 (GitHub Actions 탭에서 "Run workflow" 버튼으로 실행)
+  workflow_dispatch:
+    inputs:
+      deploy_reason:
+        description: '🔍 배포 사유 (선택사항)'
+        required: false
+        default: '수동 배포 실행'
+        type: string
+      
+      force_deploy:
+        description: '🔄 강제 배포 (최신 상태여도 강제 실행)'
+        required: false
+        default: false
+        type: boolean
+        
+      skip_health_check:
+        description: '⚡ 헬스체크 스킵 (빠른 배포)'
+        required: false
+        default: false
+        type: boolean
 
 permissions:
   contents: read
@@ -59,7 +80,7 @@ jobs:
       - name: 🐳 Docker Buildx 설정 (CA 인증서 설정 후)
         uses: docker/setup-buildx-action@v3
         with:
-          config-inline: |
+          buildkitd-config-inline: |
             [registry."${{ secrets.KAKAO_REGISTRY_URL }}"]
               ca = ["/etc/ssl/certs/docker-registry.pem"]
 
@@ -89,7 +110,6 @@ jobs:
             ${{ secrets.KAKAO_REGISTRY_URL }}/${{ secrets.KAKAO_REGISTRY_PROJECT }}/${{ env.IMAGE_NAME }}:latest
           build-args: |
             NODE_ENV=production
-            NEXT_PUBLIC_API_URL=${{ secrets.NEXT_PUBLIC_API_URL }}
             NEXT_PUBLIC_BUILD_ID=${{ github.sha }}
           # 🔒 보안 강화: CA 인증서 사용, insecure 모드 제거
           provenance: false
@@ -101,11 +121,26 @@ jobs:
           host: ${{ secrets.KAKAO_SERVER_HOST }}
           username: ${{ secrets.KAKAO_SERVER_USER }}
           key: ${{ secrets.KAKAO_SSH_PRIVATE_KEY }}
-          port: ${{ secrets.KAKAO_SERVER_PORT }} # Secret으로 포트 관리
-          timeout: 45s
+          port: ${{ secrets.KAKAO_SERVER_PORT }}
+          timeout: 60s
+          command_timeout: 10m
           script: |
             set -e
+            
+            # --- 배포 정보 출력 ---
             echo "🚀 프론트엔드 무중단 배포 시작..."
+            echo "📝 트리거: ${{ github.event_name }}"
+            
+            # 수동 배포인 경우 추가 정보 표시
+            if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+              echo "🎯 수동 배포 실행됨"
+              echo "📋 배포 사유: ${{ github.event.inputs.deploy_reason }}"
+              echo "🔄 강제 배포: ${{ github.event.inputs.force_deploy }}"
+              echo "⚡ 헬스체크 스킵: ${{ github.event.inputs.skip_health_check }}"
+            fi
+            echo "👤 실행자: ${{ github.actor }}"
+            echo "🏷️ 커밋: ${{ github.sha }}"
+            echo ""
             
             # --- 변수 설정 ---
             REGISTRY_URL="${{ secrets.KAKAO_REGISTRY_URL }}"
@@ -144,74 +179,79 @@ jobs:
               --restart unless-stopped \
               -p ${TEMP_PORT}:3000 \
               -e NODE_ENV=production \
-              -e NEXT_PUBLIC_API_URL="${{ secrets.NEXT_PUBLIC_API_URL }}" \
               -e NEXT_PUBLIC_BUILD_ID="${{ github.sha }}" \
               ${REGISTRY_URL}/${REGISTRY_PROJECT}/${IMAGE_NAME}:latest
 
             # --- 새 버전 헬스 체크 ---
-            echo "🏥 새 버전 헬스 체크 (포트: ${TEMP_PORT})..."
-            sleep 10
-            for i in {1..12}; do
-                if curl -f http://localhost:${TEMP_PORT} >/dev/null 2>&1; then
-                    echo "✅ 새 버전 헬스 체크 성공!"
-                    
-                    # --- 무중단 포트 전환 시작 ---
-                    echo "🔄 무중단 포트 전환 시작..."
-                    
-                    # 1. 기존 컨테이너 정리
-                    echo "🧹 기존 컨테이너 정리..."
-                    sudo docker stop ${CONTAINER_NAME} >/dev/null 2>&1 || true
-                    sudo docker rm ${CONTAINER_NAME} >/dev/null 2>&1 || true
-                    
-                    # 2. 새 컨테이너를 메인 이름으로 직접 시작
-                    echo "🚀 새 컨테이너를 메인으로 시작: ${CONTAINER_NAME}"
-                    sudo docker stop ${NEW_CONTAINER_NAME}
-                    sudo docker rm ${NEW_CONTAINER_NAME}
-                    
-                    # 포트가 완전히 해제될 때까지 잠시 대기
-                    sleep 3
-                    
-                    sudo docker run -d \
-                      --name ${CONTAINER_NAME} \
-                      --restart unless-stopped \
-                      -p 3001:3000 \
-                      -e NODE_ENV=production \
-                      -e NEXT_PUBLIC_API_URL="${{ secrets.NEXT_PUBLIC_API_URL }}" \
-                      -e NEXT_PUBLIC_BUILD_ID="${{ github.sha }}" \
-                      ${REGISTRY_URL}/${REGISTRY_PROJECT}/${IMAGE_NAME}:latest
-                    
-                    # 3. 메인 포트 헬스 체크
-                    echo "🏥 메인 포트 헬스 체크..."
-                    sleep 5
-                    for j in {1..6}; do
-                      if curl -f http://localhost:3001 >/dev/null 2>&1; then
-                        echo "✅ 메인 포트 전환 성공!"
-                        break
-                      fi
-                      if [ $j -eq 6 ]; then
-                        echo "❌ 메인 포트 전환 실패, 배포 실패"
-                        sudo docker stop ${CONTAINER_NAME} >/dev/null 2>&1 || true
-                        sudo docker rm ${CONTAINER_NAME} >/dev/null 2>&1 || true
-                        exit 1
-                      fi
-                      echo "재시도 ($j/6)..."
-                      sleep 3
-                    done
-                    
-                    echo "✅ 무중단 배포 완료!"
-                    
-                    break
-                fi
-                if [ $i -eq 12 ]; then
-                    echo "❌ 새 버전 헬스 체크 실패. 배포 롤백"
-                    sudo docker logs ${NEW_CONTAINER_NAME}
-                    sudo docker stop ${NEW_CONTAINER_NAME}
-                    sudo docker rm ${NEW_CONTAINER_NAME}
-                    exit 1
-                fi
-                echo "재시도 ($i/12)..."
-                sleep 5
+            if [ "${{ github.event.inputs.skip_health_check }}" = "true" ]; then
+              echo "⚡ 헬스 체크 스킵됨 (빠른 배포 모드)"
+              sleep 3
+              echo "✅ 헬스 체크 건너뛰기 - 바로 배포 진행"
+              
+              # --- 무중단 포트 전환 시작 ---
+              echo "🔄 무중단 포트 전환 시작..."
+            else
+              echo "🏥 새 버전 헬스 체크 (포트: ${TEMP_PORT})..."
+              sleep 12
+              for i in {1..10}; do
+                  if curl -f http://localhost:${TEMP_PORT} >/dev/null 2>&1; then
+                      echo "✅ 새 버전 헬스 체크 성공!"
+                      
+                      # --- 무중단 포트 전환 시작 ---
+                      echo "🔄 무중단 포트 전환 시작..."
+                      break
+                  fi
+                  if [ $i -eq 10 ]; then
+                      echo "❌ 새 버전 헬스 체크 실패. 배포 롤백"
+                      sudo docker stop ${NEW_CONTAINER_NAME}
+                      sudo docker rm ${NEW_CONTAINER_NAME}
+                      exit 1
+                  fi
+                  echo "재시도 ($i/10)..."
+                  sleep 6
+              done
+            fi
+            
+            # 1. 기존 컨테이너 정리
+            echo "🧹 기존 컨테이너 정리..."
+            sudo docker stop ${CONTAINER_NAME} >/dev/null 2>&1 || true
+            sudo docker rm ${CONTAINER_NAME} >/dev/null 2>&1 || true
+            
+            # 2. 새 컨테이너를 메인 이름으로 직접 시작
+            echo "🚀 새 컨테이너를 메인으로 시작: ${CONTAINER_NAME}"
+            sudo docker stop ${NEW_CONTAINER_NAME}
+            sudo docker rm ${NEW_CONTAINER_NAME}
+            
+            # 포트가 완전히 해제될 때까지 잠시 대기
+            sleep 3
+            
+            sudo docker run -d \
+              --name ${CONTAINER_NAME} \
+              --restart unless-stopped \
+              -p 3001:3000 \
+              -e NODE_ENV=production \
+              -e NEXT_PUBLIC_BUILD_ID="${{ github.sha }}" \
+              ${REGISTRY_URL}/${REGISTRY_PROJECT}/${IMAGE_NAME}:latest
+            
+            # 3. 메인 포트 헬스 체크
+            echo "🏥 메인 포트 헬스 체크..."
+            sleep 5
+            for j in {1..6}; do
+              if curl -f http://localhost:3001 >/dev/null 2>&1; then
+                echo "✅ 메인 포트 전환 성공!"
+                break
+              fi
+              if [ $j -eq 6 ]; then
+                echo "❌ 메인 포트 전환 실패, 배포 실패"
+                sudo docker stop ${CONTAINER_NAME} >/dev/null 2>&1 || true
+                sudo docker rm ${CONTAINER_NAME} >/dev/null 2>&1 || true
+                exit 1
+              fi
+              echo "재시도 ($j/6)..."
+              sleep 3
             done
+            
+            echo "✅ 무중단 배포 완료!"
 
             # --- 이전 이미지 정리 ---
             echo "🧹 이전 이미지 정리..."
@@ -226,4 +266,15 @@ jobs:
           echo "- ✅ Docker 이미지 빌드 및 푸시" >> $GITHUB_STEP_SUMMARY
           echo "- ✅ 서버 무중단 배포 완료" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
+          
+          # 수동 배포인 경우 추가 정보 표시
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            echo "### 🎯 수동 배포 정보" >> $GITHUB_STEP_SUMMARY
+            echo "- **배포 사유:** ${{ github.event.inputs.deploy_reason }}" >> $GITHUB_STEP_SUMMARY
+            echo "- **강제 배포:** ${{ github.event.inputs.force_deploy }}" >> $GITHUB_STEP_SUMMARY  
+            echo "- **헬스체크 스킵:** ${{ github.event.inputs.skip_health_check }}" >> $GITHUB_STEP_SUMMARY
+            echo "- **실행자:** ${{ github.actor }}" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+          fi
+          
           echo "**배포 시간:** $(date)" >> $GITHUB_STEP_SUMMARY

@@ -131,7 +131,7 @@ export default function TestPage() {
             <p className='mt-2 text-sm text-blue-600'>
               백엔드 서버:{' '}
               <code className='rounded bg-blue-100 px-2 py-1'>
-                {process.env.NEXT_PUBLIC_API_URL}
+                nginx 리버스 프록시 (/api/* → 61.109.238.45:6789)
               </code>
             </p>
           </div>
