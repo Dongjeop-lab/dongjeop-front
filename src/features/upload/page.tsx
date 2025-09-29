@@ -3,6 +3,7 @@ import Image from 'next/image';
 import { useRef, useState } from 'react';
 
 import BottomCTA from '@/components/ui/bottom-cta';
+import { API_PATH } from '@/lib/path';
 import { SourceType } from '@/types/common';
 
 interface UploadContainerProps {
@@ -21,7 +22,7 @@ const UploadContainer = (_props: UploadContainerProps) => {
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
 
-  const handleImageUploadClick = () => {
+  const openImagePicker = () => {
     if (imagePreview) return;
     fileInputRef.current?.click();
   };
@@ -41,8 +42,8 @@ const UploadContainer = (_props: UploadContainerProps) => {
     const file = event.target.files?.[0];
     if (!file) return;
 
-    // 파일 크기 검증
-    const maxSize = 10 * 1024 * 1024; // 10MB
+    // 파일 크기 검증 (10MB 제한)
+    const maxSize = 10 * 1024 * 1024;
     if (file.size > maxSize) {
       console.log('파일 크기가 너무 큽니다. 10MB 이하의 파일을 선택해주세요.');
       return;
@@ -56,8 +57,8 @@ const UploadContainer = (_props: UploadContainerProps) => {
 
     setSelectedImage(file);
 
-    // FileReader 에러 처리
     const reader = new FileReader();
+
     reader.onload = e => {
       const result = e.target?.result as string;
       if (result) {
@@ -77,6 +78,33 @@ const UploadContainer = (_props: UploadContainerProps) => {
 
     // input value 초기화 (같은 파일 재선택 가능하도록)
     event.target.value = '';
+  };
+
+  const handleImageUpload = async () => {
+    if (!selectedImage) return;
+
+    try {
+      const formData = new FormData();
+      formData.append('image_file', selectedImage!);
+      formData.append('source_type', '1'); // TODO: 추후 변경
+      formData.append('file_name', selectedImage!.name);
+
+      const response = await fetch(`${API_PATH.UPLOAD}`, {
+        method: 'POST',
+        body: formData,
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        console.error('업로드 실패:', data);
+        return;
+      }
+
+      console.log('업로드 성공, image_key:', data.image_key);
+    } catch (error) {
+      console.log(error, '업로드 실패');
+    }
   };
 
   return (
@@ -101,7 +129,7 @@ const UploadContainer = (_props: UploadContainerProps) => {
             className={`relative overflow-hidden rounded-2xl ${
               imagePreview ? '' : 'cursor-pointer'
             }`}
-            onClick={handleImageUploadClick}
+            onClick={openImagePicker}
           >
             {imagePreview ? (
               <div className='relative'>
@@ -207,7 +235,10 @@ const UploadContainer = (_props: UploadContainerProps) => {
             1분 만에 등록하기
           </BottomCTA.Button>
         ) : (
-          <BottomCTA.Button variant='primary'>
+          <BottomCTA.Button
+            variant='primary'
+            onClick={handleImageUpload}
+          >
             1분 만에 등록하기
           </BottomCTA.Button>
         )}
