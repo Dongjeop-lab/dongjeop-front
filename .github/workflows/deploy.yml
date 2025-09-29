@@ -89,7 +89,6 @@ jobs:
             ${{ secrets.KAKAO_REGISTRY_URL }}/${{ secrets.KAKAO_REGISTRY_PROJECT }}/${{ env.IMAGE_NAME }}:latest
           build-args: |
             NODE_ENV=production
-            NEXT_PUBLIC_API_URL=${{ secrets.NEXT_PUBLIC_API_URL }}
             NEXT_PUBLIC_BUILD_ID=${{ github.sha }}
           # 🔒 보안 강화: CA 인증서 사용, insecure 모드 제거
           provenance: false
@@ -144,7 +143,6 @@ jobs:
               --restart unless-stopped \
               -p ${TEMP_PORT}:3000 \
               -e NODE_ENV=production \
-              -e NEXT_PUBLIC_API_URL="${{ secrets.NEXT_PUBLIC_API_URL }}" \
               -e NEXT_PUBLIC_BUILD_ID="${{ github.sha }}" \
               ${REGISTRY_URL}/${REGISTRY_PROJECT}/${IMAGE_NAME}:latest
 
@@ -176,7 +174,6 @@ jobs:
                       --restart unless-stopped \
                       -p 3001:3000 \
                       -e NODE_ENV=production \
-                      -e NEXT_PUBLIC_API_URL="${{ secrets.NEXT_PUBLIC_API_URL }}" \
                       -e NEXT_PUBLIC_BUILD_ID="${{ github.sha }}" \
                       ${REGISTRY_URL}/${REGISTRY_PROJECT}/${IMAGE_NAME}:latest
                     
