@@ -111,7 +111,7 @@ const UploadContainer = (_props: UploadContainerProps) => {
       >
         {/* 사진 등록 섹션 */}
         {/* XXX: Status bar 높이까지 section의 padding-top에 포함한 상태 */}
-        <section className='flex w-[360px] flex-col items-center justify-center gap-y-8 px-5 pt-24 pb-10'>
+        <section className='flex w-[360px] flex-1 flex-col items-center justify-center gap-y-8 px-5 pt-24 pb-10'>
           <h1 className='text-26-bold text-center'>
             실내 사진을 등록해
             <br />
