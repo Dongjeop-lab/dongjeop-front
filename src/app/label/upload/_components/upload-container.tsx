@@ -36,7 +36,7 @@ const UploadContainer = (_props: UploadContainerProps) => {
       >
         {/* 사진 등록 섹션 */}
         {/* XXX: Status bar 높이까지 section의 padding-top에 포함한 상태 */}
-        <section className='flex w-[360px] flex-1 flex-col items-center justify-center gap-y-8 px-5 pt-24 pb-10'>
+        <section className='flex w-[360px] flex-1 flex-col items-center justify-center gap-y-8 px-5 pt-24.5 pb-10'>
           <h1 className='text-26-bold text-center'>
             실내 사진을 등록해
             <br />
@@ -54,7 +54,7 @@ const UploadContainer = (_props: UploadContainerProps) => {
           >
             {imagePreview ? (
               <div className='relative'>
-                <img
+                <Image
                   src={imagePreview}
                   alt='선택된 사진 미리보기'
                   className='max-w-[280px] object-cover'
@@ -65,7 +65,7 @@ const UploadContainer = (_props: UploadContainerProps) => {
                   onClick={handleImageReset}
                   aria-label='사진 선택 취소'
                 >
-                  <img
+                  <Image
                     src='/images/upload/close.svg'
                     alt=''
                     aria-hidden='true'
@@ -82,12 +82,12 @@ const UploadContainer = (_props: UploadContainerProps) => {
                   height={260}
                 />
                 <div className='absolute inset-0 flex flex-col items-center justify-center'>
-                  <img
-                    src='/images/common/icon-hammer.svg'
+                  <Image
+                    src='/images/upload/icon-hammer.svg'
                     alt=''
                     aria-hidden='true'
                   />
-                  <img
+                  <Image
                     src='/images/upload/tooltip.svg'
                     alt=''
                     aria-hidden='true'
