@@ -8,7 +8,7 @@ import {
   useRouter,
   useSearchParams,
 } from 'next/navigation';
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 import { apiClient } from '@/app/api/client';
 import Header from '@/components/ui/header';
@@ -23,6 +23,7 @@ import { queryKeys } from '@/lib/query-key';
 import { GetLabelStatusResponse } from '@/types/api/label';
 
 const LabelPage = () => {
+  const [isRoutingFinished, setIsRoutingFinished] = useState(false);
   const router = useRouter();
   const params = useParams<{ imageKey: string }>();
   const pathname = usePathname();
@@ -120,6 +121,8 @@ const LabelPage = () => {
           router.push(`${pathname}/finish`);
       }
     }
+
+    setIsRoutingFinished(true);
   }, [data?.data, isSuccess, router, pathname]);
 
   useEffect(() => {
@@ -172,6 +175,8 @@ const LabelPage = () => {
         );
     }
   };
+
+  if (!isRoutingFinished) return null;
 
   return (
     <>
