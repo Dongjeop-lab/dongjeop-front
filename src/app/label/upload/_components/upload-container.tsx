@@ -130,6 +130,17 @@ const UploadContainer = (_props: UploadContainerProps) => {
           </BottomCTA.Button>
         )}
       </BottomCTA>
+      <BottomCTA>
+        <BottomCTA.Button
+          variant={selectedImage ? 'primary' : 'secondary'}
+          disabled={!selectedImage}
+          className={
+            selectedImage ? '' : '!bg-secondary !text-secondary-foreground'
+          }
+        >
+          1분 만에 등록하기
+        </BottomCTA.Button>
+      </BottomCTA>
     </div>
   );
 };
