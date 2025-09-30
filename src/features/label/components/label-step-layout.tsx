@@ -94,7 +94,7 @@ const LabelStepLayout = ({
           alt='라벨링하는 풍경'
           height={280}
           width={300}
-          className='h-[280px] w-fit max-w-screen rounded-lg object-cover'
+          className='h-[280px] w-auto rounded-lg'
         />
         {labelingOptions}
       </div>
