@@ -1,16 +1,29 @@
-import Image from 'next/image';
+'use client';
+import { useEffect, useState } from 'react';
 
 import BottomCTA from '@/components/ui/bottom-cta';
 import { SubmissionResultResponse } from '@/types/api/submission';
 
+import FinishStep1 from './_components/finish-step-1';
+import FinishStep2 from './_components/finish-step-2';
+
+// TODO: 외부 API 호출 후 제거
+const mockData: SubmissionResultResponse = {
+  seq_no: 344,
+  achievement_rate: 80,
+  total_image_num: 200,
+};
+
 const FinishPage = () => {
-  // TODO: seqNo, achievementRate는 페이지 접근 전 API를 통해 받아오기
-  // TODO: 외부 API 호출
-  const mockData: SubmissionResultResponse = {
-    seq_no: 344,
-    achievement_rate: 80,
-    total_image_num: 200,
-  };
+  const [step, setStep] = useState(1);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setStep(2);
+    }, 3000);
+
+    return () => clearTimeout(timer);
+  }, []);
 
   return (
     <div className='h-screen w-full'>
@@ -18,73 +31,26 @@ const FinishPage = () => {
         className='flex flex-col items-center justify-center'
         style={{ minHeight: 'calc(100vh - 56px)' }}
       >
-        {/* 등록완료화면-2 */}
-        {/* XXX: Status bar 높이까지 section의 padding-top에 포함한 상태 */}
-        <section className='flex w-[360px] flex-1 flex-col items-center justify-center px-12.5 pt-24.5'>
-          <div className='flex flex-col items-center gap-y-2.5 pt-7.5 pb-5'>
-            <p className='text-18-semibold text-primary'>
-              목표까지 {mockData.achievement_rate}% 남았어요!
-            </p>
-            <h1 className='text-26-bold text-center'>
-              친구에게 공유해
-              <br />
-              계단을 부셔주세요.
-            </h1>
-          </div>
-
-          <div className={`relative my-7.5 overflow-hidden rounded-2xl`}>
-            <Image
-              src='/images/finish/stairs-finish-2.svg'
-              className='blur-md'
-              alt=''
-              aria-hidden='true'
-              width={280}
-              height={260}
-            />
-            <div className='absolute inset-0 flex flex-col items-center justify-center'>
-              <Image
-                src='/images/finish/icon-hammer.svg'
-                alt=''
-                aria-hidden='true'
-                width={50}
-                height={40}
-              />
-              <p className='text-18-bold text-primary-foreground'>
-                지금까지 모인 사진
-              </p>
-              <p className='text-primary-foreground text-[4rem] leading-normal font-bold tracking-[-0.02em]'>
-                {mockData.total_image_num}
-              </p>
-            </div>
-          </div>
-        </section>
-
-        <section className='mb-14 flex w-full flex-col items-center gap-y-2 px-5 py-7.5'>
-          <h3 className='text-18-semibold'>사진을 모으면 어떤 점이 좋나요?</h3>
-
-          <ol className='list-disc space-y-2 pl-5'>
-            <li>
-              실내 사진을 모을 수록,{' '}
-              <span className='text-primary'>
-                실내 접근성을 분석하는 AI모델
-              </span>
-              을 만드는데 큰 도움이 돼요.
-            </li>
-            <li>
-              AI 모델은 추후 이동약자를 위한 서비스를 운영하는 “계단뿌셔클럽”에
-              활용될 예정이에요.
-            </li>
-          </ol>
-        </section>
+        {step === 1 ? (
+          <FinishStep1 seqNo={mockData.seq_no} />
+        ) : (
+          <FinishStep2
+            achievementRate={mockData.achievement_rate}
+            totalImageNum={mockData.total_image_num}
+          />
+        )}
       </main>
 
-      {/* 하단 CTA 버튼 */}
-      <BottomCTA>
-        <BottomCTA.Button variant='secondary'>
-          친구에게 공유하기
-        </BottomCTA.Button>
-        <BottomCTA.Button variant='primary'>한 장 더 등록하기</BottomCTA.Button>
-      </BottomCTA>
+      {step === 2 && (
+        <BottomCTA>
+          <BottomCTA.Button variant='secondary'>
+            친구에게 공유하기
+          </BottomCTA.Button>
+          <BottomCTA.Button variant='primary'>
+            한 장 더 등록하기
+          </BottomCTA.Button>
+        </BottomCTA>
+      )}
     </div>
   );
 };
