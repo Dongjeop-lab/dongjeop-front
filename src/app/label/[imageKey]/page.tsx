@@ -62,16 +62,20 @@ const LabelPage = () => {
   };
 
   const handleUpdateLabelCache = (newData: Partial<GetLabelStatusResponse>) => {
-    queryClient.setQueryData<GetLabelStatusResponse>(
-      ['label', params.imageKey],
-      oldData => {
-        if (!oldData) return;
-        return {
-          ...oldData,
+    queryClient.setQueryData<{
+      success: boolean;
+      data: GetLabelStatusResponse;
+    }>(['label', params.imageKey], oldData => {
+      if (!oldData) return;
+
+      return {
+        ...oldData,
+        data: {
+          ...oldData.data,
           ...newData,
-        };
-      }
-    );
+        },
+      };
+    });
   };
 
   useEffect(() => {
