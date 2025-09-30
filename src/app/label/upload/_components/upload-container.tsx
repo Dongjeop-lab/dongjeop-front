@@ -116,6 +116,7 @@ const UploadContainer = (_props: UploadContainerProps) => {
         <BottomCTA.Button
           variant={selectedImage ? 'primary' : 'secondary'}
           disabled={!selectedImage}
+          onClick={handleImageUpload}
           className={
             selectedImage ? '' : '!bg-secondary !text-secondary-foreground'
           }
