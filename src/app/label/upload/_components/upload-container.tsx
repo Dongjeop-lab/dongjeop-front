@@ -30,10 +30,7 @@ const UploadContainer = (_props: UploadContainerProps) => {
 
   return (
     <div className='h-screen w-full'>
-      <main
-        className='flex flex-col items-center justify-center'
-        style={{ minHeight: 'calc(100vh - 56px)' }}
-      >
+      <main className='flex min-h-[calc(100vh-56px)] flex-col items-center justify-center'>
         {/* 사진 등록 섹션 */}
         {/* XXX: Status bar 높이까지 section의 padding-top에 포함한 상태 */}
         <section className='flex w-[360px] flex-1 flex-col items-center justify-center gap-y-8 px-5 pt-24.5 pb-10'>

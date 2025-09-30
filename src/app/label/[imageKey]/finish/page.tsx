@@ -28,8 +28,9 @@ const FinishPage = () => {
   return (
     <div className='h-screen w-full'>
       <main
-        className='flex flex-col items-center justify-center'
-        style={{ minHeight: 'calc(100vh - 56px)' }}
+        className={`flex flex-col items-center justify-center ${
+          step === 1 ? 'h-screen overflow-hidden' : 'min-h-[calc(100vh-56px)]'
+        }`}
       >
         <h1 className='sr-only'>등록 완료 페이지</h1>
 
