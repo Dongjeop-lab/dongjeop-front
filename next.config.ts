@@ -34,6 +34,12 @@ const nextConfig: NextConfig = {
       //   hostname: 'api.dongjeop.com',
       //   pathname: '/uploads/**',
       // },
+      {
+        protocol: 'https',
+        hostname: 'objectstorage.kr-central-2.kakaocloud.com',
+        port: '',
+        pathname: '/v1/**',
+      },
     ],
 
     // 이미지 포맷 최적화 (최신 포맷 우선)

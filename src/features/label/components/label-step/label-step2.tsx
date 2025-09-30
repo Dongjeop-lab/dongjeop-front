@@ -1,13 +1,16 @@
 'use client';
 
-import { useState } from 'react';
+import { useMemo } from 'react';
 
 import BottomCTA from '@/components/ui/bottom-cta';
 import ButtonList from '@/components/ui/button-list';
 import useInteractionTimer from '@/hooks/use-interaction-timer';
 import useUpdateLabel from '@/hooks/use-update-label';
 import { TOTAL_LABELING_STEPS } from '@/lib/constants';
-import { UpdateLabelRequestBody } from '@/types/api/label';
+import {
+  GetLabelStatusResponse,
+  UpdateLabelRequestBody,
+} from '@/types/api/label';
 
 import { labelOption } from '../../types/label-option';
 import { LabelStepProps } from '../../types/label-step';
@@ -33,23 +36,47 @@ const LABEL_STEP_2_OPTIONS: labelOption<LabelStep2OptionValue>[] = [
   { title: '잘 모르겠어요', value: NOT_SURE_VALUE },
 ];
 
-export const LabelStep2 = ({ imageKey, onNext }: LabelStepProps) => {
-  const [selectedValue, setSelectedValue] = useState<string[]>([]);
+export const LabelStep2 = ({
+  imageKey,
+  currentLabelData,
+  onNext,
+  onUpdateCache,
+}: LabelStepProps) => {
   const { endTimer } = useInteractionTimer();
   const { isPending, mutate } = useUpdateLabel({ imageKey, onSuccess: onNext });
 
-  const handleSelect = (value: string) => {
-    if (selectedValue.includes(value)) {
-      setSelectedValue(prev => prev.filter(v => v !== value));
-      return;
-    }
+  const selectedValue = useMemo(() => {
+    if (!currentLabelData) return [];
+    if (currentLabelData.is_not_sure_chair) return [NOT_SURE_VALUE];
+
+    return LABEL_STEP_2_OPTIONS.map(opt => opt.value).filter(
+      value =>
+        value !== NOT_SURE_VALUE &&
+        currentLabelData[value as keyof GetLabelStatusResponse]
+    );
+  }, [currentLabelData]);
+
+  const handleSelect = (value: LabelStep2OptionValue) => {
+    let newCacheData: Partial<GetLabelStatusResponse> = {};
 
     if (value === NOT_SURE_VALUE) {
-      setSelectedValue([NOT_SURE_VALUE]);
-      return;
+      newCacheData = {
+        has_movable_chair: false,
+        has_high_chair: false,
+        has_floor_chair: false,
+        has_fixed_chair: false,
+        is_not_sure_chair: true,
+      };
+    } else {
+      const key = value as keyof GetLabelStatusResponse;
+      newCacheData = {
+        ...currentLabelData,
+        [key]: !currentLabelData?.[key],
+        is_not_sure_chair: false,
+      };
     }
 
-    setSelectedValue(prev => [...prev, value]);
+    onUpdateCache(newCacheData);
   };
 
   const handleSubmitValue = () => {
@@ -77,7 +104,7 @@ export const LabelStep2 = ({ imageKey, onNext }: LabelStepProps) => {
         description={`사진에 보이는 의자에 대해\n모두 선택해주세요`}
         currentStep={2}
         totalSteps={TOTAL_LABELING_STEPS}
-        imageKey='/images/dummy-label-image.png'
+        imageKey={imageKey}
         className='pb-20'
         labelingOptions={
           <ButtonList className='w-full'>

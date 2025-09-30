@@ -1,7 +1,5 @@
 'use client';
 
-import { useState } from 'react';
-
 import ButtonList from '@/components/ui/button-list';
 import useInteractionTimer from '@/hooks/use-interaction-timer';
 import useUpdateLabel from '@/hooks/use-update-label';
@@ -15,29 +13,35 @@ import LabelStepLayout from '../label-step-layout';
 const LABEL_STEP_1_OPTIONS: labelOption<HasStep>[] = [
   {
     title: '있어요',
-    value: 'yes',
+    value: 'YES',
   },
   {
     title: '없어요',
-    value: 'no',
+    value: 'NO',
   },
   {
     title: '잘 모르겠어요',
-    value: 'not_sure',
+    value: 'NOT_SURE',
   },
 ];
 
-export const LabelStep1 = ({ imageKey, onNext }: LabelStepProps) => {
-  const [selectedValue, setSelectedValue] = useState<string | null>(null);
+export const LabelStep1 = ({
+  imageKey,
+  currentLabelData,
+  onNext,
+  onUpdateCache,
+}: LabelStepProps) => {
   const { endTimer } = useInteractionTimer();
   const { isPending, mutate } = useUpdateLabel({
     imageKey,
     onSuccess: onNext,
   });
 
+  const selectedValue = currentLabelData?.has_step;
+
   const handleSelectItem = (value: HasStep) => {
     const interactionTime = endTimer() ?? 0;
-    setSelectedValue(value);
+    onUpdateCache({ has_step: value });
     mutate({
       has_step: value,
       step_label_finish_duration: interactionTime,
@@ -51,7 +55,7 @@ export const LabelStep1 = ({ imageKey, onNext }: LabelStepProps) => {
       description='사진에 보이는 것만 선택해주세요'
       currentStep={1}
       totalSteps={TOTAL_LABELING_STEPS}
-      imageKey='/images/dummy-label-image.png'
+      imageKey={imageKey}
       labelingOptions={
         <ButtonList className='w-full'>
           {LABEL_STEP_1_OPTIONS.map(({ title, value }) => (
