@@ -31,6 +31,8 @@ const FinishPage = () => {
         className='flex flex-col items-center justify-center'
         style={{ minHeight: 'calc(100vh - 56px)' }}
       >
+        <h1 className='sr-only'>등록 완료 페이지</h1>
+
         {step === 1 ? (
           <FinishStep1 seqNo={mockData.seq_no} />
         ) : (
