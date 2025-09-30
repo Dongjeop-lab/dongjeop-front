@@ -14,14 +14,14 @@ const FinishStep2 = ({ achievementRate, totalImageNum }: FinishStep2Props) => {
           <p className='text-18-semibold text-primary'>
             목표까지 {achievementRate}% 남았어요!
           </p>
-          <h1 className='text-26-bold text-center'>
+          <h2 className='text-26-bold text-center'>
             친구에게 공유해
             <br />
             계단을 부셔주세요.
-          </h1>
+          </h2>
         </div>
 
-        <div className={`relative my-7.5 overflow-hidden rounded-2xl`}>
+        <figure className={`relative my-7.5 overflow-hidden rounded-2xl`}>
           <Image
             src='/images/finish/stairs-finish-2.svg'
             className='blur-md'
@@ -30,7 +30,8 @@ const FinishStep2 = ({ achievementRate, totalImageNum }: FinishStep2Props) => {
             width={280}
             height={260}
           />
-          <div className='absolute inset-0 flex flex-col items-center justify-center'>
+          <figcaption className='absolute inset-0 flex flex-col items-center justify-center'>
+            {/* TODO: 링 추가 */}
             <Image
               src='/images/finish/icon-hammer.svg'
               alt=''
@@ -44,9 +45,10 @@ const FinishStep2 = ({ achievementRate, totalImageNum }: FinishStep2Props) => {
             <p className='text-primary-foreground text-[4rem] leading-normal font-bold tracking-[-0.02em]'>
               {totalImageNum}
             </p>
-          </div>
-        </div>
+          </figcaption>
+        </figure>
       </section>
+
       <section className='mb-14 flex w-full flex-col items-center gap-y-2 px-5 py-7.5'>
         <h3 className='text-18-semibold'>사진을 모으면 어떤 점이 좋나요?</h3>
 
