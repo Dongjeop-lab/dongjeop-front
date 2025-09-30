@@ -17,6 +17,7 @@ import {
   LabelStep2,
   LabelStep3,
 } from '@/features/label/components/label-step';
+import { STEP_NUMBER } from '@/lib/constants';
 import { API_PATH, BROWSER_PATH } from '@/lib/path';
 import { GetLabelStatusResponse } from '@/types/api/label';
 
@@ -38,11 +39,11 @@ const LabelPage = () => {
 
   const stepParam = Number.parseInt(searchParams.get('step') ?? '', 10);
   const currentStep = Number.isFinite(stepParam)
-    ? Math.min(Math.max(stepParam, 1), 3)
+    ? Math.min(Math.max(stepParam, STEP_NUMBER.STEP1), STEP_NUMBER.STEP3)
     : 1;
 
   const handleNextStep = () => {
-    if (currentStep === 3) {
+    if (currentStep === STEP_NUMBER.STEP3) {
       router.push(`${pathname}/finish`);
       return;
     }
@@ -52,7 +53,7 @@ const LabelPage = () => {
   };
 
   const handleBack = () => {
-    if (currentStep === 1) {
+    if (currentStep === STEP_NUMBER.STEP1) {
       router.push(BROWSER_PATH.LABEL.UPLOAD);
       return;
     }
@@ -97,9 +98,9 @@ const LabelPage = () => {
       ];
 
       if (step2.some(Boolean)) {
-        return 3;
+        return STEP_NUMBER.STEP3;
       } else {
-        return 2;
+        return STEP_NUMBER.STEP2;
       }
     };
 
