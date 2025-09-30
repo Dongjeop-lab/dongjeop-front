@@ -59,6 +59,10 @@ const LabelStepLayout = ({
   totalSteps,
   className,
 }: LabelStepLayoutProps) => {
+  const imageUrl = process.env.NEXT_PUBLIC_LABEL_IMAGE_BASE_URL
+    ? `${process.env.NEXT_PUBLIC_LABEL_IMAGE_BASE_URL}/${imageKey}`
+    : '/images/dummy-label-image.png';
+
   return (
     <motion.main
       className={cn(
@@ -86,7 +90,7 @@ const LabelStepLayout = ({
       </motion.div>
       <div className='flex w-full flex-col items-center gap-6'>
         <Image
-          src={imageKey} // TODO: 이미지 url로 변경 필요
+          src={imageUrl}
           alt='라벨링하는 풍경'
           height={280}
           width={300}
