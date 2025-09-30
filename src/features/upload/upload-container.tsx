@@ -5,8 +5,8 @@ import { useRef } from 'react';
 import BottomCTA from '@/components/ui/bottom-cta';
 import { SourceType } from '@/types/common';
 
-import UploadGuide from './components/UploadGuide';
-import { useImageUpload } from './hooks/useImageUpload';
+import UploadGuide from './components/upload-guide';
+import { useImageUpload } from './hooks/use-image-upload';
 
 interface UploadContainerProps {
   source: SourceType;

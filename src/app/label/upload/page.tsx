@@ -1,4 +1,4 @@
-import UploadContainer from '@/features/upload/page';
+import UploadContainer from '@/features/upload/upload-container';
 import { getSourceParam } from '@/lib/queryParams';
 
 interface UploadPageProps {
