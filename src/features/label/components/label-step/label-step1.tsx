@@ -13,15 +13,15 @@ import LabelStepLayout from '../label-step-layout';
 const LABEL_STEP_1_OPTIONS: labelOption<HasStep>[] = [
   {
     title: '있어요',
-    value: 'yes',
+    value: 'YES',
   },
   {
     title: '없어요',
-    value: 'no',
+    value: 'NO',
   },
   {
     title: '잘 모르겠어요',
-    value: 'not_sure',
+    value: 'NOT_SURE',
   },
 ];
 

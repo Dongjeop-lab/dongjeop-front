@@ -14,25 +14,25 @@ const LABEL_STEP_3_OPTIONS: labelOption<WidthClass>[] = [
   {
     title: '좁아요',
     subtitle: '2명이 동시에 지나갈 수 있어요',
-    value: 'narrow',
+    value: 'NARROW',
   },
   {
     title: '보통이에요',
     subtitle: '3명이 동시에 지나갈 수 있어요',
-    value: 'normal',
+    value: 'NORMAL',
   },
   {
     title: '넓어요',
     subtitle: '4명이 동시에 지나갈 수 있어요',
-    value: 'wide',
+    value: 'WIDE',
   },
   {
     title: '휠체어 진입 불가',
-    value: 'impossible',
+    value: 'IMPOSSIBLE',
   },
   {
     title: '잘 모르겠어요',
-    value: 'not_sure',
+    value: 'NOT_SURE',
   },
 ];
 

@@ -1,10 +1,10 @@
-export type HasStep = 'yes' | 'no' | 'not_sure';
+export type HasStep = 'YES' | 'NO' | 'NOT_SURE';
 export type WidthClass =
-  | 'narrow'
-  | 'normal'
-  | 'wide'
-  | 'impossible'
-  | 'not_sure';
+  | 'NARROW'
+  | 'NORMAL'
+  | 'WIDE'
+  | 'IMPOSSIBLE'
+  | 'NOT_SURE';
 
 export interface LabelData {
   has_step: HasStep;
@@ -17,7 +17,7 @@ export interface LabelData {
 }
 
 export interface GetLabelStatusResponse extends Partial<LabelData> {
-  service_status: 'init' | 'doing' | 'finished';
+  service_status: 'INIT' | 'DOING' | 'FINISHED';
 }
 
 export interface UpdateLabelRequestBody extends Partial<LabelData> {

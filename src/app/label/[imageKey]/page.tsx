@@ -104,12 +104,13 @@ const LabelPage = () => {
 
       const { service_status: serviceStatus } = data.data;
       switch (serviceStatus) {
-        case 'init':
+        case 'INIT':
           router.push(`${pathname}?step=1`);
           break;
-        case 'doing':
+        case 'DOING':
           router.push(`${pathname}?step=${getPausedStep(data.data)}`);
-        case 'finished':
+          break;
+        case 'FINISHED':
           router.push(`${pathname}/finish`);
       }
     }
