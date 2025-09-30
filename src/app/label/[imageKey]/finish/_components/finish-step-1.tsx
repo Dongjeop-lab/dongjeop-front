@@ -30,13 +30,7 @@ const FinishStep1 = ({ seqNo }: FinishStep1Props) => {
 
       {/* 반원 그라데이션 */}
       <div className='relative w-full flex-1'>
-        <div
-          className='absolute -bottom-18 left-1/2 h-36 w-100 -translate-x-1/2 bg-[#ff8a00]'
-          style={{
-            borderRadius: 'borderRadius: "50% / 100% 100% 0 0"',
-            filter: 'blur(180px)',
-          }}
-        />
+        <div className='absolute -bottom-18 left-1/2 h-36 w-full -translate-x-1/2 rounded-[50%/100%_100%_0_0] bg-[#ff8a00] blur-[180px]' />
       </div>
     </>
   );
