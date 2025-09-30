@@ -19,6 +19,7 @@ import {
 } from '@/features/label/components/label-step';
 import { STEP_NUMBER } from '@/lib/constants';
 import { API_PATH, BROWSER_PATH } from '@/lib/path';
+import { queryKeys } from '@/lib/query-key';
 import { GetLabelStatusResponse } from '@/types/api/label';
 
 const LabelPage = () => {
@@ -30,7 +31,7 @@ const LabelPage = () => {
   const queryClient = useQueryClient();
 
   const { data, isError, isSuccess } = useQuery({
-    queryKey: ['label', params.imageKey],
+    queryKey: queryKeys.label.imageKey(params.imageKey),
     queryFn: () =>
       apiClient.get<GetLabelStatusResponse>(
         `${API_PATH.LABEL}/${params.imageKey}`
@@ -66,7 +67,7 @@ const LabelPage = () => {
     queryClient.setQueryData<{
       success: boolean;
       data: GetLabelStatusResponse;
-    }>(['label', params.imageKey], oldData => {
+    }>(queryKeys.label.imageKey(params.imageKey), oldData => {
       if (!oldData) return;
 
       return {
