@@ -20,10 +20,10 @@ const UploadGuide = () => {
     <section className='my-13 flex w-full flex-col items-center gap-y-5 bg-[#fff6ed] px-5 py-10'>
       <h2 className='text-18-semibold'>어떤 사진을 올려야하나요?</h2>
 
-      <div className='flex w-full flex-col items-center gap-y-2'>
-        {guideTexts.map(({ icon, text }, idx) => (
-          <div
-            key={idx}
+      <ul className='flex w-full flex-col items-center gap-y-2'>
+        {guideTexts.map(({ icon, text }) => (
+          <li
+            key={text}
             className='flex items-center gap-x-2'
           >
             <img
@@ -32,14 +32,14 @@ const UploadGuide = () => {
               aria-hidden='true'
             />
             <p>{text}</p>
-          </div>
+          </li>
         ))}
-      </div>
+      </ul>
 
       {/* 업로드 가이드 이미지 */}
-      <div className='flex min-h-[84px] w-full gap-x-2'>
+      <ul className='flex min-h-[84px] w-full gap-x-2'>
         {guideImages.map((src, index) => (
-          <div
+          <li
             key={src}
             className='h-full w-full flex-1'
           >
@@ -48,9 +48,9 @@ const UploadGuide = () => {
               alt={`가이드 이미지 ${index + 1}`}
               className='h-full w-full rounded-2xl object-contain'
             />
-          </div>
+          </li>
         ))}
-      </div>
+      </ul>
     </section>
   );
 };
