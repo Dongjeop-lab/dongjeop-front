@@ -81,17 +81,17 @@ export const LabelStep2 = ({
 
   const handleSubmitValue = () => {
     const interactionTime = endTimer() ?? 0;
-
-    const updateValues = {
-      has_movable_chair: !!currentLabelData?.has_movable_chair,
-      has_high_chair: !!currentLabelData?.has_high_chair,
-      has_floor_chair: !!currentLabelData?.has_floor_chair,
-      has_fixed_chair: !!currentLabelData?.has_fixed_chair,
-      is_not_sure_chair: !!currentLabelData?.is_not_sure_chair,
-    };
-
+    const updateValeus: Omit<UpdateLabelRequestBody, 'finish_labeling'> =
+      selectedValue.includes(NOT_SURE_VALUE)
+        ? { is_not_sure_chair: true }
+        : selectedValue.reduce(
+            (acc, value) => {
+              return { ...acc, [value]: true };
+            },
+            {} as Omit<UpdateLabelRequestBody, 'finish_labeling'>
+          );
     mutate({
-      ...updateValues,
+      ...updateValeus,
       chair_label_finish_duration: interactionTime,
       finish_labeling: false,
     });
