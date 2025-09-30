@@ -1,5 +1,6 @@
-import UploadContainer from '@/features/upload/upload-container';
 import { getSourceParam } from '@/lib/queryParams';
+
+import UploadContainer from './_components/upload-container';
 
 interface UploadPageProps {
   searchParams?: Promise<{ [key: string]: string | string[] | undefined }>;
