@@ -1,3 +1,14 @@
+const guideTexts = [
+  {
+    icon: '/images/upload/check.svg',
+    text: '공간, 통로, 좌석이 함께 보이는 사진',
+  },
+  {
+    icon: '/images/upload/x.svg',
+    text: '사람, 음식, 천장 등 클로즈업 사진',
+  },
+];
+
 const guideImages = [
   '/images/upload/upload-guide-1.png',
   '/images/upload/upload-guide-2.png',
@@ -7,26 +18,22 @@ const guideImages = [
 const UploadGuide = () => {
   return (
     <section className='my-13 flex w-full flex-col items-center gap-y-5 bg-[#fff6ed] px-5 py-10'>
-      <p className='text-18-semibold'>어떤 사진을 올려야하나요?</p>
+      <h2 className='text-18-semibold'>어떤 사진을 올려야하나요?</h2>
 
       <div className='flex w-full flex-col items-center gap-y-2'>
-        <div className='flex items-center gap-x-2'>
-          <img
-            src='/images/upload/check.svg'
-            alt=''
-            aria-hidden='true'
-          />
-          <p>공간, 통로, 좌석이 함께 보이는 사진</p>
-        </div>
-
-        <div className='flex items-center gap-x-2'>
-          <img
-            src='/images/upload/x.svg'
-            alt=''
-            aria-hidden='true'
-          />
-          <p>사람, 음식, 천장 등 클로즈업 사진</p>
-        </div>
+        {guideTexts.map(({ icon, text }, idx) => (
+          <div
+            key={idx}
+            className='flex items-center gap-x-2'
+          >
+            <img
+              src={icon}
+              alt=''
+              aria-hidden='true'
+            />
+            <p>{text}</p>
+          </div>
+        ))}
       </div>
 
       {/* 업로드 가이드 이미지 */}
