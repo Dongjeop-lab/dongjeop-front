@@ -1,6 +1,8 @@
+import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
-import { API_PATH } from '@/lib/path';
+import { API_PATH, BROWSER_PATH } from '@/lib/path';
+import { PostImageResponse } from '@/types/api/upload';
 
 interface UseImageUploadReturn {
   selectedImage: File | null;
@@ -11,6 +13,7 @@ interface UseImageUploadReturn {
 }
 
 export const useImageUpload = (): UseImageUploadReturn => {
+  const router = useRouter();
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
 
@@ -70,14 +73,14 @@ export const useImageUpload = (): UseImageUploadReturn => {
         body: formData,
       });
 
-      const data = await response.json();
+      const data: PostImageResponse = await response.json();
 
       if (!response.ok) {
         console.error('업로드 실패:', data);
         return;
       }
 
-      console.log('업로드 성공, image_key:', data.image_key);
+      router.push(BROWSER_PATH.LABEL.LABELING(data.image_key));
     } catch (error) {
       console.log(error, '업로드 실패');
     }

@@ -1,20 +1,23 @@
 'use client';
+import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
 import BottomCTA from '@/components/ui/bottom-cta';
 import { FINISH_LABEL_TRANSITION_DELAY } from '@/lib/constants';
-import { SubmissionResultResponse } from '@/types/api/submission';
+import { BROWSER_PATH } from '@/lib/path';
+import { GetSubmissionResultResponse } from '@/types/api/submission';
 
 import FinishStep from './_components/finish-step';
 
 // TODO: 외부 API 호출 후 제거
-const mockData: SubmissionResultResponse = {
+const mockData: GetSubmissionResultResponse = {
   seq_no: 344,
   achievement_rate: 80,
   total_image_num: 200,
 };
 
 const FinishPage = () => {
+  const router = useRouter();
   const [step, setStep] = useState(1);
 
   useEffect(() => {
@@ -42,7 +45,10 @@ const FinishPage = () => {
           <BottomCTA.Button variant='secondary'>
             친구에게 공유하기
           </BottomCTA.Button>
-          <BottomCTA.Button variant='primary'>
+          <BottomCTA.Button
+            variant='primary'
+            onClick={() => router.push(BROWSER_PATH.LABEL.UPLOAD)}
+          >
             한 장 더 등록하기
           </BottomCTA.Button>
         </BottomCTA>
