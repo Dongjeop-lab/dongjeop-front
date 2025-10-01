@@ -53,7 +53,11 @@ const UploadContainer = (_props: UploadContainerProps) => {
                 <Image
                   src={imagePreview}
                   alt='선택된 사진 미리보기'
-                  className='max-w-[280px] object-cover'
+                  width={0}
+                  height={0}
+                  sizes='100vw'
+                  className='h-auto max-h-[280px] w-auto rounded-2xl object-contain'
+                  unoptimized
                 />
                 <button
                   type='button'
@@ -65,6 +69,8 @@ const UploadContainer = (_props: UploadContainerProps) => {
                     src='/images/upload/close.svg'
                     alt=''
                     aria-hidden='true'
+                    width={32}
+                    height={32}
                   />
                 </button>
               </div>
@@ -82,11 +88,15 @@ const UploadContainer = (_props: UploadContainerProps) => {
                     src='/images/upload/icon-hammer.svg'
                     alt=''
                     aria-hidden='true'
+                    width={140}
+                    height={140}
                   />
                   <Image
                     src='/images/upload/tooltip.svg'
                     alt=''
                     aria-hidden='true'
+                    width={67.4}
+                    height={39.53}
                   />
                 </div>
               </>
