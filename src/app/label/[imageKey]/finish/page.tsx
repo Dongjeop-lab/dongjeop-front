@@ -2,10 +2,10 @@
 import { useEffect, useState } from 'react';
 
 import BottomCTA from '@/components/ui/bottom-cta';
+import { FINISH_LABEL_TRANSITION_DELAY } from '@/lib/constants';
 import { SubmissionResultResponse } from '@/types/api/submission';
 
-import FinishStep1 from './_components/finish-step-1';
-import FinishStep2 from './_components/finish-step-2';
+import FinishStep from './_components/finish-step';
 
 // TODO: 외부 API 호출 후 제거
 const mockData: SubmissionResultResponse = {
@@ -20,32 +20,25 @@ const FinishPage = () => {
   useEffect(() => {
     const timer = setTimeout(() => {
       setStep(2);
-    }, 3000);
+    }, FINISH_LABEL_TRANSITION_DELAY);
 
     return () => clearTimeout(timer);
   }, []);
 
   return (
-    <div className='h-screen w-full'>
-      <main
-        className={`flex flex-col items-center justify-center ${
-          step === 1 ? 'h-screen overflow-hidden' : 'min-h-[calc(100vh-56px)]'
-        }`}
-      >
+    <>
+      <main className={`flex h-screen flex-col items-center overflow-hidden`}>
         <h1 className='sr-only'>등록 완료 페이지</h1>
-
-        {step === 1 ? (
-          <FinishStep1 seqNo={mockData.seq_no} />
-        ) : (
-          <FinishStep2
-            achievementRate={mockData.achievement_rate}
-            totalImageNum={mockData.total_image_num}
-          />
-        )}
+        <FinishStep
+          currentStep={step}
+          seqNo={mockData.seq_no}
+          achievementRate={mockData.achievement_rate}
+          totalImageNum={mockData.total_image_num}
+        />
       </main>
 
       {step === 2 && (
-        <BottomCTA>
+        <BottomCTA hasAnimation>
           <BottomCTA.Button variant='secondary'>
             친구에게 공유하기
           </BottomCTA.Button>
@@ -54,7 +47,7 @@ const FinishPage = () => {
           </BottomCTA.Button>
         </BottomCTA>
       )}
-    </div>
+    </>
   );
 };
 

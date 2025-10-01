@@ -5,3 +5,5 @@ export const STEP_NUMBER = {
   STEP2: 2,
   STEP3: 3,
 } as const;
+
+export const FINISH_LABEL_TRANSITION_DELAY = 3000;
