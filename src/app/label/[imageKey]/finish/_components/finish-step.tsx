@@ -29,7 +29,6 @@ const FinishStep = ({
 }: FinishStep1Props) => {
   return (
     <main className='flex flex-col items-center pt-11'>
-      {/* XXX: Status bar 높이까지 section의 padding-top에 포함한 상태 */}
       <section className='flex w-[360px] flex-1 flex-col items-center justify-center pt-5 pb-[1.875rem]'>
         <AnimatePresence mode='wait'>
           {currentStep === 1 ? (
