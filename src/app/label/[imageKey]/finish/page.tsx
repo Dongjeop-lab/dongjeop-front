@@ -2,48 +2,21 @@
 import { useParams, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
-import { apiClient } from '@/app/api/client';
 import BottomCTA from '@/components/ui/bottom-cta';
 import { FINISH_LABEL_TRANSITION_DELAY } from '@/lib/constants';
-import { API_PATH, BROWSER_PATH } from '@/lib/path';
-import { GetSubmissionResultResponse } from '@/types/api/submission';
+import { BROWSER_PATH } from '@/lib/path';
 
 import FinishStep from './_components/finish-step';
+import { useSubmissionResult } from './_hoooks/use-submission-result';
 
 const FinishPage = () => {
   const router = useRouter();
   const params = useParams<{ imageKey: string }>();
 
-  const [submissionResult, setSubmissionResult] =
-    useState<GetSubmissionResultResponse | null>(null);
-  const [loading, setLoading] = useState<boolean>(false);
-  const [error, setError] = useState<string | null>(null);
+  const { submissionResult, loading, error } = useSubmissionResult(
+    params.imageKey
+  );
   const [step, setStep] = useState(1);
-
-  useEffect(() => {
-    const fetchResult = async () => {
-      try {
-        setLoading(true);
-        const response = await apiClient.get<GetSubmissionResultResponse>(
-          `${API_PATH.FINISH}/${params.imageKey}`
-        );
-
-        if (response.success && response.data) {
-          setSubmissionResult(response.data);
-        } else {
-          console.error('API 요청 실패:', response.error);
-          setError(response.error || '데이터를 불러오는데 실패했습니다.');
-        }
-      } catch (err) {
-        console.error('Failed to fetch result:', err);
-        setError('네트워크 오류가 발생했습니다.');
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchResult();
-  }, [params.imageKey]);
 
   useEffect(() => {
     if (loading || !submissionResult) return;
