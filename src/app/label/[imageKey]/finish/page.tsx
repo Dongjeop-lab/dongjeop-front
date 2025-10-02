@@ -7,7 +7,7 @@ import { FINISH_LABEL_TRANSITION_DELAY } from '@/lib/constants';
 import { BROWSER_PATH } from '@/lib/path';
 
 import FinishStep from './_components/finish-step';
-import { useSubmissionResult } from './_hoooks/use-submission-result';
+import { useSubmissionResult } from './_hooks/use-submission-result';
 
 const FinishPage = () => {
   const router = useRouter();
