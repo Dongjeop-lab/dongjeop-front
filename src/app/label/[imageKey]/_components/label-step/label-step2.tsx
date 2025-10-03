@@ -12,8 +12,8 @@ import {
   UpdateLabelRequestBody,
 } from '@/types/api/label';
 
-import { labelOption } from '../../types/label-option';
-import { LabelStepProps } from '../../types/label-step';
+import { labelOption } from '../../_types/label-option';
+import { LabelStepProps } from '../../_types/label-step';
 import LabelStepLayout from '../label-step-layout';
 
 type LabelStep2OptionValue =

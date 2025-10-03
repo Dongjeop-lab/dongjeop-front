@@ -6,8 +6,8 @@ import useUpdateLabel from '@/hooks/use-update-label';
 import { TOTAL_LABELING_STEPS } from '@/lib/constants';
 import { HasStep } from '@/types/api/label';
 
-import { labelOption } from '../../types/label-option';
-import { LabelStepProps } from '../../types/label-step';
+import { labelOption } from '../../_types/label-option';
+import { LabelStepProps } from '../../_types/label-step';
 import LabelStepLayout from '../label-step-layout';
 
 const LABEL_STEP_1_OPTIONS: labelOption<HasStep>[] = [
