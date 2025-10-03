@@ -14,7 +14,7 @@ const TextField = ({ type = 'text', className, ...props }: TextFieldProps) => {
       pattern={type === 'number' ? '[0-9]*' : undefined}
       type={type}
       className={cn(
-        'rounded-xl border border-[#00000010] bg-white py-5 pr-[1.875rem] pl-[1.375rem] text-base font-medium',
+        'border-border-default rounded-xl border bg-white py-5 pr-[1.875rem] pl-[1.375rem] text-base font-medium',
         'placeholder:text-base placeholder:font-medium placeholder:text-[#B1B7C1]',
         className
       )}
