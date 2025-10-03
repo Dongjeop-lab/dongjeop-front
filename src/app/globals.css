@@ -23,6 +23,8 @@
 
   --color-border-default: #00000010;
 
+  --color-info: #0052c8;
+
   --animate-cta-in: cta-in 0.5s ease-out;
 
   @keyframes cta-in {
@@ -34,6 +36,14 @@
       opacity: 1;
       transform: translateY(0);
     }
+  }
+}
+
+@layer base {
+  /* 활성화된 버튼에 자동으로 cursor: pointer 적용 */
+  button:not(:disabled),
+  button:not([disabled]) {
+    cursor: pointer;
   }
 }
 
