@@ -21,6 +21,8 @@
 
   --color-muted: #727272;
 
+  --color-border-default: #00000010;
+
   --animate-cta-in: cta-in 0.5s ease-out;
 
   @keyframes cta-in {

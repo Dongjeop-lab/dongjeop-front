@@ -1,6 +1,7 @@
 import { AnimatePresence } from 'motion/react';
 import * as motion from 'motion/react-client';
 import Image from 'next/image';
+import CountUp from 'react-countup';
 
 import { cn } from '@/lib/utils';
 
@@ -76,9 +77,13 @@ const FinishStep = ({
                 <p className='text-primary-foreground text-lg font-bold'>
                   지금까지 모인 사진
                 </p>
-                <p className='text-primary-foreground -mt-2.5 text-[4rem] font-bold'>
-                  {totalImageNum}
-                </p>
+                <CountUp
+                  start={0}
+                  end={totalImageNum}
+                  delay={0.4}
+                  duration={0.5}
+                  className='text-primary-foreground -mt-2.5 text-[4rem] font-bold'
+                />
               </motion.figcaption>
             )}
           </AnimatePresence>

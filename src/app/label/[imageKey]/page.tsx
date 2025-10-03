@@ -12,15 +12,12 @@ import { useEffect, useRef, useState } from 'react';
 
 import { apiClient } from '@/app/api/client';
 import Header from '@/components/ui/header';
-import {
-  LabelStep1,
-  LabelStep2,
-  LabelStep3,
-} from '@/features/label/components/label-step';
 import { STEP_NUMBER } from '@/lib/constants';
 import { API_PATH, BROWSER_PATH } from '@/lib/path';
 import { queryKeys } from '@/lib/query-key';
 import { GetLabelStatusResponse } from '@/types/api/label';
+
+import { LabelStep1, LabelStep2, LabelStep3 } from './_components/label-step';
 
 const LabelPage = () => {
   const [isRoutingFinished, setIsRoutingFinished] = useState(false);
