@@ -1,32 +1,54 @@
 'use client';
-import { useRouter } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
 import BottomCTA from '@/components/ui/bottom-cta';
 import { FINISH_LABEL_TRANSITION_DELAY } from '@/lib/constants';
 import { BROWSER_PATH } from '@/lib/path';
-import { GetSubmissionResultResponse } from '@/types/api/submission';
 
 import FinishStep from './_components/finish-step';
-
-// TODO: 외부 API 호출 후 제거
-const mockData: GetSubmissionResultResponse = {
-  seq_no: 344,
-  achievement_rate: 80,
-  total_image_num: 200,
-};
+import { useSubmissionResult } from './_hooks/use-submission-result';
 
 const FinishPage = () => {
   const router = useRouter();
+  const params = useParams<{ imageKey: string }>();
+
+  const { submissionResult, loading, error } = useSubmissionResult(
+    params.imageKey
+  );
   const [step, setStep] = useState(1);
 
   useEffect(() => {
+    if (loading || !submissionResult) return;
+
     const timer = setTimeout(() => {
       setStep(2);
     }, FINISH_LABEL_TRANSITION_DELAY);
 
     return () => clearTimeout(timer);
-  }, []);
+  }, [loading, submissionResult]);
+
+  if (loading) return null;
+
+  // TODO: 에러 UI 요청
+  // XXX: ApiClient response에 statusCode가 없어 에러 메시지 문자열로 구분
+  // 404
+  if (error?.includes('존재하지 않는')) {
+    return (
+      <main className='flex h-screen flex-col items-center justify-center'>
+        <p>{error}</p>
+      </main>
+    );
+  }
+
+  // 500 또는 데이터 없음
+  if (error || !submissionResult) {
+    return (
+      <main className='flex h-screen flex-col items-center justify-center'>
+        <p>{error || '데이터를 불러올 수 없습니다.'}</p>
+      </main>
+    );
+  }
 
   return (
     <>
@@ -34,9 +56,9 @@ const FinishPage = () => {
         <h1 className='sr-only'>등록 완료 페이지</h1>
         <FinishStep
           currentStep={step}
-          seqNo={mockData.seq_no}
-          achievementRate={mockData.achievement_rate}
-          totalImageNum={mockData.total_image_num}
+          seqNo={submissionResult.seq_no}
+          achievementRate={submissionResult.achievement_rate}
+          totalImageNum={submissionResult.total_image_num}
         />
       </main>
 
