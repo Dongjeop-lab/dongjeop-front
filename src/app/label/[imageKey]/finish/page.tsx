@@ -28,14 +28,7 @@ const FinishPage = () => {
     return () => clearTimeout(timer);
   }, [loading, submissionResult]);
 
-  // TODO: 로딩 UI 요청
-  if (loading) {
-    return (
-      <main className='flex h-screen flex-col items-center justify-center'>
-        <p>로딩 중...</p>
-      </main>
-    );
-  }
+  if (loading) return null;
 
   // TODO: 에러 UI 요청
   // XXX: ApiClient response에 statusCode가 없어 에러 메시지 문자열로 구분
