@@ -29,8 +29,8 @@ type LabelStep2OptionValue =
 const NOT_SURE_VALUE = 'not_sure';
 
 const LABEL_STEP_2_OPTIONS: labelOption<LabelStep2OptionValue>[] = [
-  { title: '이동식 의자', value: 'has_movable_chair' },
-  { title: '높은 의자', value: 'has_high_chair' },
+  { title: '낮은 이동식 의자', value: 'has_movable_chair' },
+  { title: '높은 이동식 의자', value: 'has_high_chair' },
   { title: '좌식 의자', value: 'has_floor_chair' },
   { title: '고정식 의자', value: 'has_fixed_chair' },
   { title: '잘 모르겠어요', value: NOT_SURE_VALUE },
