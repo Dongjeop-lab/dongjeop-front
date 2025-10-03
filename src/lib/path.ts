@@ -4,6 +4,9 @@ export const BROWSER_PATH = {
     LABELING: (imageKey: string) => `/label/${imageKey}`,
     FINISH: (imageKey: string) => `/label/${imageKey}/finish`,
   },
+  QUIZ: {
+    DEFAULT: '/quiz',
+  },
 } as const;
 
 const DEFAULT_API_ENDPOINT = '/api/v1';
