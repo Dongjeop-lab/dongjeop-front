@@ -32,8 +32,7 @@ const UploadContainer = (_props: UploadContainerProps) => {
     <div className='h-screen w-full'>
       <main className='flex min-h-[calc(100vh-56px)] flex-col items-center justify-center'>
         {/* 사진 등록 섹션 */}
-        {/* XXX: Status bar 높이까지 section의 padding-top에 포함한 상태 */}
-        <section className='flex w-[360px] flex-1 flex-col items-center justify-center gap-y-8 px-5 pt-24.5 pb-10'>
+        <section className='flex w-[360px] flex-1 flex-col items-center justify-center gap-y-8 px-5 pt-11 pb-10'>
           <h1 className='text-26-bold text-center'>
             실내 사진을 등록해
             <br />
@@ -54,7 +53,11 @@ const UploadContainer = (_props: UploadContainerProps) => {
                 <Image
                   src={imagePreview}
                   alt='선택된 사진 미리보기'
-                  className='max-w-[280px] object-cover'
+                  width={0}
+                  height={0}
+                  sizes='100vw'
+                  className='h-auto max-h-[280px] w-auto rounded-2xl object-contain'
+                  unoptimized
                 />
                 <button
                   type='button'
@@ -66,6 +69,8 @@ const UploadContainer = (_props: UploadContainerProps) => {
                     src='/images/upload/close.svg'
                     alt=''
                     aria-hidden='true'
+                    width={32}
+                    height={32}
                   />
                 </button>
               </div>
@@ -83,11 +88,15 @@ const UploadContainer = (_props: UploadContainerProps) => {
                     src='/images/upload/icon-hammer.svg'
                     alt=''
                     aria-hidden='true'
+                    width={140}
+                    height={140}
                   />
                   <Image
                     src='/images/upload/tooltip.svg'
                     alt=''
                     aria-hidden='true'
+                    width={67.4}
+                    height={39.53}
                   />
                 </div>
               </>
