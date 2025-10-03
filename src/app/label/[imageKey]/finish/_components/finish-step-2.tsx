@@ -8,8 +8,7 @@ interface FinishStep2Props {
 const FinishStep2 = ({ achievementRate, totalImageNum }: FinishStep2Props) => {
   return (
     <>
-      {/* XXX: Status bar 높이까지 section의 padding-top에 포함한 상태 */}
-      <section className='flex w-[360px] flex-1 flex-col items-center justify-center px-12.5 pt-24.5'>
+      <section className='flex w-[360px] flex-1 flex-col items-center justify-center px-12.5 pt-11'>
         <div className='flex flex-col items-center gap-y-2.5 pt-7.5 pb-5'>
           <p className='text-18-semibold text-primary'>
             목표까지 {achievementRate}% 남았어요!

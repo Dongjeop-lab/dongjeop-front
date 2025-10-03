@@ -1,6 +1,7 @@
 import { AnimatePresence } from 'motion/react';
 import * as motion from 'motion/react-client';
 import Image from 'next/image';
+import CountUp from 'react-countup';
 
 import { cn } from '@/lib/utils';
 
@@ -29,7 +30,6 @@ const FinishStep = ({
 }: FinishStep1Props) => {
   return (
     <main className='flex flex-col items-center pt-11'>
-      {/* XXX: Status bar 높이까지 section의 padding-top에 포함한 상태 */}
       <section className='flex w-[360px] flex-1 flex-col items-center justify-center pt-5 pb-[1.875rem]'>
         <AnimatePresence mode='wait'>
           {currentStep === 1 ? (
@@ -77,9 +77,13 @@ const FinishStep = ({
                 <p className='text-primary-foreground text-lg font-bold'>
                   지금까지 모인 사진
                 </p>
-                <p className='text-primary-foreground -mt-2.5 text-[4rem] font-bold'>
-                  {totalImageNum}
-                </p>
+                <CountUp
+                  start={0}
+                  end={totalImageNum}
+                  delay={0.4}
+                  duration={0.5}
+                  className='text-primary-foreground -mt-2.5 text-[4rem] font-bold'
+                />
               </motion.figcaption>
             )}
           </AnimatePresence>
