@@ -1,5 +1,5 @@
-import NoticeCard from './NoticeCard';
-import RewardCard from './RewardCard';
+import NoticeCard from './notice-card';
+import RewardCard from './reward-card';
 
 const EventDescription = () => {
   return (

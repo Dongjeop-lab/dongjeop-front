@@ -1,5 +1,5 @@
-import BottomButton from '@/app/_components/BottomButton';
-import EventDescription from '@/app/_components/EventDescription';
+import BottomButton from '@/app/_components/bottom-button';
+import EventDescription from '@/app/_components/event-description';
 import Introduction from '@/app/_components/introduction';
 
 const Home = () => {
