@@ -79,7 +79,7 @@ const FinishStep = ({
                 </p>
                 <CountUp
                   start={0}
-                  end={totalImageNum}
+                  end={totalImageNum || 0} // TODO: API 응답에 totalImageNum 추가되면 `|| 0` 제거
                   delay={0.4}
                   duration={0.5}
                   className='text-primary-foreground -mt-2.5 text-[4rem] font-bold'
