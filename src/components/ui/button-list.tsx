@@ -98,7 +98,7 @@ const Item = ({
         {/* TODO: 나타날 때, 인터렉션이 있으면 좋을 것 같은데 고려 필요 */}
         {selected && (
           <Image
-            src='/icons/check.svg'
+            src='/icons/check-blue.svg'
             width={24}
             height={24}
             alt=''

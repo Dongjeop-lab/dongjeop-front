@@ -38,7 +38,7 @@ const Introduction = () => {
         <ul className='flex flex-col gap-4 py-10 font-normal text-[#484848]'>
           <li className='flex items-center gap-x-[0.5rem] tracking-[-2%]'>
             <Image
-              src='/icons/check.svg'
+              src='/icons/check-orange.svg'
               width={24}
               height={24}
               alt=''
@@ -49,7 +49,7 @@ const Introduction = () => {
           </li>
           <li className='flex items-start gap-x-[0.5rem] tracking-[-2%]'>
             <Image
-              src='/icons/check.svg'
+              src='/icons/check-orange.svg'
               width={24}
               height={24}
               alt=''
