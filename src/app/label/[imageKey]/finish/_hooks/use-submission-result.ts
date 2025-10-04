@@ -14,6 +14,8 @@ export const useSubmissionResult = (imageKey: string) => {
     const fetchResult = async () => {
       try {
         setLoading(true);
+        setError(null);
+
         const response = await apiClient.get<GetSubmissionResultResponse>(
           `${API_PATH.FINISH}/${imageKey}`
         );
