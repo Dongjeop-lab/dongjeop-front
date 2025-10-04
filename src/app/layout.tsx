@@ -16,11 +16,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html
-      lang='ko'
-      className={pretendard.className}
-    >
-      <body className='text-16-regular'>
+    <html lang='ko'>
+      <body className={`${pretendard.className} text-16-regular`}>
         <TanstackQueryProvider>{children}</TanstackQueryProvider>
       </body>
     </html>
