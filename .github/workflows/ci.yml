@@ -3,7 +3,6 @@ name: 🔍 코드 품질 검사
 on:
   push:
     branches: [ main, develop ]
-    branches: [ main, develop ]
   pull_request:
     types: [opened, synchronize, reopened]
 
@@ -12,19 +11,11 @@ permissions:
   pull-requests: write    # PR 댓글 권한
   checks: write          # 체크 상태 업데이트 권한
 
-env:
-  # 🔐 환경변수 중앙 관리 (CD와 일관성 유지)
-  NEXT_PUBLIC_API_URL: ${{ secrets.NEXT_PUBLIC_API_URL }}
-
 jobs:
   # 🔍 코드 품질 검사 (빠른 피드백)
   quality-check:
     name: 🔍 코드 품질 검사
-  # 🔍 코드 품질 검사 (빠른 피드백)
-  quality-check:
-    name: 🔍 코드 품질 검사
     runs-on: ubuntu-latest
-    timeout-minutes: 10
     timeout-minutes: 10
     
     steps:
@@ -32,10 +23,8 @@ jobs:
         uses: actions/checkout@v4
 
       - name: 🟢 Node.js 22 설정
-      - name: 🟢 Node.js 22 설정
         uses: actions/setup-node@v4
         with:
-          node-version: '22'
           node-version: '22'
           cache: 'npm'
 
@@ -51,23 +40,12 @@ jobs:
       - name: 🎨 코드 스타일 검사
         run: npm run format:check
 
-      - name: 🛡️ 보안 취약점 검사
-        run: |
-          echo "🔒 의존성 보안 검사..."
-          npm audit --audit-level=high
-        continue-on-error: true  # 경고는 허용
-
-      - name: 🎨 코드 스타일 검사
-        run: npm run format:check
-
       - name: 🔍 린트 검사
         run: npm run lint
 
       - name: 🏷️ 타입 검사
-      - name: 🏷️ 타입 검사
         run: npm run typecheck
 
-      - name: 🏗️ 빌드 테스트
       - name: 🏗️ 빌드 테스트
         run: npm run build
         env:
@@ -159,32 +137,7 @@ jobs:
             echo "- ❌ **코드 품질 검사** 실패" >> $GITHUB_STEP_SUMMARY
           fi
           
-          quality_result="${{ needs.quality-check.result }}"
-          
-          echo "## 🔍 CI 코드 품질 검사 완료" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          echo "### 📊 검사 결과:" >> $GITHUB_STEP_SUMMARY
-          
-          if [ "$quality_result" = "success" ]; then
-            echo "- ✅ **코드 품질 검사** 통과" >> $GITHUB_STEP_SUMMARY
-          else
-            echo "- ❌ **코드 품질 검사** 실패" >> $GITHUB_STEP_SUMMARY
-          fi
-          
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "### 🔧 검사 항목:" >> $GITHUB_STEP_SUMMARY
-          echo "- 🎨 코드 스타일 (Prettier)" >> $GITHUB_STEP_SUMMARY
-          echo "- 🔍 린트 검사 (ESLint)" >> $GITHUB_STEP_SUMMARY
-          echo "- 🏷️ 타입 검사 (TypeScript)" >> $GITHUB_STEP_SUMMARY
-          echo "- 🏗️ 빌드 테스트 (Next.js)" >> $GITHUB_STEP_SUMMARY
-          echo "- 🛡️ 보안 취약점 검사" >> $GITHUB_STEP_SUMMARY
-          
-          if [ "$quality_result" = "success" ]; then
-            echo "" >> $GITHUB_STEP_SUMMARY
-            echo "🎉 **코드 품질 검사 통과! 안전하게 배포 가능합니다.**" >> $GITHUB_STEP_SUMMARY
-            echo "" >> $GITHUB_STEP_SUMMARY
-            echo "💡 **참고:** Docker 빌드는 main 브랜치 배포 시 자동으로 진행됩니다." >> $GITHUB_STEP_SUMMARY
-          fi
           echo "### 🔧 검사 항목:" >> $GITHUB_STEP_SUMMARY
           echo "- 🎨 코드 스타일 (Prettier)" >> $GITHUB_STEP_SUMMARY
           echo "- 🔍 린트 검사 (ESLint)" >> $GITHUB_STEP_SUMMARY
