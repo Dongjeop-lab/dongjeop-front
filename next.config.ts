@@ -34,6 +34,12 @@ const nextConfig: NextConfig = {
       //   hostname: 'api.dongjeop.com',
       //   pathname: '/uploads/**',
       // },
+      {
+        protocol: 'https',
+        hostname: 'objectstorage.kr-central-2.kakaocloud.com',
+        port: '',
+        pathname: '/v1/**',
+      },
     ],
 
     // 이미지 포맷 최적화 (최신 포맷 우선)
@@ -104,6 +110,36 @@ const nextConfig: NextConfig = {
         ],
       },
     ];
+  },
+
+  // =============================================================================
+  // API 프록시 설정 (개발 환경용)
+  // =============================================================================
+
+  // 개발 환경에서 API 요청 프록시
+  async rewrites() {
+    // 개발 환경에서만 프록시 설정 활성화
+    if (process.env.NODE_ENV === 'development') {
+      const apiProxyTarget = process.env.DEV_API_PROXY_TARGET;
+
+      // 환경변수 검증
+      if (!apiProxyTarget) {
+        throw new Error(
+          'DEV_API_PROXY_TARGET 환경 변수가 설정되어 있지 않습니다.'
+        );
+      }
+
+      // 후행 슬래시 제거
+      const normalizedTarget = apiProxyTarget.replace(/\/$/, '');
+
+      return [
+        {
+          source: '/api/:path*',
+          destination: `${normalizedTarget}/api/:path*`,
+        },
+      ];
+    }
+    return [];
   },
 
   // =============================================================================
