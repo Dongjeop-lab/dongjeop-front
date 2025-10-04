@@ -3,7 +3,7 @@ import TextField from '@/components/ui/text-field';
 
 const EventFormSection = () => {
   return (
-    <div className='flex flex-col items-center gap-6'>
+    <div className='mb-8 flex flex-col items-center gap-6 px-5'>
       <form className='flex w-full flex-col gap-3'>
         <TextField placeholder='이름을 입력해주세요' />
         <TextField
