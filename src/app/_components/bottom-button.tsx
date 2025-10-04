@@ -16,7 +16,6 @@ const BottomButton = () => {
   };
   return (
     <nav
-      role='navigation'
       aria-label='이벤트 참여 액션'
       className='fixed right-0 bottom-0 left-0 flex w-full flex-col items-center gap-2 bg-gradient-to-t from-white from-60% to-transparent px-[1.25rem] py-[2.5rem]'
     >
