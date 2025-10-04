@@ -19,7 +19,7 @@ const guideImages = [
 
 const UploadGuide = () => {
   return (
-    <section className='my-13 flex w-full flex-col items-center gap-y-5 bg-[#fff6ed] px-5 py-10'>
+    <section className='flex w-full flex-col items-center gap-y-5 bg-[#fff6ed] px-5 py-10'>
       <h2 className='text-18-semibold'>어떤 사진을 올려야하나요?</h2>
 
       <ul className='flex w-full flex-col items-center gap-y-2'>

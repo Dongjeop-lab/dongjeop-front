@@ -29,10 +29,10 @@ const UploadContainer = (_props: UploadContainerProps) => {
   };
 
   return (
-    <div className='h-screen w-full'>
-      <main className='flex min-h-[calc(100vh-56px)] flex-col items-center justify-center'>
+    <div className='flex min-h-screen w-full'>
+      <main className='flex flex-col items-center justify-center pb-14'>
         {/* 사진 등록 섹션 */}
-        <section className='flex w-[360px] flex-1 flex-col items-center justify-center gap-y-8 px-5 pt-11 pb-10'>
+        <section className='flex w-full max-w-[360px] flex-1 flex-col items-center justify-center gap-y-8 px-5 pt-11 pb-10'>
           <h1 className='text-26-bold text-center'>
             실내 사진을 등록해
             <br />
