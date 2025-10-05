@@ -23,7 +23,7 @@ const BottomButton = () => {
         type='button'
         onClick={handleNavigateToAccessibilityQuiz}
         aria-label='접근성 퀴즈 풀어보기 페이지로 이동'
-        className='bg-secondary text-secondary-foreground h-[3.125rem] w-full rounded-[0.75rem] px-[2rem] py-[0.5rem] text-[1rem] leading-[100%] font-semibold tracking-[-0.015em]'
+        className='bg-secondary text-secondary-foreground h-14 w-full rounded-[0.75rem] px-[2rem] py-[0.5rem] text-[1rem] leading-[100%] font-semibold tracking-[-0.015em]'
       >
         접근성 퀴즈 풀어보기
       </button>
@@ -31,7 +31,7 @@ const BottomButton = () => {
         type='button'
         onClick={handleNavigateToUpload}
         aria-label='실내 사진 업로드 페이지로 이동'
-        className='bg-primary h-[3.125rem] w-full rounded-[0.75rem] px-[2rem] py-[0.5rem] text-[1rem] leading-[100%] font-semibold tracking-[-0.015em] text-white'
+        className='bg-primary h-14 w-full rounded-[0.75rem] px-[2rem] py-[0.5rem] text-[1rem] leading-[100%] font-semibold tracking-[-0.015em] text-white'
       >
         1분만에 실내 사진 올리기
       </button>

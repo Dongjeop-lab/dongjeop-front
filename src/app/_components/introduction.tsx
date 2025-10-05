@@ -41,9 +41,9 @@ const Introduction = () => {
               src='/icons/check-orange.svg'
               width={24}
               height={24}
-              alt=''
+              alt='icon-check'
               aria-hidden='true'
-              className='text-primary h-[1.125rem] w-[1.125rem]'
+              className='h-[1.125rem] w-[1.125rem]'
             />
             퀴즈를 풀며 이동약자의 시선을 따라가보세요!
           </li>
@@ -52,9 +52,9 @@ const Introduction = () => {
               src='/icons/check-orange.svg'
               width={24}
               height={24}
-              alt=''
+              alt='icon-check'
               aria-hidden='true'
-              className='text-primary mt-0.5 h-[1.125rem] w-[1.125rem]'
+              className='mt-0.5 h-[1.125rem] w-[1.125rem]'
             />
             <p>
               실내 사진을 올리고 <strong>이동약자를 위한</strong>
