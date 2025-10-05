@@ -78,7 +78,7 @@ const Item = ({
         aria-selected={selected}
         className={cn(
           'flex w-full cursor-pointer items-center justify-between rounded-xl border p-2.5 pr-5 transition-all duration-75 ease-out active:scale-[0.98]',
-          selected ? 'border-[#3491FF]' : 'border-border-default',
+          selected ? 'border-border-blue' : 'border-border-default',
           className
         )}
       >
