@@ -3,17 +3,32 @@
 import { useRouter } from 'next/navigation';
 
 import { BROWSER_PATH } from '@/lib/path';
+import { buildUrlWithServerParams } from '@/lib/queryParams';
 
-const BottomButton = () => {
+interface BottomButtonProps {
+  searchParams?: { [key: string]: string | string[] | undefined };
+}
+
+const BottomButton = ({ searchParams = {} }: BottomButtonProps) => {
   const router = useRouter();
 
   const handleNavigateToAccessibilityQuiz = () => {
-    router.push(`${BROWSER_PATH.QUIZ.DEFAULT}?step=1`);
+    const url = buildUrlWithServerParams(
+      BROWSER_PATH.QUIZ.DEFAULT,
+      searchParams,
+      { step: '1' }
+    );
+    router.push(url);
   };
 
   const handleNavigateToUpload = () => {
-    router.push(BROWSER_PATH.LABEL.UPLOAD);
+    const url = buildUrlWithServerParams(
+      BROWSER_PATH.LABEL.UPLOAD,
+      searchParams
+    );
+    router.push(url);
   };
+
   return (
     <nav
       aria-label='이벤트 참여 액션'

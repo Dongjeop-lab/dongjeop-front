@@ -2,7 +2,13 @@ import BottomButton from '@/app/_components/bottom-button';
 import EventDescription from '@/app/_components/event-description';
 import Introduction from '@/app/_components/introduction';
 
-const Home = () => {
+interface HomeProps {
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
+}
+
+const Home = async ({ searchParams }: HomeProps) => {
+  const resolvedParams = await searchParams;
+
   return (
     <div className='h-screen w-full'>
       <main
@@ -14,7 +20,7 @@ const Home = () => {
         <EventDescription />
       </main>
 
-      <BottomButton />
+      <BottomButton searchParams={resolvedParams} />
     </div>
   );
 };
