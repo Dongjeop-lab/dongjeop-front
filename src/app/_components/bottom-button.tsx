@@ -1,19 +1,31 @@
 'use client';
 
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 
 import { BROWSER_PATH } from '@/lib/path';
+import { buildUrlWithSearchParams } from '@/lib/queryParams';
 
 const BottomButton = () => {
   const router = useRouter();
+  const searchParams = useSearchParams();
 
   const handleNavigateToAccessibilityQuiz = () => {
-    router.push(`${BROWSER_PATH.QUIZ.DEFAULT}?step=1`);
+    const url = buildUrlWithSearchParams(
+      BROWSER_PATH.QUIZ.DEFAULT,
+      searchParams,
+      { step: '1' }
+    );
+    router.push(url);
   };
 
   const handleNavigateToUpload = () => {
-    router.push(BROWSER_PATH.LABEL.UPLOAD);
+    const url = buildUrlWithSearchParams(
+      BROWSER_PATH.LABEL.UPLOAD,
+      searchParams
+    );
+    router.push(url);
   };
+
   return (
     <nav
       aria-label='이벤트 참여 액션'
