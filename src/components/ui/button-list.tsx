@@ -99,8 +99,8 @@ const Item = ({
         {selected && (
           <Image
             src='/icons/check-blue.svg'
-            width={24}
-            height={24}
+            width={20}
+            height={20}
             alt=''
           />
         )}
