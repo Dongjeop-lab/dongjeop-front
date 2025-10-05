@@ -1,8 +1,8 @@
 'use client';
 
+import useInteractionTimer from '@/app/label/[imageKey]/_hooks/use-interaction-timer';
+import useUpdateLabel from '@/app/label/[imageKey]/_hooks/use-update-label';
 import ButtonList from '@/components/ui/button-list';
-import useInteractionTimer from '@/hooks/use-interaction-timer';
-import useUpdateLabel from '@/hooks/use-update-label';
 import { TOTAL_LABELING_STEPS } from '@/lib/constants';
 import { HasStep } from '@/types/api/label';
 

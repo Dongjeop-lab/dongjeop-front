@@ -1,39 +1,36 @@
-import { useEffect, useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
 
 import { apiClient } from '@/app/api/client';
 import { API_PATH } from '@/lib/path';
 import { GetSubmissionResultResponse } from '@/types/api/submission';
 
 export const useSubmissionResult = (imageKey: string) => {
-  const [submissionResult, setSubmissionResult] =
-    useState<GetSubmissionResultResponse | null>(null);
-  const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string | null>(null);
+  const {
+    data: submissionResult,
+    isLoading: loading,
+    error,
+  } = useQuery({
+    queryKey: ['submissionResult', imageKey],
+    queryFn: async () => {
+      const response = await apiClient.get<GetSubmissionResultResponse>(
+        `${API_PATH.FINISH}/${imageKey}`
+      );
 
-  useEffect(() => {
-    const fetchResult = async () => {
-      try {
-        setLoading(true);
-        const response = await apiClient.get<GetSubmissionResultResponse>(
-          `${API_PATH.FINISH}/${imageKey}`
-        );
-
-        if (response.success && response.data) {
-          setSubmissionResult(response.data);
-        } else {
-          console.error('API 요청 실패:', response.error);
-          setError(response.error || '데이터를 불러오는데 실패했습니다.');
-        }
-      } catch (err) {
-        console.error('Failed to fetch result:', err);
-        setError('네트워크 오류가 발생했습니다.');
-      } finally {
-        setLoading(false);
+      if (!response.success || !response.data) {
+        // apiClient가 HTTP 에러(404, 500)나 네트워크 에러를 모두 response.error에 담아줌
+        throw new Error(response.error || '기여 결과 조회에 실패했습니다.');
       }
-    };
 
-    fetchResult();
-  }, [imageKey]);
+      return response.data;
+    },
+    retry: 1,
+    staleTime: 0,
+    gcTime: 0,
+  });
 
-  return { submissionResult, loading, error };
+  return {
+    submissionResult,
+    loading,
+    error: error ? (error as Error).message : null,
+  };
 };
