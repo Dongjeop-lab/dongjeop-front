@@ -58,7 +58,7 @@ const FinishPage = () => {
           currentStep={step}
           seqNo={submissionResult.seq_no}
           achievementRate={submissionResult.achievement_rate}
-          totalImageNum={submissionResult.total_image_num}
+          totalImageNum={submissionResult.seq_no}
         />
       </main>
 
