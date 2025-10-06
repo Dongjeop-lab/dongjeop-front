@@ -1,3 +1,5 @@
+import { Suspense } from 'react';
+
 import BottomButton from '@/app/_components/bottom-button';
 import EventDescription from '@/app/_components/event-description';
 import Introduction from '@/app/_components/introduction';
@@ -15,7 +17,9 @@ const Home = () => {
         <div className='h-14 w-full bg-[#EAF3FF]' />
       </main>
 
-      <BottomButton />
+      <Suspense fallback={<></>}>
+        <BottomButton />
+      </Suspense>
     </div>
   );
 };
