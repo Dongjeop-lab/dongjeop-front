@@ -1,3 +1,5 @@
+import Image from 'next/image';
+
 import NoticeCard from './notice-card';
 import RewardCard from './reward-card';
 
@@ -62,28 +64,43 @@ const EventDescription = () => {
 
         <div className='h-3' />
 
-        <NoticeCard title='지급 일정'>
-          <p className='text-secondary-foreground text-center text-[0.875rem] leading-[100%] font-medium tracking-[-0.03125rem]'>
-            활동 기간 종료 후 11월 20일에
-            <br />
-            기재한 연락처로 개별 안내 드려요
-          </p>
-        </NoticeCard>
-
-        <div className='h-3' />
-
-        <NoticeCard title='개인정보 수집 및 이용'>
-          <p className='text-secondary-foreground text-center text-[0.875rem] leading-[100%] font-medium tracking-[-0.03125rem]'>
-            개인정보 수집 이용은
-            <br />첫 화면에서 동의하신 범위 내에만 처리됩니다.
-          </p>
-
-          <button
-            type='button'
-            className='mt-2.5 text-center text-[0.875rem] leading-[100%] font-medium tracking-[-0.03125rem] text-[#838C95] underline decoration-solid underline-offset-0'
-          >
-            자세히보기
-          </button>
+        <NoticeCard title='참여 방법 및 지급 일정'>
+          <ul className='flex flex-col gap-y-2.5'>
+            <li className='flex items-start gap-x-2 tracking-[-2%]'>
+              <Image
+                src='/icons/check-orange.svg'
+                width={18}
+                height={18}
+                alt='icon-check'
+                aria-hidden='true'
+                className='h-[1.125rem] w-[1.125rem]'
+              />
+              <p className='text-start text-[#484848]'>
+                사진 등록 시{' '}
+                <span className='text-[#0D6EF9]'>
+                  전화번호를 입력한 경우에 한해
+                </span>
+                <br />
+                참여로 인정됩니다.
+              </p>
+            </li>
+            <li className='flex items-start gap-x-2 tracking-[-2%]'>
+              <Image
+                src='/icons/check-orange.svg'
+                width={18}
+                height={18}
+                alt='icon-check'
+                aria-hidden='true'
+                className='h-[1.125rem] w-[1.125rem]'
+              />
+              <p className='text-start text-[#484848]'>
+                이벤트 기간 종료 후{' '}
+                <span className='text-[#0D6EF9]'>11월 20일</span>에 기재한
+                <br />
+                연락처로 개별 안내 드려요.
+              </p>
+            </li>
+          </ul>
         </NoticeCard>
       </div>
     </section>

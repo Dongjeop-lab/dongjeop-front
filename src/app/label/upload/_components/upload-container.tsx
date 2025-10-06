@@ -120,12 +120,9 @@ const UploadContainer = (_props: UploadContainerProps) => {
       {/* 하단 CTA 버튼 */}
       <BottomCTA>
         <BottomCTA.Button
-          variant={selectedImage ? 'primary' : 'secondary'}
+          variant={'primary'}
           disabled={!selectedImage}
           onClick={handleImageUpload}
-          className={
-            selectedImage ? '' : '!bg-secondary !text-secondary-foreground'
-          }
         >
           1분 만에 등록하기
         </BottomCTA.Button>
