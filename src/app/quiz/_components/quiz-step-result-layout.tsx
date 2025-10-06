@@ -1,3 +1,4 @@
+import { motion } from 'motion/react';
 import Image from 'next/image';
 import { ReactNode } from 'react';
 
@@ -16,7 +17,16 @@ const QuizStepResultLayout = ({
 }: QuizStepResultLayoutProps) => {
   return (
     <>
-      <div className='flex flex-col items-center gap-11'>
+      <motion.div
+        initial={{ opacity: 0, y: 30 }}
+        animate={{
+          opacity: 1,
+          y: 0,
+          transition: { duration: 0.7, ease: 'easeOut' },
+        }}
+        transition={{ duration: 0.7, ease: 'easeOut' }}
+        className='flex flex-col items-center gap-11'
+      >
         <h1 className='flex flex-col items-center gap-5'>
           <Image
             src={isCorrect ? '/icons/correct.svg' : '/icons/incorrect.svg'}
@@ -28,8 +38,8 @@ const QuizStepResultLayout = ({
             {isCorrect ? '정답이에요!' : '정답이 아니에요!'}
           </span>
         </h1>
-        {description}
-      </div>
+        <div className='w-full'>{description}</div>
+      </motion.div>
       <BottomCTA hasAnimation>
         <BottomCTA.Button
           variant='primary'
