@@ -13,8 +13,7 @@ const ProgressBar = ({
   trackClassName = 'bg-[#B3BFCE24]',
   indicatorClassName = 'bg-orange',
 }: ProgressBarProps) => {
-  const clampedProgress = Math.min(Math.max(progress, 0), 100);
-
+  const clampedProgress = Math.min(Math.max(progress, 0), 100) * 100;
   return (
     <div
       className={cn(
