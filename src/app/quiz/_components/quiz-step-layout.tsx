@@ -1,3 +1,4 @@
+import { motion } from 'motion/react';
 import { ReactNode } from 'react';
 
 import ProgressBar from '@/components/ui/progress-bar';
@@ -22,7 +23,12 @@ const QuizStepLayout = ({
   return (
     <div className='flex flex-col items-center gap-8'>
       <ProgressBar progress={currentStep / totalStep} />
-      <div className='flex flex-col items-center gap-2 px-5'>
+      <motion.div
+        initial={{ opacity: 0, y: 30 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.7, ease: 'easeOut' }}
+        className='flex flex-col items-center gap-2 px-5'
+      >
         <span className='text-orange text-22-bold'>{`Q${currentStep}.`}</span>
         <h1 className='text-22-bold text-center whitespace-break-spaces'>
           {title}
@@ -32,8 +38,15 @@ const QuizStepLayout = ({
             {subTitle}
           </p>
         )}
-      </div>
-      <div className='w-full'>{quizContent}</div>
+      </motion.div>
+      <motion.div
+        initial={{ opacity: 0, y: 30 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.7, ease: 'easeOut' }}
+        className='w-full'
+      >
+        {quizContent}
+      </motion.div>
     </div>
   );
 };
