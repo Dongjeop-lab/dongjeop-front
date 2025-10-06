@@ -30,7 +30,7 @@ const QuizStepResultLayout = ({
         </h1>
         {description}
       </div>
-      <BottomCTA>
+      <BottomCTA hasAnimation>
         <BottomCTA.Button
           variant='primary'
           onClick={onNextStep}
