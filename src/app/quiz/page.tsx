@@ -12,7 +12,7 @@ const FIRST_STEP = 1;
 const LAST_STEP = 3;
 
 const QuizPage = () => {
-  const [currentStep, setCurrentStep] = useState(1);
+  const [currentStep, setCurrentStep] = useState(FIRST_STEP);
 
   const router = useRouter();
 
