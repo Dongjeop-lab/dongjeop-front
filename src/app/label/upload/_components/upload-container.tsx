@@ -3,13 +3,13 @@ import Image from 'next/image';
 import { useRef } from 'react';
 
 import BottomCTA from '@/components/ui/bottom-cta';
-import { SourceType } from '@/types/common';
+import { EntryType } from '@/types/api/upload';
 
 import { useImageUpload } from '../_hooks/use-image-upload';
 import UploadGuide from './upload-guide';
 
 interface UploadContainerProps {
-  source: SourceType;
+  entryType: EntryType;
 }
 
 // TODO: API 요청 시 헤더 또는 바디에 source 포함시키기

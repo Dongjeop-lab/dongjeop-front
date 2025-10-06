@@ -1,4 +1,4 @@
-import { getSourceParam } from '@/lib/queryParams';
+import { getEntryTypeParam } from '@/lib/queryParams';
 
 import UploadContainer from './_components/upload-container';
 
@@ -7,16 +7,10 @@ interface UploadPageProps {
 }
 
 const UploadPage = async ({ searchParams }: UploadPageProps) => {
-  const resolvedParams = searchParams ? await searchParams : undefined;
-  const sourceParam = resolvedParams?.source;
+  const resolvedParams = searchParams ? await searchParams : {};
+  const entryType = getEntryTypeParam(resolvedParams);
 
-  const params = {
-    source: Array.isArray(sourceParam) ? sourceParam[0] : sourceParam,
-  };
-
-  const source = getSourceParam(params);
-
-  return <UploadContainer source={source} />;
+  return <UploadContainer entryType={entryType} />;
 };
 
 export default UploadPage;
