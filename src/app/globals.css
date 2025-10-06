@@ -59,6 +59,9 @@
   .text-18-medium {
     @apply text-lg font-medium tracking-[-0.015em];
   }
+  .text-16-semibold {
+    @apply text-base font-semibold tracking-[-0.015em];
+  }
   .text-16-regular {
     @apply text-base font-normal tracking-[-0.02em];
   }
