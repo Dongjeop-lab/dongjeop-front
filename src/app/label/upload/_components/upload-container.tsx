@@ -12,8 +12,7 @@ interface UploadContainerProps {
   entryType: EntryType;
 }
 
-// TODO: API 요청 시 헤더 또는 바디에 source 포함시키기
-const UploadContainer = (_props: UploadContainerProps) => {
+const UploadContainer = ({ entryType }: UploadContainerProps) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const {
     selectedImage,
@@ -21,7 +20,7 @@ const UploadContainer = (_props: UploadContainerProps) => {
     handleImageChange,
     handleImageReset,
     handleImageUpload,
-  } = useImageUpload();
+  } = useImageUpload(entryType);
 
   const openImagePicker = () => {
     if (imagePreview) return;
