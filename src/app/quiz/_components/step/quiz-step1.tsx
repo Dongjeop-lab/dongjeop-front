@@ -18,6 +18,14 @@ const OPTIONS = [
   },
 ];
 
+const IMAGE = {
+  src: '/images/quiz/quiz1.png',
+  width: 320,
+  height: 280,
+  alt: '휠체어를 탄 젊은 남성이 카페 입구의 계단을 바라보고 있다. 카페 안 창가에는 다른 두 사람이 앉아 이야기를 나누고 있다.',
+  className: 'mx-auto w-full max-w-80 rounded-2xl',
+};
+
 export const QuizStep1 = ({ onNext }: QuizStepProps) => {
   const [isCorrect, setIsCorrect] = useState<boolean | null>(null);
 
@@ -29,11 +37,8 @@ export const QuizStep1 = ({ onNext }: QuizStepProps) => {
         quizContent={
           <div className='flex flex-col gap-10 px-5'>
             <Image
-              alt='휠체어를 탄 젊은 남성이 카페 입구의 계단을 바라보고 있다. 카페 안 창가에는 다른 두 사람이 앉아 이야기를 나누고 있다.'
-              src='/images/quiz/quiz1.png'
-              width={320}
-              height={280}
-              className='mx-auto w-full max-w-80'
+              {...IMAGE}
+              alt={IMAGE.alt}
             />
             <ButtonList>
               {OPTIONS.map(({ title, isCorrect }) => (
@@ -56,11 +61,8 @@ export const QuizStep1 = ({ onNext }: QuizStepProps) => {
       description={
         <div className='flex flex-col gap-9 px-5'>
           <Image
-            alt='휠체어를 탄 젊은 남성이 카페 입구의 계단을 바라보고 있다. 카페 안 창가에는 다른 두 사람이 앉아 이야기를 나누고 있다.'
-            src='/images/quiz/quiz1.png'
-            width={320}
-            height={280}
-            className='mx-auto w-full max-w-80'
+            {...IMAGE}
+            alt={IMAGE.alt}
           />
           <p className='text=[0.9375rem] text-center whitespace-break-spaces text-[#555]'>
             <span className='text-[#000]'>
