@@ -22,7 +22,7 @@ const QuizStepLayout = ({
   return (
     <div className='flex flex-col items-center gap-8'>
       <ProgressBar progress={currentStep / totalStep} />
-      <div className='flex flex-col items-center gap-2'>
+      <div className='flex flex-col items-center gap-2 px-5'>
         <span className='text-orange text-22-bold'>{`Q${currentStep}.`}</span>
         <h1 className='text-22-bold text-center whitespace-break-spaces'>
           {title}
