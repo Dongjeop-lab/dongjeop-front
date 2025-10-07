@@ -1,9 +1,9 @@
 'use client';
 import Image from 'next/image';
-import { useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 import BottomCTA from '@/components/ui/bottom-cta';
-import { EntryType } from '@/types/api/upload';
+import { EntryType, ImageSourceType } from '@/types/api/upload';
 
 import { useImageUpload } from '../_hooks/use-image-upload';
 import UploadGuide from './upload-guide';
@@ -14,18 +14,41 @@ interface UploadContainerProps {
 
 const UploadContainer = ({ entryType }: UploadContainerProps) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const [sourceType, setSourceType] = useState<ImageSourceType>(
+    ImageSourceType.GALLERY
+  );
+
   const {
     selectedImage,
     imagePreview,
     handleImageChange,
     handleImageReset,
     handleImageUpload,
-  } = useImageUpload(entryType);
+  } = useImageUpload(sourceType, entryType);
 
   const openImagePicker = () => {
     if (imagePreview) return;
     fileInputRef.current?.click();
   };
+
+  useEffect(() => {
+    if (!selectedImage) {
+      setSourceType(ImageSourceType.GALLERY);
+      return;
+    }
+
+    const now = Date.now();
+    const lastModified = selectedImage.lastModified;
+    const timeDiff = now - lastModified;
+
+    // lastModified 기준 2분 이내면 카메라 촬영, 그 외는 갤러리 선택으로 판단
+    const detectedSource =
+      timeDiff < 2 * 60 * 1000
+        ? ImageSourceType.CAMERA
+        : ImageSourceType.GALLERY;
+
+    setSourceType(detectedSource);
+  }, [selectedImage]);
 
   return (
     <div className='flex min-h-screen w-full'>
