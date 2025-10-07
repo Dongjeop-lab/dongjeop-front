@@ -1,10 +1,11 @@
 'use client';
 import { useParams, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
+import { toast } from 'react-toastify';
 
 import BottomCTA from '@/components/ui/bottom-cta';
 import { FINISH_LABEL_TRANSITION_DELAY } from '@/lib/constants';
-import { BROWSER_PATH } from '@/lib/path';
+import { BROWSER_PATH, ENTRY_QUERY } from '@/lib/path';
 
 import FinishStep from './_components/finish-step';
 import { useSubmissionResult } from './_hooks/use-submission-result';
@@ -50,6 +51,17 @@ const FinishPage = () => {
     );
   }
 
+  const handleCopyToClipboard = async () => {
+    try {
+      const shareUrl = `${process.env.NEXT_PUBLIC_BASE_URL}?${ENTRY_QUERY.KEY}=${ENTRY_QUERY.VALUE}`;
+      await navigator.clipboard.writeText(shareUrl);
+      toast.success('링크를 복사했어요. 친구에게 공유해보세요!');
+    } catch (error) {
+      toast.error('링크를 복사하지 못했어요. 다시 시도해주세요.');
+      console.error(error);
+    }
+  };
+
   return (
     <>
       <main className={`flex h-screen flex-col items-center overflow-hidden`}>
@@ -64,7 +76,10 @@ const FinishPage = () => {
 
       {step === 2 && (
         <BottomCTA hasAnimation>
-          <BottomCTA.Button variant='secondary'>
+          <BottomCTA.Button
+            variant='secondary'
+            onClick={handleCopyToClipboard}
+          >
             친구에게 공유하기
           </BottomCTA.Button>
           <BottomCTA.Button

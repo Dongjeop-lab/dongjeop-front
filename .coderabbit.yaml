@@ -9,6 +9,7 @@ reviews:
   request_changes_workflow: false
   high_level_summary: true
   review_status: true
+  ignore_base_branch_filter: false
   
   path_filters:
     - '!**/README.md'
