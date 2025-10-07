@@ -21,7 +21,7 @@ const TERMS: Term[] = [
 ];
 
 const EventFormSection = () => {
-  const [checkedIds, setCheckedIds] = useState<Set<string>>(new Set([]));
+  const [checkedIds, setCheckedIds] = useState<Set<string>>(new Set());
 
   const handleCheck = (id: string) => {
     setCheckedIds(prev => {
