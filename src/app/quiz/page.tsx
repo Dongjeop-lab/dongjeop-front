@@ -17,7 +17,7 @@ const QuizPage = () => {
   const router = useRouter();
 
   const handleBack = () => {
-    if (currentStep === 1) {
+    if (currentStep === FIRST_STEP) {
       router.push('/');
       return;
     }
