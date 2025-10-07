@@ -22,7 +22,7 @@ const QuizStepLayout = ({
 }: QuizStepLayoutProps) => {
   return (
     <div className='flex flex-col items-center gap-8'>
-      <ProgressBar progress={currentStep / totalStep} />
+      <ProgressBar progress={(currentStep / totalStep) * 100} />
       <motion.div
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}

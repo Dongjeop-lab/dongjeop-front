@@ -1,27 +1,30 @@
 @import 'tailwindcss';
 
 @theme {
-  --color-primary: #ff7f1c;
+  --color-primary: #3182f7;
   --color-primary-foreground: #ffffff;
 
-  --color-primary-pressed: #e76500;
-  --color-primary-pressed-foreground: #ffbb87;
+  --color-primary-pressed: #1263d6;
+  --color-primary-pressed-foreground: #81a5e4;
 
-  --color-primary-disabled: #ff7f1c30;
-  --color-primary-disabled-foreground: #ff7f1c;
+  --color-primary-disabled: #e0e0e0;
+  --color-primary-disabled-foreground: #aaaaaa;
 
-  --color-secondary: #e8e8e8;
-  --color-secondary-foreground: #555555;
+  --color-secondary: #d2e5ff;
+  --color-secondary-foreground: #0058d8;
 
-  --color-secondary-pressed: #d3d3d3;
-  --color-secondary-pressed-foreground: #777777;
+  --color-secondary-pressed: #9ac1f4;
+  --color-secondary-pressed-foreground: #005fd84d;
 
-  --color-secondary-disabled: #f5f5f5;
-  --color-secondary-disabled-foreground: #cfcfcf;
+  --color-secondary-disabled: #f2f7ff;
+  --color-secondary-disabled-foreground: #bfd5f5;
+
+  --color-orange: #ff7f1c;
 
   --color-muted: #727272;
 
   --color-border-default: #00000010;
+  --color-border-blue: #3491ff;
 
   --color-info: #0052c8;
 
@@ -64,5 +67,14 @@
   }
   .text-16-regular {
     @apply text-base font-normal tracking-[-0.02em];
+  }
+  .text-16-semibold {
+    @apply text-base font-semibold tracking-[-0.015em];
+  }
+  .text-16-bold {
+    @apply text-base font-bold tracking-[-0.02em];
+  }
+  .text-14-bold {
+    @apply text-sm font-bold tracking-[-0.02em];
   }
 }

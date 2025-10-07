@@ -29,11 +29,27 @@ type LabelStep2OptionValue =
 const NOT_SURE_VALUE = 'not_sure';
 
 const LABEL_STEP_2_OPTIONS: labelOption<LabelStep2OptionValue>[] = [
-  { title: '낮은 이동식 의자', value: 'has_movable_chair' },
-  { title: '높은 이동식 의자', value: 'has_high_chair' },
-  { title: '좌식 의자', value: 'has_floor_chair' },
-  { title: '고정식 의자', value: 'has_fixed_chair' },
-  { title: '잘 모르겠어요', value: NOT_SURE_VALUE },
+  {
+    title: '일반 의자',
+    subtitle: '이동이 가능한, 일반적인 높이의 의자',
+    value: 'has_movable_chair',
+  },
+  {
+    title: '높은 의자',
+    subtitle: '주로 높은 바 테이블과 사용되는 의자',
+    value: 'has_high_chair',
+  },
+  {
+    title: '좌식',
+    subtitle: '바닥에 앉는 형태의 의자 또는 방석',
+    value: 'has_floor_chair',
+  },
+  {
+    title: '붙박이/소파 의자',
+    subtitle: '밀어도 움직이지 않는 의자',
+    value: 'has_fixed_chair',
+  },
+  { title: '잘 모르겠어요', subtitle: '', value: NOT_SURE_VALUE },
 ];
 
 export const LabelStep2 = ({
@@ -108,11 +124,12 @@ export const LabelStep2 = ({
         className='pb-20'
         labelingOptions={
           <ButtonList className='w-full'>
-            {LABEL_STEP_2_OPTIONS.map(({ title, value }) => (
+            {LABEL_STEP_2_OPTIONS.map(({ title, subtitle, value }) => (
               <ButtonList.Item
                 key={title}
                 disabled={isPending}
                 title={title}
+                subTitle={subtitle}
                 selected={selectedValue.includes(value)}
                 onClick={() => handleSelect(value)}
               />
