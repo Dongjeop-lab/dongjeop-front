@@ -55,9 +55,9 @@ const FinishPage = () => {
     try {
       const shareUrl = `${process.env.NEXT_PUBLIC_BASE_URL}?${ENTRY_QUERY.KEY}=${ENTRY_QUERY.VALUE}`;
       await navigator.clipboard.writeText(shareUrl);
-      toast.success('링크 복사 성공');
+      toast.success('링크를 복사했어요. 친구에게 공유해보세요!');
     } catch (error) {
-      toast.error('링크 복사 실패');
+      toast.error('링크를 복사하지 못했어요. 다시 시도해주세요.');
       console.error(error);
     }
   };
