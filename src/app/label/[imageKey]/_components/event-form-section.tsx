@@ -70,12 +70,7 @@ const EventFormSection = () => {
         >
           건너뛰기
         </BottomCTA.Button>
-        <BottomCTA.Button
-          type='submit'
-          variant='primary'
-        >
-          이벤트 참여하기
-        </BottomCTA.Button>
+        <BottomCTA.Button variant='primary'>이벤트 참여하기</BottomCTA.Button>
       </BottomCTA>
     </>
   );
