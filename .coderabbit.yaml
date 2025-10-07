@@ -1,7 +1,8 @@
 language: ko-KR
 
 base_branches:
-  - '*'
+  - main
+  - develop
 
 reviews:
   profile: assertive

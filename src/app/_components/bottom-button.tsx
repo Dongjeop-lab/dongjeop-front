@@ -1,19 +1,31 @@
 'use client';
 
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 
 import { BROWSER_PATH } from '@/lib/path';
+import { buildUrlWithSearchParams } from '@/lib/queryParams';
 
 const BottomButton = () => {
   const router = useRouter();
+  const searchParams = useSearchParams();
 
   const handleNavigateToAccessibilityQuiz = () => {
-    router.push(`${BROWSER_PATH.QUIZ.DEFAULT}?step=1`);
+    const url = buildUrlWithSearchParams(
+      BROWSER_PATH.QUIZ.DEFAULT,
+      searchParams,
+      { step: '1' }
+    );
+    router.push(url);
   };
 
   const handleNavigateToUpload = () => {
-    router.push(BROWSER_PATH.LABEL.UPLOAD);
+    const url = buildUrlWithSearchParams(
+      BROWSER_PATH.LABEL.UPLOAD,
+      searchParams
+    );
+    router.push(url);
   };
+
   return (
     <nav
       aria-label='이벤트 참여 액션'
@@ -23,7 +35,7 @@ const BottomButton = () => {
         type='button'
         onClick={handleNavigateToAccessibilityQuiz}
         aria-label='접근성 퀴즈 풀어보기 페이지로 이동'
-        className='bg-secondary text-secondary-foreground h-[3.125rem] w-full rounded-[0.75rem] px-[2rem] py-[0.5rem] text-[1rem] leading-[100%] font-semibold tracking-[-0.015em]'
+        className='bg-secondary text-secondary-foreground text-16-semibold h-14 w-full rounded-[0.75rem] px-[2rem] py-[0.5rem] leading-[100%]'
       >
         접근성 퀴즈 풀어보기
       </button>
@@ -31,7 +43,7 @@ const BottomButton = () => {
         type='button'
         onClick={handleNavigateToUpload}
         aria-label='실내 사진 업로드 페이지로 이동'
-        className='bg-primary h-[3.125rem] w-full rounded-[0.75rem] px-[2rem] py-[0.5rem] text-[1rem] leading-[100%] font-semibold tracking-[-0.015em] text-white'
+        className='bg-primary text-16-semibold h-14 w-full rounded-[0.75rem] px-[2rem] py-[0.5rem] leading-[100%] text-white'
       >
         1분만에 실내 사진 올리기
       </button>
