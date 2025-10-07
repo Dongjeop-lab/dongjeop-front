@@ -1,14 +1,13 @@
 import { ReadonlyURLSearchParams } from 'next/navigation';
 
-import { SOURCE, SourceType } from '@/types/common';
+import { ENTRY_QUERY } from '@/lib/path';
+import { EntryType } from '@/types/api/upload';
 
-export const getSourceParam = (
+export const getEntryTypeParam = (
   params: Record<string, string | string[] | undefined>
-): SourceType => {
-  const source = Array.isArray(params.source)
-    ? params.source[0]
-    : params.source;
-  return source === SOURCE.SHARE ? SOURCE.SHARE : SOURCE.NORMAL;
+): EntryType => {
+  const entry = Array.isArray(params.entry) ? params.entry[0] : params.entry;
+  return entry === ENTRY_QUERY.VALUE ? EntryType.SHARE : EntryType.NORMAL;
 };
 
 /**

@@ -2,7 +2,7 @@ import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
 import { API_PATH, BROWSER_PATH } from '@/lib/path';
-import { ImageSource, PostImageResponse } from '@/types/api/upload';
+import { EntryType, ImageSource, PostImageResponse } from '@/types/api/upload';
 
 interface UseImageUploadReturn {
   selectedImage: File | null;
@@ -12,7 +12,7 @@ interface UseImageUploadReturn {
   handleImageUpload: () => Promise<void>;
 }
 
-export const useImageUpload = (): UseImageUploadReturn => {
+export const useImageUpload = (entryType: EntryType): UseImageUploadReturn => {
   const router = useRouter();
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
@@ -66,6 +66,7 @@ export const useImageUpload = (): UseImageUploadReturn => {
       const formData = new FormData();
       formData.append('image_file', selectedImage);
       formData.append('source_type', ImageSource.GALLERY.toString()); // TODO: 실제 선택 값으로 변경
+      formData.append('entry_type', entryType.toString());
       formData.append('file_name', selectedImage.name);
       formData.append('terms_agreed', 'true'); // TODO: 실제 동의 여부로 교체
       formData.append('privacy_agreed', 'true'); // TODO: 실제 동의 여부로 교체
