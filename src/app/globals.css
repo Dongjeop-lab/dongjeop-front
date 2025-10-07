@@ -66,4 +66,7 @@
   .text-16-regular {
     @apply text-base font-normal tracking-[-0.02em];
   }
+  .text-14-bold {
+    @apply text-sm font-bold tracking-[-0.02em];
+  }
 }
