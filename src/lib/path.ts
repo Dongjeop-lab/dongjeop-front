@@ -6,6 +6,7 @@ export const BROWSER_PATH = {
   },
   QUIZ: {
     DEFAULT: '/quiz',
+    FINISH: '/quiz/finish',
   },
 } as const;
 
