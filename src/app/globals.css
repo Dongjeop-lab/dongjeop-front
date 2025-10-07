@@ -28,6 +28,8 @@
 
   --color-info: #0052c8;
 
+  --color-orange: #ff7f1c;
+
   --animate-cta-in: cta-in 0.5s ease-out;
 
   @keyframes cta-in {
@@ -53,6 +55,9 @@
 @layer components {
   .text-26-bold {
     @apply text-[1.625rem] font-bold tracking-[-0.02em];
+  }
+  .text-22-bold {
+    @apply text-[1.375rem] font-bold tracking-[-0.02em];
   }
   .text-18-semibold {
     @apply text-lg font-semibold tracking-[-0.015em];
