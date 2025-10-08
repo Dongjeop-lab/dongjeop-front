@@ -3,7 +3,7 @@ import { ReactNode } from 'react';
 
 interface FinishTitleProps {
   title: ReactNode;
-  subTitle: ReactNode;
+  subTitle?: ReactNode;
 }
 
 const FinishTitle = ({ title, subTitle }: FinishTitleProps) => {
@@ -14,11 +14,15 @@ const FinishTitle = ({ title, subTitle }: FinishTitleProps) => {
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       transition={{ duration: 0.5 }}
-      className='flex flex-col items-center gap-2.5 pb-[3.75rem]'
+      className='flex h-32.75 flex-col items-center justify-center gap-y-2.5'
     >
-      <p className='text-18-semibold text-primary'>{title}</p>
-      <h2 className='text-26-bold text-center whitespace-break-spaces'>
-        {subTitle}
+      {subTitle && (
+        <p className='text-18-semibold leading-[130%] tracking-[-0.01em] text-[#6f6f6f]'>
+          {subTitle}
+        </p>
+      )}
+      <h2 className='text-26-bold text-center leading-[130%] whitespace-break-spaces'>
+        {title}
       </h2>
     </motion.div>
   );
