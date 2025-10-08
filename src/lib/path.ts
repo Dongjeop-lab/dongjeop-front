@@ -6,7 +6,6 @@ export const BROWSER_PATH = {
   },
   QUIZ: {
     DEFAULT: '/quiz',
-    FINISH: '/quiz/finish',
   },
   TERMS: {
     RESEARCH_PROJECT: '/terms/research-project',
