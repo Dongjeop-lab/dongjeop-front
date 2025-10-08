@@ -1,5 +1,4 @@
 import { AnimatePresence } from 'motion/react';
-import * as motion from 'motion/react-client';
 
 import { GetSubmissionResultResponse } from '@/types/api/submission';
 
@@ -57,20 +56,6 @@ const FinishContent = ({
           onHammerClick={onHammerClick}
         />
       </div>
-
-      {/* XXX: FinishPage에 작성하는게 나을지 고민 */}
-      {currentStep !== 4 && (
-        <AnimatePresence>
-          <motion.div
-            initial={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ delay: 0.1, ease: 'easeOut', duration: 0.6 }}
-            className='relative w-full'
-          >
-            <div className='fixed -bottom-18 left-1/2 h-36 w-full -translate-x-1/2 rounded-[50%/100%_100%_0_0] bg-[#ff8a00] opacity-80 blur-[180px]' />
-          </motion.div>
-        </AnimatePresence>
-      )}
     </main>
   );
 };

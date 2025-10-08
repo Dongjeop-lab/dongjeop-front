@@ -83,11 +83,8 @@ const FinishPage = () => {
         />
       </main>
 
-      {step === 4 && (
-        <BottomCTA
-          hasAnimation
-          animationDuration={0.6}
-        >
+      {step === 4 ? (
+        <BottomCTA hasAnimation>
           <BottomCTA.Button
             variant='secondary'
             onClick={handleCopyToClipboard}
@@ -101,6 +98,10 @@ const FinishPage = () => {
             한 장 더 등록하기
           </BottomCTA.Button>
         </BottomCTA>
+      ) : (
+        <div className='relative w-full'>
+          <div className='fixed -bottom-18 left-1/2 h-36 w-full -translate-x-1/2 rounded-[50%/100%_100%_0_0] bg-[#ff8a00] opacity-80 blur-[180px]' />
+        </div>
       )}
     </>
   );
