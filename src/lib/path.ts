@@ -8,6 +8,14 @@ export const BROWSER_PATH = {
     DEFAULT: '/quiz',
     FINISH: '/quiz/finish',
   },
+  TERMS: {
+    RESEARCH_PROJECT: '/terms/research-project',
+    IMAGE_COLLECTION: '/terms/image-collection',
+    PRIVACY_ANONYMIZATION: '/terms/privacy-anonymization',
+    COPYRIGHT_PORTRAIT: '/terms/copyright-portrait',
+    REWARD_COLLECTION: '/terms/reward-collection',
+    FEEDBACK_COLLECTION: '/terms/feedback-collection',
+  },
 } as const;
 
 export const ENTRY_QUERY = {
