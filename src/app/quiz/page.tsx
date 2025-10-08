@@ -4,12 +4,16 @@ import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
 import Header from '@/components/ui/header';
-import { BROWSER_PATH } from '@/lib/path';
 
-import { QuizStep1, QuizStep2, QuizStep3 } from './_components/step';
+import {
+  QuizFinishStep,
+  QuizStep1,
+  QuizStep2,
+  QuizStep3,
+} from './_components/step';
 
 const FIRST_STEP = 1;
-const LAST_STEP = 3;
+const FINISH_STEP = 4;
 
 const QuizPage = () => {
   const [currentStep, setCurrentStep] = useState(FIRST_STEP);
@@ -25,13 +29,11 @@ const QuizPage = () => {
   };
 
   const handleNext = () => {
-    if (currentStep === LAST_STEP) {
-      //TODO: 완료 페이지를 새로운 페이지로 할 지 해당 페이지에서 처리할 지 논의 필요
-      router.push(BROWSER_PATH.QUIZ.FINISH);
+    if (currentStep === FINISH_STEP) {
       return;
     }
 
-    setCurrentStep(prev => Math.min(prev + 1, LAST_STEP));
+    setCurrentStep(prev => Math.min(prev + 1, FINISH_STEP));
   };
 
   const renderStep = () => {
@@ -46,6 +48,10 @@ const QuizPage = () => {
         return null;
     }
   };
+
+  if (currentStep === FINISH_STEP) {
+    return <QuizFinishStep />;
+  }
 
   return (
     <>
