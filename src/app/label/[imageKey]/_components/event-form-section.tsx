@@ -5,18 +5,20 @@ import { useState } from 'react';
 import AgreementForm, { Term } from '@/components/ui/agreement-form';
 import BottomCTA from '@/components/ui/bottom-cta';
 import TextField from '@/components/ui/text-field';
+import { BROWSER_PATH } from '@/lib/path';
 
-// TODO: 약관 링크 연결 필요
 const TERMS: Term[] = [
   {
     id: 'privacy-reward',
     required: true,
     label: '개인정보 수집·이용 동의 (리워드 지급 목적)',
+    link: BROWSER_PATH.TERMS.REWARD_COLLECTION,
   },
   {
     id: 'privacy-feedback',
     required: false,
     label: '개인정보 수집·이용 동의 (피드백 요청 목적)',
+    link: BROWSER_PATH.TERMS.FEEDBACK_COLLECTION,
   },
 ];
 
