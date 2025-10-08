@@ -4,7 +4,6 @@ import { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 
 import BottomCTA from '@/components/ui/bottom-cta';
-import { FINISH_LABEL_TRANSITION_DELAY } from '@/lib/constants';
 import { BROWSER_PATH, ENTRY_QUERY } from '@/lib/path';
 
 import FinishStep from './_components/finish-step';
@@ -17,17 +16,38 @@ const FinishPage = () => {
   const { submissionResult, loading, error } = useSubmissionResult(
     params.imageKey
   );
-  const [step, setStep] = useState(1);
+  const [step, setStep] = useState<1 | 2 | 3 | 4>(1);
 
   useEffect(() => {
-    if (loading || !submissionResult) return;
+    if (step !== 1) return;
 
-    const timer = setTimeout(() => {
-      setStep(2);
-    }, FINISH_LABEL_TRANSITION_DELAY);
-
+    const timer = setTimeout(() => setStep(2), 600);
     return () => clearTimeout(timer);
-  }, [loading, submissionResult]);
+  }, [step]);
+
+  const handleHammerClick = () => {
+    if (step !== 2) return;
+
+    // 3단계 애니메이션 시작 (6초)
+    // 부서진 계단 이미지로 교체 + 컨페티 로티
+    setStep(3);
+
+    // 3단계 애니메이션 종료 후 4단계로 전환
+    setTimeout(() => {
+      setStep(4);
+    }, 800);
+  };
+
+  const handleCopyToClipboard = async () => {
+    try {
+      const shareUrl = `${process.env.NEXT_PUBLIC_BASE_URL}?${ENTRY_QUERY.KEY}=${ENTRY_QUERY.VALUE}`;
+      await navigator.clipboard.writeText(shareUrl);
+      toast.success('링크를 복사했어요. 친구에게 공유해보세요!');
+    } catch (error) {
+      toast.error('링크를 복사하지 못했어요. 다시 시도해주세요.');
+      console.error(error);
+    }
+  };
 
   if (loading) return null;
 
@@ -51,31 +71,23 @@ const FinishPage = () => {
     );
   }
 
-  const handleCopyToClipboard = async () => {
-    try {
-      const shareUrl = `${process.env.NEXT_PUBLIC_BASE_URL}?${ENTRY_QUERY.KEY}=${ENTRY_QUERY.VALUE}`;
-      await navigator.clipboard.writeText(shareUrl);
-      toast.success('링크를 복사했어요. 친구에게 공유해보세요!');
-    } catch (error) {
-      toast.error('링크를 복사하지 못했어요. 다시 시도해주세요.');
-      console.error(error);
-    }
-  };
-
   return (
     <>
       <main className={`flex h-screen flex-col items-center overflow-hidden`}>
         <h1 className='sr-only'>등록 완료 페이지</h1>
+        {/* TODO: loading || error 일 땐 기여카드 렌더링 X (prop 추가) */}
         <FinishStep
           currentStep={step}
-          seqNo={submissionResult.seq_no}
-          achievementRate={submissionResult.achievement_rate}
-          totalImageNum={submissionResult.seq_no}
+          submissionResult={submissionResult}
+          onHammerClick={handleHammerClick}
         />
       </main>
 
-      {step === 2 && (
-        <BottomCTA hasAnimation>
+      {step === 4 && (
+        <BottomCTA
+          hasAnimation
+          animationDuration={0.6}
+        >
           <BottomCTA.Button
             variant='secondary'
             onClick={handleCopyToClipboard}

@@ -6,36 +6,36 @@ import { GetSubmissionResultResponse } from '@/types/api/submission';
 import { SubmissionCard } from './submission-card';
 
 interface ImageSectionProps {
-  mainStep: 1 | 2 | 3 | 4;
+  step: 1 | 2 | 3 | 4;
   submissionResult: GetSubmissionResultResponse;
   onHammerClick: () => void;
 }
 
 export const ImageSection = ({
-  mainStep,
+  step,
   submissionResult,
   onHammerClick,
 }: ImageSectionProps) => {
   const [showContributionCard, setShowContributionCard] = useState(false); // 카드 flip
 
   const handleImageClick = () => {
-    if (mainStep === 2) {
+    if (step === 2) {
       onHammerClick();
     }
   };
 
   const handleCardFlip = () => {
-    if (mainStep === 4) {
+    if (step === 4) {
       setShowContributionCard(prev => !prev);
     }
   };
 
   return (
     <div className='relative h-85 w-75'>
-      {(mainStep === 1 || mainStep === 2) && (
+      {(step === 1 || step === 2) && (
         <figure
-          className={`relative h-full w-full overflow-hidden rounded-2xl ${mainStep === 2 ? 'cursor-pointer' : ''}`}
-          onClick={mainStep === 2 ? handleImageClick : undefined}
+          className={`relative h-full w-full overflow-hidden rounded-2xl ${step === 2 ? 'cursor-pointer' : ''}`}
+          onClick={step === 2 ? handleImageClick : undefined}
         >
           <Image
             src='/images/upload/stairs-upload.svg'
@@ -63,7 +63,8 @@ export const ImageSection = ({
         </figure>
       )}
 
-      {mainStep === 3 && (
+      {/* TODO: 컨페티 효과 부여 */}
+      {step === 3 && (
         <div className='relative h-full w-full'>
           <Image
             src='/images/finish/stairs-finish.svg'
@@ -75,7 +76,8 @@ export const ImageSection = ({
         </div>
       )}
 
-      {mainStep === 4 && (
+      {/* TODO: 초기 1회) flip 애니메이션 부여 */}
+      {step === 4 && (
         <div
           onClick={handleCardFlip}
           className='relative h-full w-full'
