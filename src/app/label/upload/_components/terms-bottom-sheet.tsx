@@ -1,6 +1,7 @@
 import AgreementForm, { Term } from '@/components/ui/agreement-form';
 import BottomCTA from '@/components/ui/bottom-cta';
 import BottomSheet from '@/components/ui/bottom-sheet';
+import { BROWSER_PATH } from '@/lib/path';
 
 interface TermsBottomSheetProps {
   isOpen: boolean;
@@ -11,27 +12,31 @@ interface TermsBottomSheetProps {
   onConfirm: VoidFunction;
 }
 
-// TODO: 링크 적용 및 id 수정
+// TODO: id 수정
 const TERMS: Term[] = [
   {
     id: 'terms-research',
     required: true,
     label: '연구 프로젝트 참여 약관 동의',
+    link: BROWSER_PATH.TERMS.RESEARCH_PROJECT,
   },
   {
     id: 'terms-ai',
     required: true,
     label: 'AI 학습용 데이터 수집 및 이용 동의',
+    link: BROWSER_PATH.TERMS.IMAGE_COLLECTION,
   },
   {
     id: 'terms-privacy',
     required: true,
     label: '개인정보 비식별화 처리 동의',
+    link: BROWSER_PATH.TERMS.PRIVACY_ANONYMIZATION,
   },
   {
     id: 'terms-marketing',
     required: true,
     label: '저작권·초상권 관련 유의사항 동의',
+    link: BROWSER_PATH.TERMS.COPYRIGHT_PORTRAIT,
   },
 ];
 
