@@ -67,12 +67,15 @@ export const useImageUpload = (
   };
 
   const handleImageUpload = async () => {
-    if (!selectedImage || !sourceType) return;
+    if (!selectedImage) return;
 
     try {
       const formData = new FormData();
       formData.append('image_file', selectedImage);
-      formData.append('source_type', sourceType.toString());
+
+      const uploadSourceType = sourceType ?? ImageSourceType.GALLERY;
+      formData.append('source_type', uploadSourceType.toString());
+
       formData.append('entry_type', entryType.toString());
       formData.append('file_name', selectedImage.name);
       formData.append('terms_agreed', 'true'); // TODO: 실제 동의 여부로 교체
