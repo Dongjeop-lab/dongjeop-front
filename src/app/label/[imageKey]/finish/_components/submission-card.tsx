@@ -10,7 +10,7 @@ export const SubmissionCard = ({
   achievementRate,
 }: SubmissionsCardProps) => {
   return (
-    <div className='flex h-85 w-75 flex-col gap-y-1.5 bg-[url(/images/finish/submission-card-bg.svg)] p-7.5 pt-12.5'>
+    <div className='flex h-full w-full flex-col gap-y-1.5 bg-[url(/images/finish/submission-card-bg.svg)] p-7.5 pt-12.5'>
       <div className='text-18-bold'>
         <p>지금까지 모인 사진</p>
         <p className='text-[2.625rem] leading-[130%] text-[#984200]'>
