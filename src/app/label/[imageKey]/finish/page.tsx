@@ -1,4 +1,5 @@
 'use client';
+import Image from 'next/image';
 import { useParams, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
@@ -38,6 +39,9 @@ const FinishPage = () => {
     }, 800);
   };
 
+  // TODO: 기여카드 저장 로직 추가
+  const handleDownloadSubmissonCard = () => {};
+
   const handleCopyToClipboard = async () => {
     try {
       const shareUrl = `${process.env.NEXT_PUBLIC_BASE_URL}?${ENTRY_QUERY.KEY}=${ENTRY_QUERY.VALUE}`;
@@ -73,14 +77,31 @@ const FinishPage = () => {
 
   return (
     <>
-      <main className={`flex h-screen flex-col items-center overflow-hidden`}>
+      <main className='flex flex-col items-center pt-11 pb-14'>
         <h1 className='sr-only'>등록 완료 페이지</h1>
-        {/* TODO: loading || error 일 땐 기여카드 렌더링 X (prop 추가) */}
+        {/* TODO: loading || error 일 땐 기여카드 & 이미지 저장 버튼 렌더링 X (prop 추가) */}
         <FinishContent
           currentStep={step}
           submissionResult={submissionResult}
           onHammerClick={handleHammerClick}
         />
+        {step === 4 && (
+          //  TODO: 애니메이션 추가
+          <div
+            className='mb-7.5 flex gap-x-1 rounded-[50px] bg-[#292929] py-2.5 pr-6 pl-4.5'
+            onClick={handleDownloadSubmissonCard}
+          >
+            <Image
+              src='/images/finish/download.svg'
+              alt='기여카드 이미지 저장하기'
+              width={18}
+              height={18}
+            />
+            <p className='text-16-semibold leading-[130%] tracking-[-0.01em] text-white'>
+              이미지 저장
+            </p>
+          </div>
+        )}
       </main>
 
       {step === 4 ? (

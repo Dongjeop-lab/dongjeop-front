@@ -17,7 +17,7 @@ const FinishContent = ({
   onHammerClick,
 }: FinishContentProps) => {
   return (
-    <main className='relative flex h-full w-full flex-col items-center pt-11'>
+    <main className='flex flex-col items-center gap-y-5'>
       {/* 타이틀 영역 */}
       <div className='relative h-32.75 w-90 overflow-hidden'>
         <AnimatePresence mode='popLayout'>
@@ -49,7 +49,7 @@ const FinishContent = ({
 
       {/* 중앙 이미지 영역 */}
       {/* FIXME: 화면 정중앙에 위치하도록 수정 */}
-      <div className='mt-5 p-7.5'>
+      <div className='p-7.5'>
         <ImageSection
           step={currentStep}
           submissionResult={submissionResult}
