@@ -6,7 +6,7 @@ import { toast } from 'react-toastify';
 import BottomCTA from '@/components/ui/bottom-cta';
 import { BROWSER_PATH, ENTRY_QUERY } from '@/lib/path';
 
-import FinishStep from './_components/finish-step';
+import FinishContent from './_components/finish-content';
 import { useSubmissionResult } from './_hooks/use-submission-result';
 
 const FinishPage = () => {
@@ -76,7 +76,7 @@ const FinishPage = () => {
       <main className={`flex h-screen flex-col items-center overflow-hidden`}>
         <h1 className='sr-only'>등록 완료 페이지</h1>
         {/* TODO: loading || error 일 땐 기여카드 렌더링 X (prop 추가) */}
-        <FinishStep
+        <FinishContent
           currentStep={step}
           submissionResult={submissionResult}
           onHammerClick={handleHammerClick}

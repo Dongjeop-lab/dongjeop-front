@@ -6,17 +6,17 @@ import { GetSubmissionResultResponse } from '@/types/api/submission';
 import FinishTitle from './finish-title';
 import { ImageSection } from './image-section';
 
-interface FinishStepProps {
+interface FinishContentProps {
   currentStep: 1 | 2 | 3 | 4;
   submissionResult: GetSubmissionResultResponse;
   onHammerClick: () => void;
 }
 
-const FinishStep = ({
+const FinishContent = ({
   currentStep,
   submissionResult,
   onHammerClick,
-}: FinishStepProps) => {
+}: FinishContentProps) => {
   return (
     <main className='relative flex h-full w-full flex-col items-center pt-11'>
       {/* 타이틀 영역 */}
@@ -75,4 +75,4 @@ const FinishStep = ({
   );
 };
 
-export default FinishStep;
+export default FinishContent;
