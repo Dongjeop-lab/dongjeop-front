@@ -14,9 +14,7 @@ interface UploadContainerProps {
 
 const UploadContainer = ({ entryType }: UploadContainerProps) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const [sourceType, setSourceType] = useState<ImageSourceType>(
-    ImageSourceType.GALLERY
-  );
+  const [sourceType, setSourceType] = useState<ImageSourceType | null>(null);
 
   const {
     selectedImage,
@@ -33,7 +31,7 @@ const UploadContainer = ({ entryType }: UploadContainerProps) => {
 
   useEffect(() => {
     if (!selectedImage) {
-      setSourceType(ImageSourceType.GALLERY);
+      setSourceType(null);
       return;
     }
 

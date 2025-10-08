@@ -17,7 +17,7 @@ interface UseImageUploadReturn {
 }
 
 export const useImageUpload = (
-  sourceType: ImageSourceType,
+  sourceType: ImageSourceType | null,
   entryType: EntryType
 ): UseImageUploadReturn => {
   const router = useRouter();
@@ -67,7 +67,7 @@ export const useImageUpload = (
   };
 
   const handleImageUpload = async () => {
-    if (!selectedImage) return;
+    if (!selectedImage || !sourceType) return;
 
     try {
       const formData = new FormData();
