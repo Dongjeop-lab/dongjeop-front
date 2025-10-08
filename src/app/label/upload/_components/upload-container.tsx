@@ -1,9 +1,9 @@
 'use client';
 import Image from 'next/image';
-import { useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 import BottomCTA from '@/components/ui/bottom-cta';
-import { EntryType } from '@/types/api/upload';
+import { EntryType, ImageSourceType } from '@/types/api/upload';
 
 import { useImageUpload } from '../_hooks/use-image-upload';
 import UploadGuide from './upload-guide';
@@ -12,20 +12,44 @@ interface UploadContainerProps {
   entryType: EntryType;
 }
 
+// 카메라 촬영 감지를 위한 임계값 (2분)
+const CAMERA_DETECTION_THRESHOLD_MS = 2 * 60 * 1000;
+
 const UploadContainer = ({ entryType }: UploadContainerProps) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const [sourceType, setSourceType] = useState<ImageSourceType | null>(null);
+
   const {
     selectedImage,
     imagePreview,
     handleImageChange,
     handleImageReset,
     handleImageUpload,
-  } = useImageUpload(entryType);
+  } = useImageUpload(sourceType, entryType);
 
   const openImagePicker = () => {
     if (imagePreview) return;
     fileInputRef.current?.click();
   };
+
+  useEffect(() => {
+    if (!selectedImage) {
+      setSourceType(null);
+      return;
+    }
+
+    const now = Date.now();
+    const lastModified = selectedImage.lastModified;
+    const timeDiff = now - lastModified;
+
+    // lastModified가 현재 시간 기준 2분 이내면 카메라 촬영, 그 외는 갤러리 선택으로 판단
+    const detectedSource =
+      timeDiff < CAMERA_DETECTION_THRESHOLD_MS
+        ? ImageSourceType.CAMERA
+        : ImageSourceType.GALLERY;
+
+    setSourceType(detectedSource);
+  }, [selectedImage]);
 
   return (
     <div className='flex min-h-screen w-full'>
