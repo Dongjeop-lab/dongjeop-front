@@ -12,6 +12,9 @@ interface UploadContainerProps {
   entryType: EntryType;
 }
 
+// 카메라 촬영 감지를 위한 임계값 (2분)
+const CAMERA_DETECTION_THRESHOLD_MS = 2 * 60 * 1000;
+
 const UploadContainer = ({ entryType }: UploadContainerProps) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [sourceType, setSourceType] = useState<ImageSourceType | null>(null);
@@ -39,9 +42,9 @@ const UploadContainer = ({ entryType }: UploadContainerProps) => {
     const lastModified = selectedImage.lastModified;
     const timeDiff = now - lastModified;
 
-    // lastModified 기준 2분 이내면 카메라 촬영, 그 외는 갤러리 선택으로 판단
+    // lastModified가 현재 시간 기준 2분 이내면 카메라 촬영, 그 외는 갤러리 선택으로 판단
     const detectedSource =
-      timeDiff < 2 * 60 * 1000
+      timeDiff < CAMERA_DETECTION_THRESHOLD_MS
         ? ImageSourceType.CAMERA
         : ImageSourceType.GALLERY;
 
