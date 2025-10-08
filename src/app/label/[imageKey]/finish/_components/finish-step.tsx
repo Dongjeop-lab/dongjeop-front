@@ -1,127 +1,71 @@
 import { AnimatePresence } from 'motion/react';
 import * as motion from 'motion/react-client';
-import Image from 'next/image';
-import CountUp from 'react-countup';
 
-import { cn } from '@/lib/utils';
+import { GetSubmissionResultResponse } from '@/types/api/submission';
 
-import { CircularProgress } from './circular-progress';
 import FinishTitle from './finish-title';
+import { ImageSection } from './image-section';
 
-interface FinishStep1Props {
-  currentStep: number;
-  seqNo: number;
-  achievementRate: number;
-  totalImageNum: number;
+interface FinishStepProps {
+  currentStep: 1 | 2 | 3 | 4;
+  submissionResult: GetSubmissionResultResponse;
+  onHammerClick: () => void;
 }
 
-const fadeAnimation = {
-  initial: { opacity: 0 },
-  animate: { opacity: 1 },
-  exit: { opacity: 0 },
-  transition: { duration: 0.5 },
-};
-
 const FinishStep = ({
-  seqNo,
-  achievementRate,
   currentStep,
-  totalImageNum,
-}: FinishStep1Props) => {
+  submissionResult,
+  onHammerClick,
+}: FinishStepProps) => {
   return (
-    <main className='flex flex-col items-center pt-11'>
-      <section className='flex w-[360px] flex-1 flex-col items-center justify-center pt-5 pb-[1.875rem]'>
-        <AnimatePresence mode='wait'>
-          {currentStep === 1 ? (
+    <main className='relative flex h-full w-full flex-col items-center pt-11'>
+      {/* 타이틀 영역 */}
+      <div className='relative h-32.75 w-90 overflow-hidden'>
+        <AnimatePresence mode='popLayout'>
+          {currentStep === 1 && (
             <FinishTitle
-              title={'사진 등록 완료!'}
-              subTitle={`${seqNo}번째 기여자세요!\n함께해 주셔서 감사해요.`}
+              key='step-1'
+              title={`고마운 마음을\n망치로 바꿔드렸어요`}
+              subTitle={'사진 등록 완료!'}
+              skipInitial={true}
             />
-          ) : (
+          )}
+
+          {(currentStep === 2 || currentStep === 3) && (
             <FinishTitle
-              title={`목표까지 ${achievementRate}% 남았어요!`}
-              subTitle={`친구에게 공유해\n계단을 부셔주세요.`}
+              key='step-2-3'
+              title={`망치를 눌러\n이동약자의 계단을\n부숴주세요`}
+            />
+          )}
+
+          {currentStep === 4 && (
+            <FinishTitle
+              key='step-4'
+              title={'친구에게 공유해\n계단을 부숴주세요'}
+              subTitle={'아직 더 많은 사진이 필요해요'}
             />
           )}
         </AnimatePresence>
-        <figure className='relative overflow-hidden rounded-2xl'>
-          <Image
-            src='/images/finish/stairs-finish.svg'
-            className={cn(
-              'h-full w-full',
-              'transition-all duration-300 ease-in-out',
-              currentStep === 2 && 'blur-sm'
-            )}
-            alt=''
-            aria-hidden='true'
-            width={280}
-            height={260}
-          />
-          <AnimatePresence>
-            {currentStep == 2 && (
-              <motion.figcaption
-                {...fadeAnimation}
-                className='absolute inset-0 flex flex-col items-center justify-center'
-              >
-                <CircularProgress
-                  progress={100 - achievementRate}
-                  className='absolute'
-                />
-                <Image
-                  src='/images/finish/icon-hammer.svg'
-                  alt=''
-                  aria-hidden='true'
-                  width={50}
-                  height={40}
-                />
-                <p className='text-primary-foreground text-lg font-bold'>
-                  지금까지 모인 사진
-                </p>
-                <CountUp
-                  start={0}
-                  end={totalImageNum || 0} // TODO: API 응답에 totalImageNum 추가되면 `|| 0` 제거
-                  delay={0.4}
-                  duration={0.5}
-                  className='text-primary-foreground -mt-2.5 text-[4rem] font-bold'
-                />
-              </motion.figcaption>
-            )}
-          </AnimatePresence>
-        </figure>
-      </section>
+      </div>
 
-      {currentStep === 2 && (
-        <motion.section
-          initial={{ opacity: 0, y: 60 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, ease: 'easeOut' }}
-          className='mb-20 flex w-full flex-col items-center gap-2 px-5 pt-[1.875rem]'
-        >
-          <h3 className='text-18-semibold'>사진을 모으면 어떤 점이 좋나요?</h3>
+      {/* 중앙 이미지 영역 */}
+      {/* FIXME: 화면 정중앙에 위치하도록 수정 */}
+      <div className='mt-5 p-7.5'>
+        <ImageSection
+          step={currentStep}
+          submissionResult={submissionResult}
+          onHammerClick={onHammerClick}
+        />
+      </div>
 
-          <ul className='list-disc space-y-2 pl-5'>
-            <li>
-              {`실내 사진을 모을 수록, `}
-              <span className='text-primary'>
-                실내 접근성을 분석하는 AI모델
-              </span>
-              을 만드는데 큰 도움이 돼요.
-            </li>
-            <li>
-              AI 모델은 추후 이동약자를 위한 서비스를 운영하는 “계단뿌셔클럽”에
-              활용될 예정이에요.
-            </li>
-          </ul>
-        </motion.section>
-      )}
-
-      {/* 반원 그라데이션 */}
-      {currentStep === 1 && (
+      {/* XXX: FinishPage에 작성하는게 나을지 고민 */}
+      {currentStep !== 4 && (
         <AnimatePresence>
           <motion.div
             initial={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className='relative w-full flex-1'
+            transition={{ delay: 0.1, ease: 'easeOut', duration: 0.6 }}
+            className='relative w-full'
           >
             <div className='fixed -bottom-18 left-1/2 h-36 w-full -translate-x-1/2 rounded-[50%/100%_100%_0_0] bg-[#ff8a00] opacity-80 blur-[180px]' />
           </motion.div>
