@@ -1,3 +1,4 @@
+import { AnimatePresence, motion } from 'motion/react';
 import Image from 'next/image';
 import { useState } from 'react';
 
@@ -16,7 +17,7 @@ export const ImageSection = ({
   submissionResult,
   onHammerClick,
 }: ImageSectionProps) => {
-  const [showContributionCard, setShowContributionCard] = useState(false); // 카드 flip
+  const [showContributionCard, setShowContributionCard] = useState(false);
 
   const handleImageClick = () => {
     if (step === 2) {
@@ -32,62 +33,47 @@ export const ImageSection = ({
 
   return (
     <div className='relative h-85 w-75'>
-      {(step === 1 || step === 2) && (
-        <figure
-          className={`relative h-full w-full overflow-hidden rounded-2xl ${step === 2 ? 'cursor-pointer' : ''}`}
-          onClick={step === 2 ? handleImageClick : undefined}
-        >
-          <Image
-            src='/images/upload/stairs-upload.svg'
-            alt=''
-            aria-hidden='true'
-            fill
-            className='object-cover'
-          />
-          <div className='absolute inset-0 flex flex-col items-center justify-center'>
+      <AnimatePresence>
+        {(step === 1 || step === 2) && (
+          <figure
+            key='hammer-stairs'
+            className={`relative h-full w-full overflow-hidden rounded-2xl ${step === 2 ? 'cursor-pointer' : ''}`}
+            onClick={step === 2 ? handleImageClick : undefined}
+          >
             <Image
-              src='/images/upload/icon-hammer.svg'
+              src='/images/upload/stairs-upload.svg'
               alt=''
               aria-hidden='true'
-              width={161.54}
-              height={161.54}
+              fill
+              className='object-cover'
             />
-            <Image
-              src='/images/upload/tooltip.svg'
-              alt=''
-              aria-hidden='true'
-              width={76.85}
-              height={45.69}
-            />
-          </div>
-        </figure>
-      )}
+            <div className='absolute inset-0 flex flex-col items-center justify-center'>
+              <Image
+                src='/images/upload/icon-hammer.svg'
+                alt=''
+                aria-hidden='true'
+                width={161.54}
+                height={161.54}
+              />
+              <Image
+                src='/images/upload/tooltip.svg'
+                alt=''
+                aria-hidden='true'
+                width={76.85}
+                height={45.69}
+              />
+            </div>
+          </figure>
+        )}
 
-      {/* TODO: 컨페티 효과 부여 */}
-      {step === 3 && (
-        <div className='relative h-full w-full'>
-          <Image
-            src='/images/finish/stairs-finish.svg'
-            alt=''
-            aria-hidden='true'
-            fill
-            className='object-cover'
-          />
-        </div>
-      )}
-
-      {/* TODO: 초기 1회) flip 애니메이션 부여 */}
-      {step === 4 && (
-        <div
-          onClick={handleCardFlip}
-          className='relative h-full w-full'
-        >
-          {showContributionCard ? (
-            <SubmissionCard
-              seqNo={submissionResult.seq_no}
-              achievementRate={submissionResult.achievement_rate}
-            />
-          ) : (
+        {step === 3 && (
+          <motion.div
+            key='crushed-stairs'
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ ease: 'easeIn', duration: 0.8 }}
+            className='relative h-full w-full'
+          >
             <Image
               src='/images/finish/stairs-finish.svg'
               alt=''
@@ -95,9 +81,32 @@ export const ImageSection = ({
               fill
               className='object-cover'
             />
-          )}
-        </div>
-      )}
+          </motion.div>
+        )}
+
+        {step === 4 && (
+          <div
+            key='card-or-stairs'
+            onClick={handleCardFlip}
+            className='relative h-full w-full'
+          >
+            {showContributionCard ? (
+              <SubmissionCard
+                seqNo={submissionResult.seq_no}
+                achievementRate={submissionResult.achievement_rate}
+              />
+            ) : (
+              <Image
+                src='/images/finish/stairs-finish.svg'
+                alt=''
+                aria-hidden='true'
+                fill
+                className='object-cover'
+              />
+            )}
+          </div>
+        )}
+      </AnimatePresence>
     </div>
   );
 };

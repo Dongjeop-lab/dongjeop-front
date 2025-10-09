@@ -2,6 +2,7 @@ import { AnimatePresence } from 'motion/react';
 
 import { GetSubmissionResultResponse } from '@/types/api/submission';
 
+import { ConfettiAnimation } from './confetti-animation';
 import FinishTitle from './finish-title';
 import { ImageSection } from './image-section';
 
@@ -17,7 +18,7 @@ const FinishContent = ({
   onHammerClick,
 }: FinishContentProps) => {
   return (
-    <main className='flex flex-col items-center gap-y-5'>
+    <main className='relative flex h-full flex-col items-center gap-y-5'>
       {/* 타이틀 영역 */}
       <div className='relative h-32.75 w-90 overflow-hidden'>
         <AnimatePresence mode='popLayout'>
@@ -46,6 +47,13 @@ const FinishContent = ({
           )}
         </AnimatePresence>
       </div>
+
+      {/* 컨페티 오버레이 */}
+      {currentStep === 3 && (
+        <div className='pointer-events-none absolute top-0 left-0 z-500 flex h-full w-full items-center justify-center'>
+          <ConfettiAnimation />
+        </div>
+      )}
 
       {/* 중앙 이미지 영역 */}
       {/* FIXME: 화면 정중앙에 위치하도록 수정 */}
