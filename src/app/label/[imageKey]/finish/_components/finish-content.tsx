@@ -1,4 +1,5 @@
-import { AnimatePresence } from 'motion/react';
+import { AnimatePresence, motion } from 'motion/react';
+import Image from 'next/image';
 import { useState } from 'react';
 
 import { GetSubmissionResultResponse } from '@/types/api/submission';
@@ -61,7 +62,6 @@ const FinishContent = ({
       )}
 
       {/* 중앙 이미지 영역 */}
-      {/* FIXME: 화면 정중앙에 위치하도록 수정 */}
       <div className='p-7.5'>
         <ImageSection
           step={currentStep}
@@ -71,6 +71,29 @@ const FinishContent = ({
           }}
         />
       </div>
+
+      {/* 이미지 저장 버튼 */}
+      {currentStep === 4 && submissionResult && (
+        <AnimatePresence>
+          <motion.button
+            className='absolute top-full left-1/2 flex -translate-x-1/2 gap-x-1 rounded-[50px] bg-[#292929] py-2.5 pr-6 pl-4.5'
+            // onClick={handleDownloadSubmissonCard}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ ease: 'easeIn', duration: 0.5 }}
+          >
+            <Image
+              src='/images/finish/download.svg'
+              alt='기여카드 이미지 저장하기'
+              width={18}
+              height={18}
+            />
+            <p className='text-16-semibold leading-[130%] tracking-[-0.01em] text-white'>
+              이미지 저장
+            </p>
+          </motion.button>
+        </AnimatePresence>
+      )}
     </main>
   );
 };
