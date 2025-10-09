@@ -1,6 +1,4 @@
 'use client';
-import { AnimatePresence, motion } from 'motion/react';
-import Image from 'next/image';
 import { useParams, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
@@ -74,36 +72,15 @@ const FinishPage = () => {
 
   return (
     <>
-      <main className='flex flex-col items-center pt-11 pb-14'>
+      <main
+        className={`flex min-h-screen flex-col items-center justify-center pt-11 ${step === 4 && submissionResult ? 'pb-32' : 'pb-14'}`}
+      >
         <h1 className='sr-only'>등록 완료 페이지</h1>
         <FinishContent
           currentStep={step}
           submissionResult={submissionResult}
           onHammerClick={handleHammerClick}
         />
-
-        {/* 이미지 저장 버튼 */}
-        {step === 4 && submissionResult && (
-          <AnimatePresence>
-            <motion.button
-              className='mb-7.5 flex gap-x-1 rounded-[50px] bg-[#292929] py-2.5 pr-6 pl-4.5'
-              onClick={handleDownloadSubmissonCard}
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ ease: 'easeIn', duration: 0.5 }}
-            >
-              <Image
-                src='/images/finish/download.svg'
-                alt='기여카드 이미지 저장하기'
-                width={18}
-                height={18}
-              />
-              <p className='text-16-semibold leading-[130%] tracking-[-0.01em] text-white'>
-                이미지 저장
-              </p>
-            </motion.button>
-          </AnimatePresence>
-        )}
       </main>
 
       {step === 4 ? (
