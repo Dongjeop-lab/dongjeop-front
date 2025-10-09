@@ -18,13 +18,13 @@ const TERMS_ID = {
 
 const TERMS: Term[] = [
   {
-    id: 'privacy-reward-agree',
+    id: TERMS_ID.PRIVACY_REWARD_AGREE,
     required: true,
     label: '개인정보 수집·이용 동의 (리워드 지급 목적)',
     link: BROWSER_PATH.TERMS.REWARD_COLLECTION,
   },
   {
-    id: 'privacy-feedback-agree',
+    id: TERMS_ID.PRIVACY_FEEDBACK_AGREE,
     required: false,
     label: '개인정보 수집·이용 동의 (피드백 요청 목적)',
     link: BROWSER_PATH.TERMS.FEEDBACK_COLLECTION,
