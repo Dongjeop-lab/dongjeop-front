@@ -10,6 +10,7 @@ interface SubmissionsCardProps {
 export const SubmissionCard = forwardRef<HTMLDivElement, SubmissionsCardProps>(
   ({ seqNo, achievementRate }, ref) => {
     return (
+      // TODO: 현재 배경 이미지에서 하트 분리, 하트는 별도 element로 추가 (화질 깨짐)
       <div
         ref={ref}
         className='flex h-full w-full flex-col gap-y-1.5 rounded-2xl bg-[url(/images/finish/submission-card-bg.svg)] p-7.5 pt-12.5'

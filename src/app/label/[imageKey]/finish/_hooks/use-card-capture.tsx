@@ -18,6 +18,7 @@ export const useCardCapture = (ref: RefObject<HTMLElement | null>) => {
       const canvas = await html2canvas(ref.current, {
         useCORS: true,
         backgroundColor: null,
+        scale: 2,
         logging: false,
       });
 
