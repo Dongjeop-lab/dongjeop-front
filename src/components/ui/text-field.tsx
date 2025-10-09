@@ -6,12 +6,18 @@ interface TextFieldProps extends InputHTMLAttributes<HTMLInputElement> {
   type?: 'text' | 'number';
 }
 
-const TextField = ({ type = 'text', className, ...props }: TextFieldProps) => {
+const TextField = ({
+  type = 'text',
+  className,
+  inputMode,
+  pattern,
+  ...props
+}: TextFieldProps) => {
   return (
     <input
       {...props}
-      inputMode={type === 'number' ? 'decimal' : undefined}
-      pattern={type === 'number' ? '[0-9]*' : undefined}
+      inputMode={type === 'number' ? inputMode || 'decimal' : inputMode}
+      pattern={type === 'number' ? pattern || '[0-9]*' : pattern}
       type={type}
       className={cn(
         'border-border-default rounded-xl border bg-white py-5 pr-[1.875rem] pl-[1.375rem] text-base font-medium',
