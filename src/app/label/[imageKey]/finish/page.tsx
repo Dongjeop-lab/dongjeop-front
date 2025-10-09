@@ -35,7 +35,7 @@ const FinishPage = () => {
   };
 
   // TODO: 기여카드 저장 로직 추가
-  const handleDownloadSubmissonCard = () => {};
+  const handleDownloadCard = () => {};
 
   const handleCopyToClipboard = async () => {
     try {
@@ -80,6 +80,7 @@ const FinishPage = () => {
           currentStep={step}
           submissionResult={submissionResult}
           onHammerClick={handleHammerClick}
+          onDownloadCard={handleDownloadCard}
         />
       </main>
 
