@@ -1,6 +1,6 @@
 import { AnimatePresence, motion } from 'motion/react';
 import Image from 'next/image';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import { GetSubmissionResultResponse } from '@/types/api/submission';
 
@@ -25,11 +25,12 @@ export const ImageSection = ({
     }
   };
 
-  const handleCardFlip = () => {
+  useEffect(() => {
     if (step === 4) {
-      setShowContributionCard(prev => !prev);
+      const timer = setTimeout(() => setShowContributionCard(true), 800);
+      return () => clearTimeout(timer);
     }
-  };
+  }, [step]);
 
   return (
     <div className='relative h-85 w-75'>
@@ -85,17 +86,18 @@ export const ImageSection = ({
         )}
 
         {step === 4 && (
-          <div
-            key='card-or-stairs'
-            onClick={handleCardFlip}
+          <motion.div
+            key='flip-card'
             className='relative h-full w-full'
+            style={{ transformStyle: 'preserve-3d' }}
+            animate={{ rotateY: showContributionCard ? 180 : 0 }}
+            transition={{ duration: 0.8 }}
           >
-            {showContributionCard ? (
-              <SubmissionCard
-                seqNo={submissionResult.seq_no}
-                achievementRate={submissionResult.achievement_rate}
-              />
-            ) : (
+            {/* 앞면: Image */}
+            <div
+              className='absolute inset-0'
+              style={{ backfaceVisibility: 'hidden' }}
+            >
               <Image
                 src='/images/finish/stairs-finish.svg'
                 alt=''
@@ -103,8 +105,22 @@ export const ImageSection = ({
                 fill
                 className='object-cover'
               />
-            )}
-          </div>
+            </div>
+
+            {/* 뒷면: SubmissionCard */}
+            <div
+              className='absolute inset-0'
+              style={{
+                backfaceVisibility: 'hidden',
+                transform: 'rotateY(180deg)',
+              }}
+            >
+              <SubmissionCard
+                seqNo={submissionResult.seq_no}
+                achievementRate={submissionResult.achievement_rate}
+              />
+            </div>
+          </motion.div>
         )}
       </AnimatePresence>
     </div>
