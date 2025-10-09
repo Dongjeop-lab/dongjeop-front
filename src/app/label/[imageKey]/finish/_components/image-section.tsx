@@ -1,6 +1,6 @@
 import { AnimatePresence, motion } from 'motion/react';
 import Image from 'next/image';
-import { useEffect, useState } from 'react';
+import { RefObject, useEffect, useState } from 'react';
 
 import { GetSubmissionResultResponse } from '@/types/api/submission';
 
@@ -10,12 +10,14 @@ interface ImageSectionProps {
   step: 1 | 2 | 3 | 4;
   submissionResult: GetSubmissionResultResponse;
   onHammerClick: () => void;
+  cardRef?: RefObject<HTMLDivElement | null>;
 }
 
 export const ImageSection = ({
   step,
   submissionResult,
   onHammerClick,
+  cardRef,
 }: ImageSectionProps) => {
   const [showContributionCard, setShowContributionCard] = useState(false);
 
@@ -116,6 +118,7 @@ export const ImageSection = ({
               }}
             >
               <SubmissionCard
+                ref={cardRef}
                 seqNo={submissionResult.seq_no}
                 achievementRate={submissionResult.achievement_rate}
               />
