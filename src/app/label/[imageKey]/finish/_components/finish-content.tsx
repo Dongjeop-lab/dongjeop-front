@@ -12,12 +12,14 @@ interface FinishContentProps {
   currentStep: 1 | 2 | 3 | 4;
   submissionResult: GetSubmissionResultResponse;
   onHammerClick: () => void;
+  onDownloadCard?: () => void;
 }
 
 const FinishContent = ({
   currentStep,
   submissionResult,
   onHammerClick,
+  onDownloadCard,
 }: FinishContentProps) => {
   const [isAnimating, setIsAnimating] = useState(false);
 
@@ -77,7 +79,7 @@ const FinishContent = ({
         <AnimatePresence>
           <motion.button
             className='absolute top-full left-1/2 flex -translate-x-1/2 gap-x-1 rounded-[50px] bg-[#292929] py-2.5 pr-6 pl-4.5'
-            // onClick={handleDownloadSubmissonCard}
+            onClick={onDownloadCard}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ ease: 'easeIn', duration: 0.5 }}
