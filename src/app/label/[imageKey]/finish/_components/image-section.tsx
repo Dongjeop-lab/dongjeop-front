@@ -109,7 +109,7 @@ export const ImageSection = ({
 
             {/* 뒷면 */}
             <div
-              className='absolute inset-0'
+              className='absolute inset-0 rounded-2xl shadow-[0px_4px_20px_0px_#00000014]'
               style={{
                 backfaceVisibility: 'hidden',
                 transform: 'rotateY(180deg)',
