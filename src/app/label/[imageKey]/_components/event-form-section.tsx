@@ -111,13 +111,13 @@ const EventFormSection = ({ imageKey }: EventFormSectionProps) => {
       </div>
       <BottomCTA ratio='1:2'>
         <BottomCTA.Button
-          type='submit'
           variant='secondary'
           onClick={handleMoveFinish}
         >
           건너뛰기
         </BottomCTA.Button>
         <BottomCTA.Button
+          type='button'
           disabled={
             isPending ||
             phoneNumber.length < PHONE_NUMBER_LENGTH ||
