@@ -43,7 +43,7 @@ const LabelPage = () => {
 
   const stepParam = Number.parseInt(searchParams.get('step') ?? '', 10);
   const currentStep = Number.isFinite(stepParam)
-    ? Math.min(Math.max(stepParam, STEP_NUMBER.STEP1), STEP_NUMBER.STEP3)
+    ? Math.min(Math.max(stepParam, STEP_NUMBER.STEP1), STEP_NUMBER.EVENT)
     : 1;
 
   const handleNextStep = () => {
@@ -133,7 +133,7 @@ const LabelPage = () => {
       case STEP_NUMBER.STEP1:
         return (
           <LabelStep1
-            key={1}
+            key={STEP_NUMBER.STEP1}
             imageKey={params.imageKey}
             currentLabelData={data?.data}
             onNext={handleNextStep}
@@ -143,7 +143,7 @@ const LabelPage = () => {
       case STEP_NUMBER.STEP2:
         return (
           <LabelStep2
-            key={2}
+            key={STEP_NUMBER.STEP2}
             imageKey={params.imageKey}
             currentLabelData={data?.data}
             onNext={handleNextStep}
@@ -153,7 +153,7 @@ const LabelPage = () => {
       case STEP_NUMBER.STEP3:
         return (
           <LabelStep3
-            key={3}
+            key={STEP_NUMBER.STEP3}
             imageKey={params.imageKey}
             currentLabelData={data?.data}
             onNext={handleNextStep}
@@ -161,7 +161,12 @@ const LabelPage = () => {
           />
         );
       case STEP_NUMBER.EVENT:
-        return <EventStep />;
+        return (
+          <EventStep
+            key={STEP_NUMBER.EVENT}
+            imageKey={params.imageKey}
+          />
+        );
       default:
         return (
           <LabelStep1
