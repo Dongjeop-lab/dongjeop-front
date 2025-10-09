@@ -67,7 +67,7 @@ export const ImageSection = ({
           </figure>
         )}
 
-        {step === 3 && (
+        {(step === 3 || (step === 4 && !submissionResult)) && (
           <motion.div
             key='crushed-stairs'
             initial={{ opacity: 0 }}
@@ -85,7 +85,7 @@ export const ImageSection = ({
           </motion.div>
         )}
 
-        {step === 4 && (
+        {step === 4 && submissionResult && (
           <motion.div
             key='flip-card'
             className='relative h-full w-full'
@@ -93,7 +93,7 @@ export const ImageSection = ({
             animate={{ rotateY: showContributionCard ? 180 : 0 }}
             transition={{ duration: 0.8 }}
           >
-            {/* 앞면: Image */}
+            {/* 앞면 */}
             <div
               className='absolute inset-0'
               style={{ backfaceVisibility: 'hidden' }}
@@ -107,7 +107,7 @@ export const ImageSection = ({
               />
             </div>
 
-            {/* 뒷면: SubmissionCard */}
+            {/* 뒷면 */}
             <div
               className='absolute inset-0'
               style={{
