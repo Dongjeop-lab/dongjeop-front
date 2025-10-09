@@ -28,15 +28,11 @@ const FinishPage = () => {
 
   const handleHammerClick = () => {
     if (step !== 2) return;
+    setStep(3); // 3초간 애니메이션 실행 (컨페티 + 이미지 교체)
 
-    // 3단계 애니메이션 시작 (6초)
-    // 부서진 계단 이미지로 교체 + 컨페티 로티
-    setStep(3);
-
-    // 3단계 애니메이션 종료 후 4단계로 전환
     setTimeout(() => {
       setStep(4);
-    }, 800);
+    }, 3000);
   };
 
   // TODO: 기여카드 저장 로직 추가
