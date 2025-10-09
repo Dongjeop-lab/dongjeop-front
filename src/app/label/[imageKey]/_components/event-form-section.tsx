@@ -38,7 +38,7 @@ interface EventFormSectionProps {
 }
 
 const EventFormSection = ({ imageKey }: EventFormSectionProps) => {
-  const [phoneNumber, setPhone] = useState('');
+  const [phoneNumber, setPhoneNumber] = useState('');
   const [checkedIds, setCheckedIds] = useState<Set<string>>(new Set());
 
   const router = useRouter();
@@ -87,7 +87,7 @@ const EventFormSection = ({ imageKey }: EventFormSectionProps) => {
             value={phoneNumber.replace(/(\d{3})(\d{4})(\d{4})/, '$1-$2-$3')}
             onChange={e => {
               const digitsOnly = e.target.value.replace(/\D/g, '');
-              setPhone(digitsOnly.slice(0, PHONE_NUMBER_LENGTH));
+              setPhoneNumber(digitsOnly.slice(0, PHONE_NUMBER_LENGTH));
             }}
           />
           <p className='text-secondary-foreground text-center text-[0.9375rem] font-normal'>
