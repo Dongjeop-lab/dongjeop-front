@@ -92,4 +92,7 @@
   .text-14-bold {
     @apply text-sm font-bold tracking-[-0.02em];
   }
+  .text-14-semibold {
+    @apply text-sm font-semibold tracking-[-0.015em];
+  }
 }
