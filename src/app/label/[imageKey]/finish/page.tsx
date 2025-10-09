@@ -34,7 +34,7 @@ const FinishPage = () => {
 
     setTimeout(() => {
       setStep(4);
-    }, 3000);
+    }, 1500);
   };
 
   const handleDownloadCard = () => {
