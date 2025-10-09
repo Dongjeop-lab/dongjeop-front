@@ -82,7 +82,7 @@ const EventFormSection = ({ imageKey }: EventFormSectionProps) => {
         <div className='flex flex-col gap-6'>
           <TextField
             placeholder='전화번호를 입력해주세요'
-            inputMode='decimal'
+            inputMode='numeric'
             pattern='[0-9]*'
             value={phoneNumber.replace(/(\d{3})(\d{4})(\d{4})/, '$1-$2-$3')}
             onChange={e => {
