@@ -73,7 +73,7 @@ const FinishPage = () => {
   return (
     <>
       <main
-        className={`flex min-h-screen flex-col items-center justify-center pt-11 ${step === 4 && submissionResult ? 'pb-32' : 'pb-14'}`}
+        className={`flex min-h-screen flex-col items-center justify-center pt-11 pb-14 ${step === 4 && submissionResult ? 'mb-18' : ''}`}
       >
         <h1 className='sr-only'>등록 완료 페이지</h1>
         <FinishContent
