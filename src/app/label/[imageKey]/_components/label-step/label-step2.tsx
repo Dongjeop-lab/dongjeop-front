@@ -16,17 +16,21 @@ import { labelOption } from '../../_types/label-option';
 import { LabelStepProps } from '../../_types/label-step';
 import LabelStepLayout from '../label-step-layout';
 
-type LabelStep2OptionValue =
-  | keyof Pick<
-      UpdateLabelRequestBody,
-      | 'has_movable_chair'
-      | 'has_high_chair'
-      | 'has_floor_chair'
-      | 'has_fixed_chair'
-    >
-  | 'not_sure';
+type LabelStep2OptionWithoutNotsure = keyof Pick<
+  UpdateLabelRequestBody,
+  'has_movable_chair' | 'has_high_chair' | 'has_floor_chair' | 'has_fixed_chair'
+>;
+
+type LabelStep2OptionValue = LabelStep2OptionWithoutNotsure | 'not_sure';
 
 const NOT_SURE_VALUE = 'not_sure';
+
+const ALL_CHAIR_KEYS: LabelStep2OptionWithoutNotsure[] = [
+  'has_fixed_chair',
+  'has_floor_chair',
+  'has_high_chair',
+  'has_movable_chair',
+];
 
 const LABEL_STEP_2_OPTIONS: labelOption<LabelStep2OptionValue>[] = [
   {
@@ -97,15 +101,28 @@ export const LabelStep2 = ({
 
   const handleSubmitValue = () => {
     const interactionTime = endTimer() ?? 0;
-    const updateValeus: Omit<UpdateLabelRequestBody, 'finish_labeling'> =
-      selectedValue.includes(NOT_SURE_VALUE)
-        ? { is_not_sure_chair: true }
-        : selectedValue.reduce(
-            (acc, value) => {
-              return { ...acc, [value]: true };
-            },
-            {} as Omit<UpdateLabelRequestBody, 'finish_labeling'>
-          );
+
+    let updateValeus: Omit<UpdateLabelRequestBody, 'finish_labeling'>;
+
+    if (selectedValue.includes(NOT_SURE_VALUE)) {
+      updateValeus = {
+        has_movable_chair: false,
+        has_high_chair: false,
+        has_floor_chair: false,
+        has_fixed_chair: false,
+        is_not_sure_chair: true,
+      };
+    } else {
+      updateValeus = ALL_CHAIR_KEYS.reduce(
+        (acc, key) => {
+          acc[key] = selectedValue.includes(key);
+          return acc;
+        },
+        {} as Omit<UpdateLabelRequestBody, 'finish_labeling'>
+      );
+
+      updateValeus.is_not_sure_chair = false;
+    }
     mutate({
       ...updateValeus,
       chair_label_finish_duration: interactionTime,
