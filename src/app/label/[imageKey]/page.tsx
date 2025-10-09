@@ -17,7 +17,12 @@ import { API_PATH, BROWSER_PATH } from '@/lib/path';
 import { queryKeys } from '@/lib/query-key';
 import { GetLabelStatusResponse } from '@/types/api/label';
 
-import { LabelStep1, LabelStep2, LabelStep3 } from './_components/label-step';
+import {
+  EventStep,
+  LabelStep1,
+  LabelStep2,
+  LabelStep3,
+} from './_components/label-step';
 
 const LabelPage = () => {
   const [isRoutingFinished, setIsRoutingFinished] = useState(false);
@@ -42,12 +47,7 @@ const LabelPage = () => {
     : 1;
 
   const handleNextStep = () => {
-    if (currentStep === STEP_NUMBER.STEP3) {
-      router.push(`${pathname}/finish`);
-      return;
-    }
-
-    const nextStep = currentStep + 1;
+    const nextStep = Math.min(currentStep + 1, STEP_NUMBER.EVENT);
     router.push(`${pathname}?step=${nextStep}`);
   };
 
@@ -130,7 +130,7 @@ const LabelPage = () => {
 
   const renderStep = () => {
     switch (currentStep) {
-      case 1:
+      case STEP_NUMBER.STEP1:
         return (
           <LabelStep1
             key={1}
@@ -140,7 +140,7 @@ const LabelPage = () => {
             onUpdateCache={handleUpdateLabelCache}
           />
         );
-      case 2:
+      case STEP_NUMBER.STEP2:
         return (
           <LabelStep2
             key={2}
@@ -150,7 +150,7 @@ const LabelPage = () => {
             onUpdateCache={handleUpdateLabelCache}
           />
         );
-      case 3:
+      case STEP_NUMBER.STEP3:
         return (
           <LabelStep3
             key={3}
@@ -160,6 +160,8 @@ const LabelPage = () => {
             onUpdateCache={handleUpdateLabelCache}
           />
         );
+      case STEP_NUMBER.EVENT:
+        return <EventStep />;
       default:
         return (
           <LabelStep1
