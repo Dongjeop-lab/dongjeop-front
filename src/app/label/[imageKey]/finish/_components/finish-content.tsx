@@ -1,6 +1,6 @@
 import { AnimatePresence, motion } from 'motion/react';
 import Image from 'next/image';
-import { useState } from 'react';
+import { RefObject, useState } from 'react';
 
 import { GetSubmissionResultResponse } from '@/types/api/submission';
 
@@ -13,6 +13,7 @@ interface FinishContentProps {
   submissionResult: GetSubmissionResultResponse;
   onHammerClick: () => void;
   onDownloadCard?: () => void;
+  cardRef?: RefObject<HTMLDivElement | null>;
 }
 
 const FinishContent = ({
@@ -20,6 +21,7 @@ const FinishContent = ({
   submissionResult,
   onHammerClick,
   onDownloadCard,
+  cardRef,
 }: FinishContentProps) => {
   const [isAnimating, setIsAnimating] = useState(false);
 
@@ -71,6 +73,7 @@ const FinishContent = ({
           onHammerClick={() => {
             if (!isAnimating) onHammerClick();
           }}
+          cardRef={cardRef}
         />
       </div>
 
