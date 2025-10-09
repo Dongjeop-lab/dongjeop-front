@@ -5,12 +5,16 @@ interface FinishTitleProps {
   title: ReactNode;
   subTitle?: ReactNode;
   skipInitial?: boolean;
+  onAnimationStart?: () => void;
+  onAnimationComplete?: () => void;
 }
 
 const FinishTitle = ({
   title,
   subTitle,
   skipInitial = false,
+  onAnimationStart,
+  onAnimationComplete,
 }: FinishTitleProps) => {
   return (
     <motion.div
@@ -25,6 +29,8 @@ const FinishTitle = ({
         damping: 15,
         duration: 0.6,
       }}
+      onAnimationStart={onAnimationStart}
+      onAnimationComplete={onAnimationComplete}
       className='absolute top-0 left-0 flex h-32.75 w-90 flex-col items-center justify-center gap-y-2.5 overflow-hidden'
     >
       {subTitle && (

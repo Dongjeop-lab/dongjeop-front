@@ -1,4 +1,5 @@
 import { AnimatePresence } from 'motion/react';
+import { useState } from 'react';
 
 import { GetSubmissionResultResponse } from '@/types/api/submission';
 
@@ -17,6 +18,8 @@ const FinishContent = ({
   submissionResult,
   onHammerClick,
 }: FinishContentProps) => {
+  const [isAnimating, setIsAnimating] = useState(false);
+
   return (
     <main className='relative flex h-full flex-col items-center gap-y-5'>
       {/* 타이틀 영역 */}
@@ -35,6 +38,8 @@ const FinishContent = ({
             <FinishTitle
               key='step-2-3'
               title={`망치를 눌러\n이동약자의 계단을\n부숴주세요`}
+              onAnimationStart={() => setIsAnimating(true)}
+              onAnimationComplete={() => setIsAnimating(false)}
             />
           )}
 
@@ -61,7 +66,9 @@ const FinishContent = ({
         <ImageSection
           step={currentStep}
           submissionResult={submissionResult}
-          onHammerClick={onHammerClick}
+          onHammerClick={() => {
+            if (!isAnimating) onHammerClick();
+          }}
         />
       </div>
     </main>
