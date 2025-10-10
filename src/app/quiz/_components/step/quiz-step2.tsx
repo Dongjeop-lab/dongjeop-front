@@ -8,31 +8,54 @@ import QuizStepLayout from '../quiz-step-layout';
 import QuizStep2Explanation from './quiz-step2-explanation';
 
 // 정답 영역 정의 (px 기준, 360*540 이미지)
-const answerAreas = [
-  { id: 1, left: 90, top: 297, width: 150, height: 150 },
-  { id: 2, left: 35, top: 127, width: 132, height: 132 },
-  { id: 3, left: 213, top: 110, width: 147, height: 166 },
-];
+const ANSWER_AREAS = [
+  {
+    id: 1,
+    left: 90,
+    top: 297,
+    width: 150,
+    height: 150,
+    markerLeft: 133,
+    markerTop: 340,
+  },
+  {
+    id: 2,
+    left: 35,
+    top: 127,
+    width: 132,
+    height: 132,
+    markerLeft: 69,
+    markerTop: 161,
+  },
+  {
+    id: 3,
+    left: 213,
+    top: 110,
+    width: 147,
+    height: 166,
+    markerLeft: 283,
+    markerTop: 161,
+  },
+] as const;
+
+const IMAGE_WIDTH = 360;
+const IMAGE_HEIGHT = 540;
+const MARKER_SIZE = 64;
 
 export const QuizStep2 = ({ onNext }: QuizStepProps) => {
   const [foundCount, setFoundCount] = useState<0 | 1 | 2 | 3>(0);
-  const [showExplanation, setShowExplanation] = useState<boolean>(false);
+  const [showExplanation, setShowExplanation] = useState(false);
   const [foundAreas, setFoundAreas] = useState<Set<number>>(new Set());
 
   const handleImageClick = (e: React.MouseEvent<HTMLDivElement>) => {
     const rect = e.currentTarget.getBoundingClientRect();
-
-    // 클릭한 위치의 실제 이미지 내 좌표 계산
     const clickX = e.clientX - rect.left;
     const clickY = e.clientY - rect.top;
+    const scaleX = rect.width / IMAGE_WIDTH;
+    const scaleY = rect.height / IMAGE_HEIGHT;
 
-    // 이미지 크기 대비 스케일 계산 (반응형 대응)
-    const scaleX = rect.width / 360;
-    const scaleY = rect.height / 540;
-
-    // 어떤 영역을 클릭했는지 확인
-    for (const area of answerAreas) {
-      if (foundAreas.has(area.id)) continue; // 이미 찾은 영역은 스킵
+    for (const area of ANSWER_AREAS) {
+      if (foundAreas.has(area.id)) continue;
 
       const scaledLeft = area.left * scaleX;
       const scaledTop = area.top * scaleY;
@@ -75,27 +98,34 @@ export const QuizStep2 = ({ onNext }: QuizStepProps) => {
               <Image
                 src='/images/quiz/quiz2-bg.png'
                 alt='이동약자에게 불편할 수 있는 요소 3개가 포함된 이미지'
-                width={360}
-                height={540}
+                width={IMAGE_WIDTH}
+                height={IMAGE_HEIGHT}
               />
 
-              {/* 디버깅용: 정답 영역 표시 (개발 완료 후 제거) */}
-              {answerAreas.map(area => (
-                <div
-                  key={area.id}
-                  className={`absolute border-2 ${
-                    foundAreas.has(area.id)
-                      ? 'border-green-500 bg-green-500/30'
-                      : 'border-red-500 bg-red-500/20'
-                  }`}
-                  style={{
-                    left: `${(area.left / 360) * 100}%`,
-                    top: `${(area.top / 540) * 100}%`,
-                    width: `${(area.width / 360) * 100}%`,
-                    height: `${(area.height / 540) * 100}%`,
-                  }}
-                />
-              ))}
+              {/* 클릭 마커 표시 */}
+              {ANSWER_AREAS.map(
+                area =>
+                  foundAreas.has(area.id) && (
+                    <div
+                      key={area.id}
+                      className='absolute'
+                      style={{
+                        left: `${(area.markerLeft / IMAGE_WIDTH) * 100}%`,
+                        top: `${(area.markerTop / IMAGE_HEIGHT) * 100}%`,
+                        width: `${(MARKER_SIZE / IMAGE_WIDTH) * 100}%`,
+                        height: `${(MARKER_SIZE / IMAGE_HEIGHT) * 100}%`,
+                        pointerEvents: 'none',
+                      }}
+                    >
+                      <Image
+                        src='/images/quiz/ellipse-shadow.svg'
+                        alt='찾았어요'
+                        width={MARKER_SIZE}
+                        height={MARKER_SIZE}
+                      />
+                    </div>
+                  )
+              )}
             </div>
           </div>
         }
