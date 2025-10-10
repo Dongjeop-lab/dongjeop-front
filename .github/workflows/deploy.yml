@@ -4,7 +4,7 @@ name: 🚀 프로덕션 배포
 
 on:
   push:
-    branches: [ main, feat/env ]
+    branches: [ main ]
   
   # 🎯 수동 배포 트리거 (GitHub Actions 탭에서 "Run workflow" 버튼으로 실행)
   workflow_dispatch:
