@@ -43,12 +43,14 @@ RUN --mount=type=cache,target=/app/.next/cache \
 # ----- Stage 2: 최적화된 런타임 환경 -----  
 FROM base AS runner
 WORKDIR /app
+ARG NEXT_PUBLIC_LABEL_IMAGE_BASE_URL
 
 # 🚀 프로덕션 환경 설정
 ENV NODE_ENV=production
 ENV NEXT_TELEMETRY_DISABLED=1
 ENV PORT=3000
 ENV HOSTNAME=0.0.0.0
+ENV NEXT_PUBLIC_LABEL_IMAGE_BASE_URL=$NEXT_PUBLIC_LABEL_IMAGE_BASE_URL
 
 # 🛡️ 보안 강화: 시스템 사용자 생성 + 헬스체크 도구 설치 (한 번에)
 RUN addgroup --system --gid 1001 nodejs && \
