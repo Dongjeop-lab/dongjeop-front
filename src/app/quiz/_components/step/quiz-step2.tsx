@@ -4,43 +4,9 @@ import { useState } from 'react';
 import BottomCTA from '@/components/ui/bottom-cta';
 
 import { QuizStepProps } from '../../_types/quiz-step';
+import { ANSWER_AREAS, SIZE } from '../../lib/constants';
 import QuizStepLayout from '../quiz-step-layout';
 import QuizStep2Explanation from './quiz-step2-explanation';
-
-// 정답 영역 정의 (px 기준, 360*540 이미지)
-const ANSWER_AREAS = [
-  {
-    id: 1,
-    left: 90,
-    top: 297,
-    width: 150,
-    height: 150,
-    markerLeft: 133,
-    markerTop: 340,
-  },
-  {
-    id: 2,
-    left: 35,
-    top: 127,
-    width: 132,
-    height: 132,
-    markerLeft: 69,
-    markerTop: 161,
-  },
-  {
-    id: 3,
-    left: 213,
-    top: 110,
-    width: 147,
-    height: 166,
-    markerLeft: 283,
-    markerTop: 161,
-  },
-] as const;
-
-const IMAGE_WIDTH = 360;
-const IMAGE_HEIGHT = 540;
-const MARKER_SIZE = 64;
 
 export const QuizStep2 = ({ onNext }: QuizStepProps) => {
   const [foundCount, setFoundCount] = useState<0 | 1 | 2 | 3>(0);
@@ -51,8 +17,8 @@ export const QuizStep2 = ({ onNext }: QuizStepProps) => {
     const rect = e.currentTarget.getBoundingClientRect();
     const clickX = e.clientX - rect.left;
     const clickY = e.clientY - rect.top;
-    const scaleX = rect.width / IMAGE_WIDTH;
-    const scaleY = rect.height / IMAGE_HEIGHT;
+    const scaleX = rect.width / SIZE.IMAGE_WIDTH;
+    const scaleY = rect.height / SIZE.IMAGE_HEIGHT;
 
     for (const area of ANSWER_AREAS) {
       if (foundAreas.has(area.id)) continue;
@@ -98,8 +64,8 @@ export const QuizStep2 = ({ onNext }: QuizStepProps) => {
               <Image
                 src='/images/quiz/quiz2-bg.png'
                 alt='이동약자에게 불편할 수 있는 요소 3개가 포함된 이미지'
-                width={IMAGE_WIDTH}
-                height={IMAGE_HEIGHT}
+                width={SIZE.IMAGE_WIDTH}
+                height={SIZE.IMAGE_HEIGHT}
               />
 
               {/* 클릭 마커 표시 */}
@@ -110,18 +76,18 @@ export const QuizStep2 = ({ onNext }: QuizStepProps) => {
                       key={area.id}
                       className='absolute'
                       style={{
-                        left: `${(area.markerLeft / IMAGE_WIDTH) * 100}%`,
-                        top: `${(area.markerTop / IMAGE_HEIGHT) * 100}%`,
-                        width: `${(MARKER_SIZE / IMAGE_WIDTH) * 100}%`,
-                        height: `${(MARKER_SIZE / IMAGE_HEIGHT) * 100}%`,
+                        left: `${(area.markerLeft / SIZE.IMAGE_WIDTH) * 100}%`,
+                        top: `${(area.markerTop / SIZE.IMAGE_HEIGHT) * 100}%`,
+                        width: `${(SIZE.MARKER / SIZE.IMAGE_WIDTH) * 100}%`,
+                        height: `${(SIZE.MARKER / SIZE.IMAGE_HEIGHT) * 100}%`,
                         pointerEvents: 'none',
                       }}
                     >
                       <Image
                         src='/images/quiz/ellipse-shadow.svg'
                         alt='찾았어요'
-                        width={MARKER_SIZE}
-                        height={MARKER_SIZE}
+                        width={SIZE.MARKER}
+                        height={SIZE.MARKER}
                       />
                     </div>
                   )
