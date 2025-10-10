@@ -17,10 +17,14 @@ WORKDIR /app
 
 # 🌍 빌드 시점 환경변수 주입
 ARG NODE_ENV=production
+ARG NEXT_PUBLIC_BUILD_ID
+ARG NEXT_PUBLIC_LABEL_IMAGE_BASE_URL
 
 # Next.js 성능 최적화
 ENV NEXT_TELEMETRY_DISABLED=1
 ENV NODE_ENV=$NODE_ENV
+ENV NEXT_PUBLIC_BUILD_ID=$NEXT_PUBLIC_BUILD_ID
+ENV NEXT_PUBLIC_LABEL_IMAGE_BASE_URL=$NEXT_PUBLIC_LABEL_IMAGE_BASE_URL
 
 # 📦 package.json 복사 및 의존성 설치 (캐시 최적화)
 COPY package.json package-lock.json ./

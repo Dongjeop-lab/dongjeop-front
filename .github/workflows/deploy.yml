@@ -111,6 +111,7 @@ jobs:
           build-args: |
             NODE_ENV=production
             NEXT_PUBLIC_BUILD_ID=${{ github.sha }}
+            NEXT_PUBLIC_LABEL_IMAGE_BASE_URL=${{ secrets.NEXT_PUBLIC_LABEL_IMAGE_BASE_URL }}
           # 🔒 보안 강화: CA 인증서 사용, insecure 모드 제거
           provenance: false
           sbom: false
@@ -171,18 +172,6 @@ jobs:
             echo "📥 새 이미지 다운로드..."
             sudo docker pull ${REGISTRY_URL}/${REGISTRY_PROJECT}/${IMAGE_NAME}:latest
             
-            # --- 환경변수 파일 생성 ---
-            echo "📝 환경변수 설정..."
-            cat > /tmp/app.env << EOF
-            NODE_ENV=production
-            NEXT_PUBLIC_BUILD_ID=${{ github.sha }}
-            EOF
-            
-            # 필요한 환경변수만 주입
-            if [ -n "${{ secrets.NEXT_PUBLIC_LABEL_IMAGE_BASE_URL }}" ]; then
-              echo "NEXT_PUBLIC_LABEL_IMAGE_BASE_URL=${{ secrets.NEXT_PUBLIC_LABEL_IMAGE_BASE_URL }}" >> /tmp/app.env
-            fi
-            
             # --- 새 버전 컨테이너 실행 (임시 포트 사용) ---
             TEMP_PORT=3002
             echo "🎯 새 버전 컨테이너 시작: ${NEW_CONTAINER_NAME} (임시 포트: ${TEMP_PORT})"
@@ -190,7 +179,6 @@ jobs:
               --name ${NEW_CONTAINER_NAME} \
               --restart unless-stopped \
               -p ${TEMP_PORT}:3000 \
-              --env-file /tmp/app.env \
               ${REGISTRY_URL}/${REGISTRY_PROJECT}/${IMAGE_NAME}:latest
 
             # --- 새 버전 헬스 체크 ---
@@ -240,7 +228,6 @@ jobs:
               --name ${CONTAINER_NAME} \
               --restart unless-stopped \
               -p 3001:3000 \
-              --env-file /tmp/app.env \
               ${REGISTRY_URL}/${REGISTRY_PROJECT}/${IMAGE_NAME}:latest
             
             # 3. 메인 포트 헬스 체크
@@ -266,9 +253,6 @@ jobs:
             # --- 이전 이미지 정리 ---
             echo "🧹 이전 이미지 정리..."
             sudo docker image prune -f
-            
-            # --- 환경변수 파일 정리 ---
-            rm -f /tmp/app.env
             
             echo "🎉 배포 완료!"
 
