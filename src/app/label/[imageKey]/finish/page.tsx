@@ -45,7 +45,7 @@ const FinishPage = () => {
 
   const handleCopyToClipboard = async () => {
     try {
-      const shareUrl = `${process.env.NEXT_PUBLIC_BASE_URL}?${ENTRY_QUERY.KEY}=${ENTRY_QUERY.VALUE}`;
+      const shareUrl = `${window.location.origin}/?${ENTRY_QUERY.KEY}=${ENTRY_QUERY.VALUE}`;
       await navigator.clipboard.writeText(shareUrl);
       toast.success('링크를 복사했어요. 친구에게 공유해보세요!');
     } catch (error) {
