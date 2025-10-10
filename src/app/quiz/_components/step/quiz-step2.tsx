@@ -27,6 +27,7 @@ export const QuizStep2 = ({ onNext }: QuizStepProps) => {
   const [foundAreas, setFoundAreas] = useState<Set<number>>(new Set());
   const [wrongClickCount, setWrongClickCount] = useState<number>(0);
   const [showRetryMessage, setShowRetryMessage] = useState<boolean>(false);
+  const [hintAreaId, setHintAreaId] = useState<number | null>(null);
   const [showExplanation, setShowExplanation] = useState<boolean>(false);
 
   const handleImageClick = (e: React.MouseEvent<HTMLDivElement>) => {
@@ -57,6 +58,7 @@ export const QuizStep2 = ({ onNext }: QuizStepProps) => {
         setFoundCount(newFoundAreas.size as 0 | 1 | 2 | 3);
         setWrongClickCount(0);
         setShowRetryMessage(false);
+        setHintAreaId(null);
         isCorrect = true;
         break;
       }
@@ -68,6 +70,17 @@ export const QuizStep2 = ({ onNext }: QuizStepProps) => {
       setTimeout(() => {
         setShowRetryMessage(false);
       }, 1500);
+    }
+  };
+
+  const handleShowHint = () => {
+    const remainingAreas = ANSWER_AREAS.filter(
+      area => !foundAreas.has(area.id)
+    );
+    if (remainingAreas.length > 0) {
+      const randomArea =
+        remainingAreas[Math.floor(Math.random() * remainingAreas.length)];
+      setHintAreaId(randomArea.id);
     }
   };
 
@@ -113,7 +126,7 @@ export const QuizStep2 = ({ onNext }: QuizStepProps) => {
                       }}
                     >
                       <Image
-                        src='/images/quiz/ellipse-shadow.svg'
+                        src='/images/quiz/marker.svg'
                         alt='찾았어요'
                         width={SIZE.MARKER}
                         height={SIZE.MARKER}
@@ -122,12 +135,38 @@ export const QuizStep2 = ({ onNext }: QuizStepProps) => {
                   )
               )}
 
+              {/* 힌트 마커 표시 */}
+              {hintAreaId && (
+                <motion.div
+                  key={`hint-${hintAreaId}`}
+                  initial={{ opacity: 0, scale: 0.8 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ duration: 0.4 }}
+                  className='absolute'
+                  style={{
+                    left: `${(ANSWER_AREAS.find(a => a.id === hintAreaId)!.markerLeft / SIZE.IMAGE_WIDTH) * 100}%`,
+                    top: `${(ANSWER_AREAS.find(a => a.id === hintAreaId)!.markerTop / SIZE.IMAGE_HEIGHT) * 100}%`,
+                    width: `${(SIZE.MARKER / SIZE.IMAGE_WIDTH) * 100}%`,
+                    height: `${(SIZE.MARKER / SIZE.IMAGE_HEIGHT) * 100}%`,
+                    pointerEvents: 'none',
+                  }}
+                >
+                  <Image
+                    src='/images/quiz/marker-hint.svg'
+                    alt='정답 위치'
+                    width={SIZE.MARKER}
+                    height={SIZE.MARKER}
+                  />
+                </motion.div>
+              )}
+
               {/* 오답 영역 클릭 시 */}
               <AnimatePresence>
                 {wrongClickCount >= 3 && foundCount !== 3 && (
                   <motion.button
                     key='hint'
                     type='button'
+                    onClick={handleShowHint}
                     {...FADE_ANIMATION}
                     className={cn(
                       'text-16-semibold absolute bottom-5 left-1/2 w-30 -translate-x-1/2 rounded-[3.125rem] bg-black py-3 text-center leading-none text-white shadow-[0px_4px_4px_0px_#00000040]',
