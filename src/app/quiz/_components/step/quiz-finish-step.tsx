@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
 import { BROWSER_PATH } from '@/lib/path';
+import { cn } from '@/lib/utils';
 
 const STEP_DESCRIPTION = [
   `이동약자의 시선에\n조금 더 가까워졌나요?`,
@@ -43,14 +44,17 @@ export const QuizFinishStep = () => {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.5 }}
-            className='text-18-medium text-orange'
+            className={cn(
+              'text-18-medium text-orange leading-[130%]',
+              'tracking-[-0.01em]'
+            )}
           >
             퀴즈를 다 풀었어요!
           </motion.h1>
           <AnimatePresence mode='wait'>
             <motion.p
               key={step}
-              className='text-26-bold text-center whitespace-break-spaces'
+              className='text-26-bold text-center leading-[130%] whitespace-break-spaces'
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
