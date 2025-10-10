@@ -1,3 +1,5 @@
+import { useState } from 'react';
+
 import AgreementForm, { Term } from '@/components/ui/agreement-form';
 import BottomCTA from '@/components/ui/bottom-cta';
 import BottomSheet from '@/components/ui/bottom-sheet';
@@ -5,14 +7,10 @@ import { BROWSER_PATH } from '@/lib/path';
 
 interface TermsBottomSheetProps {
   isOpen: boolean;
-  selectedTerms: Set<string>;
-  onToggleTerm: (termId: string) => void;
-  onAgreeAll: (isChecked: boolean) => void;
   onClose: VoidFunction;
   onConfirm: VoidFunction;
 }
 
-// TODO: id 수정
 const TERMS: Term[] = [
   {
     id: 'terms-research',
@@ -42,12 +40,24 @@ const TERMS: Term[] = [
 
 const TermsBottomSheet = ({
   isOpen,
-  selectedTerms,
-  onAgreeAll,
   onClose,
   onConfirm,
-  onToggleTerm,
 }: TermsBottomSheetProps) => {
+  const [selectedTerms, setSelectedTerms] = useState<Set<string>>(new Set());
+
+  const handleCheck = (id: string) => {
+    setSelectedTerms(prev => {
+      const newCheckedIds = new Set(prev);
+
+      if (newCheckedIds.has(id)) {
+        newCheckedIds.delete(id);
+      } else {
+        newCheckedIds.add(id);
+      }
+      return newCheckedIds;
+    });
+  };
+
   return (
     <BottomSheet
       isOpen={isOpen}
@@ -57,6 +67,7 @@ const TermsBottomSheet = ({
         <BottomCTA>
           <BottomCTA.Button
             variant='primary'
+            disabled={selectedTerms.size < TERMS.length}
             onClick={onConfirm}
           >
             확인
@@ -75,8 +86,14 @@ const TermsBottomSheet = ({
         <AgreementForm
           terms={TERMS}
           checkedIds={selectedTerms}
-          onCheck={onToggleTerm}
-          onCheckAll={onAgreeAll}
+          onCheck={handleCheck}
+          onCheckAll={isChecked => {
+            if (isChecked) {
+              setSelectedTerms(new Set(TERMS.map(term => term.id)));
+            } else {
+              setSelectedTerms(new Set([]));
+            }
+          }}
         />
       </div>
     </BottomSheet>

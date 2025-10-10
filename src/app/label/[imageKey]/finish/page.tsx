@@ -1,33 +1,58 @@
 'use client';
 import { useParams, useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { toast } from 'react-toastify';
 
 import BottomCTA from '@/components/ui/bottom-cta';
-import { FINISH_LABEL_TRANSITION_DELAY } from '@/lib/constants';
 import { BROWSER_PATH, ENTRY_QUERY } from '@/lib/path';
 
-import FinishStep from './_components/finish-step';
+import FinishContent from './_components/finish-content';
+import { useCardCapture } from './_hooks/use-card-capture';
 import { useSubmissionResult } from './_hooks/use-submission-result';
 
 const FinishPage = () => {
   const router = useRouter();
   const params = useParams<{ imageKey: string }>();
 
+  const [step, setStep] = useState<1 | 2 | 3 | 4>(1);
+  const cardRef = useRef<HTMLDivElement>(null);
+  const { handleCapture } = useCardCapture(cardRef);
   const { submissionResult, loading, error } = useSubmissionResult(
     params.imageKey
   );
-  const [step, setStep] = useState(1);
 
   useEffect(() => {
-    if (loading || !submissionResult) return;
+    if (step !== 1) return;
 
-    const timer = setTimeout(() => {
-      setStep(2);
-    }, FINISH_LABEL_TRANSITION_DELAY);
-
+    const timer = setTimeout(() => setStep(2), 600);
     return () => clearTimeout(timer);
-  }, [loading, submissionResult]);
+  }, [step]);
+
+  const handleHammerClick = () => {
+    if (step !== 2) return;
+    setStep(3); // 3초간 애니메이션 실행 (컨페티 + 이미지 교체)
+
+    setTimeout(() => {
+      setStep(4);
+    }, 1500);
+  };
+
+  const handleDownloadCard = () => {
+    if (submissionResult) {
+      handleCapture(`contribution-card-${submissionResult?.seq_no}.png`);
+    }
+  };
+
+  const handleCopyToClipboard = async () => {
+    try {
+      const shareUrl = `${process.env.NEXT_PUBLIC_BASE_URL}?${ENTRY_QUERY.KEY}=${ENTRY_QUERY.VALUE}`;
+      await navigator.clipboard.writeText(shareUrl);
+      toast.success('링크를 복사했어요. 친구에게 공유해보세요!');
+    } catch (error) {
+      toast.error('링크를 복사하지 못했어요. 다시 시도해주세요.');
+      console.error(error);
+    }
+  };
 
   if (loading) return null;
 
@@ -51,30 +76,22 @@ const FinishPage = () => {
     );
   }
 
-  const handleCopyToClipboard = async () => {
-    try {
-      const shareUrl = `${process.env.NEXT_PUBLIC_BASE_URL}?${ENTRY_QUERY.KEY}=${ENTRY_QUERY.VALUE}`;
-      await navigator.clipboard.writeText(shareUrl);
-      toast.success('링크를 복사했어요. 친구에게 공유해보세요!');
-    } catch (error) {
-      toast.error('링크를 복사하지 못했어요. 다시 시도해주세요.');
-      console.error(error);
-    }
-  };
-
   return (
     <>
-      <main className={`flex h-screen flex-col items-center overflow-hidden`}>
+      <main
+        className={`flex min-h-screen flex-col items-center justify-center pt-11 pb-14 ${step === 4 && submissionResult ? 'mb-18' : ''}`}
+      >
         <h1 className='sr-only'>등록 완료 페이지</h1>
-        <FinishStep
+        <FinishContent
           currentStep={step}
-          seqNo={submissionResult.seq_no}
-          achievementRate={submissionResult.achievement_rate}
-          totalImageNum={submissionResult.seq_no}
+          submissionResult={submissionResult}
+          onHammerClick={handleHammerClick}
+          onDownloadCard={handleDownloadCard}
+          cardRef={cardRef}
         />
       </main>
 
-      {step === 2 && (
+      {step === 4 ? (
         <BottomCTA hasAnimation>
           <BottomCTA.Button
             variant='secondary'
@@ -89,6 +106,10 @@ const FinishPage = () => {
             한 장 더 등록하기
           </BottomCTA.Button>
         </BottomCTA>
+      ) : (
+        <div className='relative w-full'>
+          <div className='fixed -bottom-18 left-1/2 h-36 w-full -translate-x-1/2 rounded-[50%/100%_100%_0_0] bg-[#ff8a00] opacity-80 blur-[180px]' />
+        </div>
       )}
     </>
   );
