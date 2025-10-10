@@ -1,5 +1,6 @@
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
+import { toast } from 'react-toastify';
 
 import { API_PATH, BROWSER_PATH } from '@/lib/path';
 import {
@@ -31,13 +32,13 @@ export const useImageUpload = (
     // 파일 크기 검증 (10MB 제한)
     const maxSize = 10 * 1024 * 1024;
     if (file.size > maxSize) {
-      console.log('파일 크기가 너무 큽니다. 10MB 이하의 파일을 선택해주세요.');
+      toast.error('파일 크기가 너무 큽니다. 10MB 이하의 파일을 선택해주세요.');
       return;
     }
 
     // 이미지 파일 타입 체크
     if (!file.type.startsWith('image/')) {
-      console.log('이미지 파일만 업로드 가능합니다.');
+      toast.error('이미지 파일만 업로드 가능합니다.');
       return;
     }
 
@@ -50,7 +51,7 @@ export const useImageUpload = (
     };
 
     reader.onerror = () => {
-      console.log('이미지를 불러오는 중 오류가 발생했습니다.');
+      toast.error('이미지를 불러오는 중 오류가 발생했습니다.');
       setSelectedImage(null);
       setImagePreview(null);
     };

@@ -1,7 +1,8 @@
 'use client';
 
+import EventDescription from '@/app/_components/event-description';
+
 import EventFormSection from '../event-form-section';
-import EventIntroSection from '../event-intro-section';
 
 interface EventStepProps {
   imageKey: string;
@@ -19,7 +20,7 @@ export const EventStep = ({ imageKey }: EventStepProps) => {
         </span>
       </h1>
       <EventFormSection imageKey={imageKey} />
-      <EventIntroSection />
+      <EventDescription />
     </main>
   );
 };
