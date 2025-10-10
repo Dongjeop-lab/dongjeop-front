@@ -27,16 +27,16 @@ const QuizStepLayout = ({
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.7, ease: 'easeOut' }}
-        className='flex flex-col items-center gap-2 px-5'
+        className='flex w-80 flex-col items-center gap-2 px-5'
       >
-        <span className='text-orange text-22-bold'>{`Q${currentStep}.`}</span>
-        <h1 className='text-22-bold text-center whitespace-break-spaces'>
+        <span className='text-orange text-22-bold leading-[130%]'>{`Q${currentStep}.`}</span>
+        <h1 className='text-22-bold text-center leading-[130%] whitespace-break-spaces'>
           {title}
         </h1>
         {subTitle && (
-          <p className='text-center whitespace-break-spaces text-[#727272]'>
+          <div className='text-muted text-center leading-none whitespace-break-spaces'>
             {subTitle}
-          </p>
+          </div>
         )}
       </motion.div>
       <motion.div

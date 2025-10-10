@@ -35,7 +35,7 @@ export const QuizStep3 = ({ onNext }: QuizStepProps) => {
         currentStep={3}
         title={`휠체어나 유모차로\n이 길을 지날 수 있을까요?`}
         quizContent={
-          <div className='flex flex-col gap-10 px-5'>
+          <div className='flex flex-col gap-10 px-5 pb-5'>
             <Image
               {...IMAGE}
               alt={IMAGE.alt}
@@ -59,7 +59,7 @@ export const QuizStep3 = ({ onNext }: QuizStepProps) => {
     <QuizStepResultLayout
       isCorrect={isCorrect}
       description={
-        <div className='flex flex-col gap-9 px-5'>
+        <div className='mb-13 flex flex-col gap-9 px-5 pb-5'>
           <Image
             {...IMAGE}
             alt={IMAGE.alt}
