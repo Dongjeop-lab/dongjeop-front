@@ -26,7 +26,7 @@ const FinishContent = ({
   const [isAnimating, setIsAnimating] = useState(false);
 
   return (
-    <main className='relative flex h-full flex-col items-center gap-y-5'>
+    <section className='relative flex h-full w-full flex-col items-center gap-y-5'>
       {/* 타이틀 영역 */}
       <div className='relative h-32.75 w-90 overflow-hidden'>
         <AnimatePresence mode='popLayout'>
@@ -60,7 +60,7 @@ const FinishContent = ({
 
       {/* 컨페티 오버레이 */}
       {currentStep === 3 && (
-        <div className='pointer-events-none absolute top-0 left-0 z-500 flex h-full w-full items-center justify-center'>
+        <div className='absolute top-0 left-0 z-10 flex h-full w-full items-center justify-center'>
           <ConfettiAnimation />
         </div>
       )}
@@ -99,7 +99,7 @@ const FinishContent = ({
           </motion.button>
         </AnimatePresence>
       )}
-    </main>
+    </section>
   );
 };
 

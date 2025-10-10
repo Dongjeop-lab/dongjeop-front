@@ -69,36 +69,23 @@ export const ImageSection = ({
           </figure>
         )}
 
-        {(step === 3 || (step === 4 && !submissionResult)) && (
+        {(step === 3 || step === 4) && (
           <motion.div
-            key='crushed-stairs'
+            key='crushed-stairs-or-flip'
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ ease: 'easeIn', duration: 0.8 }}
             className='relative h-full w-full'
-          >
-            <Image
-              src='/images/finish/stairs-finish.svg'
-              alt=''
-              aria-hidden='true'
-              fill
-              className='object-cover'
-            />
-          </motion.div>
-        )}
-
-        {step === 4 && submissionResult && (
-          <motion.div
-            key='flip-card'
-            className='relative h-full w-full'
             style={{ transformStyle: 'preserve-3d' }}
-            animate={{ rotateY: showContributionCard ? 180 : 0 }}
-            transition={{ duration: 0.8 }}
           >
             {/* 앞면 */}
-            <div
+            <motion.div
               className='absolute inset-0'
               style={{ backfaceVisibility: 'hidden' }}
+              animate={{
+                rotateY: step === 4 && showContributionCard ? 180 : 0,
+              }}
+              transition={{ duration: 0.8 }}
             >
               <Image
                 src='/images/finish/stairs-finish.svg'
@@ -107,22 +94,24 @@ export const ImageSection = ({
                 fill
                 className='object-cover'
               />
-            </div>
+            </motion.div>
 
             {/* 뒷면 */}
-            <div
-              className='absolute inset-0 rounded-2xl shadow-[0px_4px_20px_0px_#00000014]'
-              style={{
-                backfaceVisibility: 'hidden',
-                transform: 'rotateY(180deg)',
-              }}
-            >
-              <SubmissionCard
-                ref={cardRef}
-                seqNo={submissionResult.seq_no}
-                achievementRate={submissionResult.achievement_rate}
-              />
-            </div>
+            {step === 4 && submissionResult && (
+              <motion.div
+                className='absolute inset-0 rounded-2xl shadow-[0px_4px_20px_0px_#00000014]'
+                style={{ backfaceVisibility: 'hidden' }}
+                initial={{ rotateY: 180 }}
+                animate={{ rotateY: showContributionCard ? 0 : 180 }}
+                transition={{ duration: 0.8 }}
+              >
+                <SubmissionCard
+                  ref={cardRef}
+                  seqNo={submissionResult.seq_no}
+                  achievementRate={submissionResult.achievement_rate}
+                />
+              </motion.div>
+            )}
           </motion.div>
         )}
       </AnimatePresence>

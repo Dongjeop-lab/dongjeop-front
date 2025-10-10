@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import { forwardRef } from 'react';
 
 import { AchievementBar } from './achievement-bar';
@@ -10,11 +11,19 @@ interface SubmissionsCardProps {
 export const SubmissionCard = forwardRef<HTMLDivElement, SubmissionsCardProps>(
   ({ seqNo, achievementRate }, ref) => {
     return (
-      // TODO: 현재 배경 이미지에서 하트 분리, 하트는 별도 element로 추가 (화질 깨짐)
       <div
         ref={ref}
         className='flex h-full w-full flex-col gap-y-1.5 rounded-2xl bg-[url(/images/finish/submission-card-bg.svg)] p-7.5 pt-12.5'
       >
+        <div className='absolute top-0 right-0 p-6'>
+          <Image
+            src='/images/finish/icon-heart.svg'
+            alt=''
+            aria-hidden='true'
+            width={58.06}
+            height={50}
+          />
+        </div>
         <div className='text-18-bold'>
           <p>지금까지 모인 사진</p>
           <p className='text-[2.625rem] leading-[130%] text-[#984200]'>
