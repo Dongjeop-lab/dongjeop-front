@@ -17,10 +17,14 @@ WORKDIR /app
 
 # 🌍 빌드 시점 환경변수 주입
 ARG NODE_ENV=production
+ARG NEXT_PUBLIC_BUILD_ID
+ARG NEXT_PUBLIC_LABEL_IMAGE_BASE_URL
 
 # Next.js 성능 최적화
 ENV NEXT_TELEMETRY_DISABLED=1
 ENV NODE_ENV=$NODE_ENV
+ENV NEXT_PUBLIC_BUILD_ID=$NEXT_PUBLIC_BUILD_ID
+ENV NEXT_PUBLIC_LABEL_IMAGE_BASE_URL=$NEXT_PUBLIC_LABEL_IMAGE_BASE_URL
 
 # 📦 package.json 복사 및 의존성 설치 (캐시 최적화)
 COPY package.json package-lock.json ./
@@ -39,12 +43,14 @@ RUN --mount=type=cache,target=/app/.next/cache \
 # ----- Stage 2: 최적화된 런타임 환경 -----  
 FROM base AS runner
 WORKDIR /app
+ARG NEXT_PUBLIC_LABEL_IMAGE_BASE_URL
 
 # 🚀 프로덕션 환경 설정
 ENV NODE_ENV=production
 ENV NEXT_TELEMETRY_DISABLED=1
 ENV PORT=3000
 ENV HOSTNAME=0.0.0.0
+ENV NEXT_PUBLIC_LABEL_IMAGE_BASE_URL=$NEXT_PUBLIC_LABEL_IMAGE_BASE_URL
 
 # 🛡️ 보안 강화: 시스템 사용자 생성 + 헬스체크 도구 설치 (한 번에)
 RUN addgroup --system --gid 1001 nodejs && \
