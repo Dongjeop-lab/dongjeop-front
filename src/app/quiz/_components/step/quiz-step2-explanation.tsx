@@ -79,7 +79,7 @@ const QuizStep2Explanation = ({ onNext }: QuizStep2ExplanationProps) => {
               }}
             >
               <Image
-                src='/images/quiz/ellipse-shadow.svg'
+                src='/images/quiz/marker.svg'
                 alt='정답 위치'
                 width={SIZE.MARKER}
                 height={SIZE.MARKER}
