@@ -11,7 +11,7 @@ export const QuizStep2 = ({ onNext }: QuizStepProps) => {
   const [foundCount, setFoundCount] = useState<0 | 1 | 2 | 3>(0);
   const [showExplanation, setShowExplanation] = useState<boolean>(false);
 
-  if (showExplanation) return <QuizStep2Explanation />;
+  if (showExplanation) return <QuizStep2Explanation onNext={onNext} />;
 
   return (
     <>
