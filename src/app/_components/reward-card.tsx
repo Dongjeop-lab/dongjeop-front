@@ -5,18 +5,20 @@ import { cn } from '@/lib/utils';
 interface RewardCardProps {
   rank: string;
   title: string;
-  imageSrc?: string;
-  imageAlt?: string;
-  imageCount?: number;
+  firstImageSrc: string;
+  secondImageSrc: string;
+  firstImageAlt: string;
+  secondImageAlt: string;
   className?: string;
 }
 
 const RewardCard = ({
   rank,
   title,
-  imageSrc,
-  imageAlt,
-  imageCount = 1,
+  firstImageSrc,
+  secondImageSrc,
+  firstImageAlt,
+  secondImageAlt,
   className,
 }: RewardCardProps) => {
   return (
@@ -31,27 +33,27 @@ const RewardCard = ({
         {title}
       </p>
 
-      {imageSrc && (
-        <figure className='flex items-center justify-center'>
-          {Array.from({ length: imageCount }).map((_, index) => (
-            <div
-              key={index}
-              className='flex items-center'
-            >
-              <Image
-                src={imageSrc}
-                alt={imageAlt || ''}
-                width={130}
-                height={130}
-                className='flex h-auto w-24 items-center rounded-full bg-white'
-              />
-              {index < imageCount - 1 && (
-                <span className='text-info mx-1 text-[1.25rem]'>+</span>
-              )}
-            </div>
-          ))}
-        </figure>
-      )}
+      <figure className='flex items-center justify-center'>
+        <div className='flex items-center'>
+          <Image
+            src={firstImageSrc}
+            alt={firstImageAlt}
+            width={130}
+            height={130}
+            className='flex h-auto w-24 items-center rounded-full bg-white'
+          />
+
+          <span className='text-info mx-1 text-[1.25rem]'>+</span>
+
+          <Image
+            src={secondImageSrc}
+            alt={secondImageAlt}
+            width={130}
+            height={130}
+            className='flex h-auto w-24 items-center rounded-full bg-white'
+          />
+        </div>
+      </figure>
     </article>
   );
 };

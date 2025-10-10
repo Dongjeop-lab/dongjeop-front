@@ -35,34 +35,39 @@ const EventDescription = () => {
         {/* 1-3등 상품 */}
         <RewardCard
           rank='1-3등 상품'
-          title='카카오 미니 인형 + 계단뿌셔클럽 양말'
-          imageSrc='/images/home/event-reward-image.png'
-          imageAlt='카카오 미니 인형'
-          imageCount={2}
+          title='카카오 피규어 조명 + 계단뿌셔클럽 양말'
+          firstImageSrc='/images/home/event-reward-image1.svg'
+          secondImageSrc='/images/home/event-reward-image4.svg'
+          firstImageAlt='카카오 피규어 조명'
+          secondImageAlt='계단뿌셔클럽 양말'
           className='rounded-t-xl bg-white'
         />
 
         {/* 4-6등 상품 */}
         <RewardCard
           rank='4-6등 상품'
-          title='카카오 키링 + 계단뿌셔클럽 양말'
-          imageSrc='/images/home/event-reward-image.png'
-          imageAlt='카카오 키링'
-          imageCount={2}
+          title='카카오 오덴세 텀블러 + 계단뿌셔클럽 양말'
+          firstImageSrc='/images/home/event-reward-image2.svg'
+          secondImageSrc='/images/home/event-reward-image4.svg'
+          firstImageAlt='카카오 오덴세 텀블러'
+          secondImageAlt='계단뿌셔클럽 양말'
           className='bg-[#F4FAFF]'
         />
 
         {/* 7-10등 상품 */}
         <RewardCard
           rank='7-10등 상품'
-          title='노플라스틱 키링'
-          imageSrc='/images/home/event-reward-image.png'
-          imageAlt='노플라스틱 키링'
-          imageCount={1}
+          title='카카오 키링 인형 + 계단뿌셔클럽 양말'
+          firstImageSrc='/images/home/event-reward-image3.svg'
+          secondImageSrc='/images/home/event-reward-image4.svg'
+          firstImageAlt='카카오 키링 인형'
+          secondImageAlt='계단뿌셔클럽 양말'
           className='rounded-b-xl bg-white'
         />
 
-        <div className='h-3' />
+        <p className='text-14-regular my-3 opacity-50'>
+          굿즈는 이벤트 진행에 따라 변경될 수 있습니다
+        </p>
 
         <NoticeCard title='참여 방법 및 지급 일정'>
           <ul className='flex flex-col gap-y-2.5'>

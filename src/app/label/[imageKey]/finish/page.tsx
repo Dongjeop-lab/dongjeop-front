@@ -1,22 +1,25 @@
 'use client';
 import { useParams, useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { toast } from 'react-toastify';
 
 import BottomCTA from '@/components/ui/bottom-cta';
 import { BROWSER_PATH, ENTRY_QUERY } from '@/lib/path';
 
 import FinishContent from './_components/finish-content';
+import { useCardCapture } from './_hooks/use-card-capture';
 import { useSubmissionResult } from './_hooks/use-submission-result';
 
 const FinishPage = () => {
   const router = useRouter();
   const params = useParams<{ imageKey: string }>();
 
+  const [step, setStep] = useState<1 | 2 | 3 | 4>(1);
+  const cardRef = useRef<HTMLDivElement>(null);
+  const { handleCapture } = useCardCapture(cardRef);
   const { submissionResult, loading, error } = useSubmissionResult(
     params.imageKey
   );
-  const [step, setStep] = useState<1 | 2 | 3 | 4>(1);
 
   useEffect(() => {
     if (step !== 1) return;
@@ -34,8 +37,11 @@ const FinishPage = () => {
     }, 3000);
   };
 
-  // TODO: 기여카드 저장 로직 추가
-  const handleDownloadCard = () => {};
+  const handleDownloadCard = () => {
+    if (submissionResult) {
+      handleCapture(`contribution-card-${submissionResult?.seq_no}.png`);
+    }
+  };
 
   const handleCopyToClipboard = async () => {
     try {
@@ -81,6 +87,7 @@ const FinishPage = () => {
           submissionResult={submissionResult}
           onHammerClick={handleHammerClick}
           onDownloadCard={handleDownloadCard}
+          cardRef={cardRef}
         />
       </main>
 
