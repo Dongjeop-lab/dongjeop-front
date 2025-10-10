@@ -1,3 +1,4 @@
+import { AnimatePresence, motion } from 'motion/react';
 import Image from 'next/image';
 import { useState } from 'react';
 
@@ -10,8 +11,9 @@ import QuizStep2Explanation from './quiz-step2-explanation';
 
 export const QuizStep2 = ({ onNext }: QuizStepProps) => {
   const [foundCount, setFoundCount] = useState<0 | 1 | 2 | 3>(0);
-  const [showExplanation, setShowExplanation] = useState(false);
   const [foundAreas, setFoundAreas] = useState<Set<number>>(new Set());
+  const [showRetryMessage, setShowRetryMessage] = useState<boolean>(false);
+  const [showExplanation, setShowExplanation] = useState<boolean>(false);
 
   const handleImageClick = (e: React.MouseEvent<HTMLDivElement>) => {
     const rect = e.currentTarget.getBoundingClientRect();
@@ -37,8 +39,14 @@ export const QuizStep2 = ({ onNext }: QuizStepProps) => {
         const newFoundAreas = new Set(foundAreas).add(area.id);
         setFoundAreas(newFoundAreas);
         setFoundCount(newFoundAreas.size as 0 | 1 | 2 | 3);
-        break;
+        setShowRetryMessage(false);
+        return;
       }
+
+      setShowRetryMessage(true);
+      setTimeout(() => {
+        setShowRetryMessage(false);
+      }, 1500);
     }
   };
 
@@ -92,6 +100,27 @@ export const QuizStep2 = ({ onNext }: QuizStepProps) => {
                     </div>
                   )
               )}
+
+              {/* 오답 영역 클릭 시 */}
+              <AnimatePresence>
+                {showRetryMessage && (
+                  <motion.div
+                    key='retry'
+                    initial={{ opacity: 0 }}
+                    animate={{
+                      opacity: 1,
+                      transition: { duration: 0.3, ease: 'easeIn' },
+                    }}
+                    exit={{
+                      opacity: 0,
+                      transition: { duration: 0.3, ease: 'easeOut' },
+                    }}
+                    className='pointer-events-none absolute bottom-5 left-1/2 w-65 -translate-x-1/2 rounded-[0.75rem] bg-[#000000CC] py-3 text-center leading-none text-white'
+                  >
+                    다시 한 번 찾아보세요!
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </div>
           </div>
         }
