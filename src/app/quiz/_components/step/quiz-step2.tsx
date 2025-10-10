@@ -10,6 +10,18 @@ import { ANSWER_AREAS, SIZE } from '../../lib/constants';
 import QuizStepLayout from '../quiz-step-layout';
 import QuizStep2Explanation from './quiz-step2-explanation';
 
+const FADE_ANIMATION = {
+  initial: { opacity: 0 },
+  animate: {
+    opacity: 1,
+    transition: { duration: 0.3, ease: 'easeIn' as const },
+  },
+  exit: {
+    opacity: 0,
+    transition: { duration: 0.3, ease: 'easeOut' as const },
+  },
+};
+
 export const QuizStep2 = ({ onNext }: QuizStepProps) => {
   const [foundCount, setFoundCount] = useState<0 | 1 | 2 | 3>(0);
   const [foundAreas, setFoundAreas] = useState<Set<number>>(new Set());
@@ -24,6 +36,8 @@ export const QuizStep2 = ({ onNext }: QuizStepProps) => {
     const scaleX = rect.width / SIZE.IMAGE_WIDTH;
     const scaleY = rect.height / SIZE.IMAGE_HEIGHT;
 
+    let isCorrect = false;
+
     for (const area of ANSWER_AREAS) {
       if (foundAreas.has(area.id)) continue;
 
@@ -31,8 +45,6 @@ export const QuizStep2 = ({ onNext }: QuizStepProps) => {
       const scaledTop = area.top * scaleY;
       const scaledRight = scaledLeft + area.width * scaleX;
       const scaledBottom = scaledTop + area.height * scaleY;
-
-      let isCorrect = false;
 
       if (
         clickX >= scaledLeft &&
@@ -46,16 +58,16 @@ export const QuizStep2 = ({ onNext }: QuizStepProps) => {
         setWrongClickCount(0);
         setShowRetryMessage(false);
         isCorrect = true;
-        return;
+        break;
       }
+    }
 
-      if (!isCorrect) {
-        setWrongClickCount(prev => prev + 1);
-        setShowRetryMessage(true);
-        setTimeout(() => {
-          setShowRetryMessage(false);
-        }, 1500);
-      }
+    if (!isCorrect) {
+      setWrongClickCount(prev => prev + 1);
+      setShowRetryMessage(true);
+      setTimeout(() => {
+        setShowRetryMessage(false);
+      }, 1500);
     }
   };
 
@@ -112,40 +124,31 @@ export const QuizStep2 = ({ onNext }: QuizStepProps) => {
 
               {/* 오답 영역 클릭 시 */}
               <AnimatePresence>
-                {wrongClickCount >= 3 && (
-                  <motion.div
+                {wrongClickCount >= 3 && foundCount !== 3 && (
+                  <motion.button
                     key='hint'
-                    initial={{ opacity: 0 }}
-                    animate={{
-                      opacity: 1,
-                      transition: { duration: 0.3, ease: 'easeIn' },
-                    }}
+                    type='button'
+                    {...FADE_ANIMATION}
                     className={cn(
                       'text-16-semibold absolute bottom-5 left-1/2 w-30 -translate-x-1/2 rounded-[3.125rem] bg-black py-3 text-center leading-none text-white shadow-[0px_4px_4px_0px_#00000040]',
                       'tracking-[-0.02em]'
                     )}
                   >
                     힌트 보기
-                  </motion.div>
+                  </motion.button>
                 )}
 
-                {wrongClickCount < 3 && showRetryMessage && (
-                  <motion.div
-                    key='retry'
-                    initial={{ opacity: 0 }}
-                    animate={{
-                      opacity: 1,
-                      transition: { duration: 0.3, ease: 'easeIn' },
-                    }}
-                    exit={{
-                      opacity: 0,
-                      transition: { duration: 0.3, ease: 'easeOut' },
-                    }}
-                    className='pointer-events-none absolute bottom-5 left-1/2 w-65 -translate-x-1/2 rounded-[0.75rem] bg-[#000000CC] py-3 text-center leading-none text-white'
-                  >
-                    다시 한 번 찾아보세요!
-                  </motion.div>
-                )}
+                {wrongClickCount < 3 &&
+                  foundCount !== 3 &&
+                  showRetryMessage && (
+                    <motion.div
+                      key='retry'
+                      {...FADE_ANIMATION}
+                      className='pointer-events-none absolute bottom-5 left-1/2 w-65 -translate-x-1/2 rounded-[0.75rem] bg-[#000000CC] py-3 text-center leading-none text-white'
+                    >
+                      다시 한 번 찾아보세요!
+                    </motion.div>
+                  )}
               </AnimatePresence>
             </div>
           </div>
