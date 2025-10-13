@@ -65,7 +65,7 @@ const EventDescription = () => {
           className='rounded-b-xl bg-white'
         />
 
-        <p className='text-14-regular my-3 opacity-50'>
+        <p className='text-14-regular my-3 text-[#00000050]'>
           굿즈는 이벤트 진행에 따라 변경될 수 있습니다
         </p>
 
