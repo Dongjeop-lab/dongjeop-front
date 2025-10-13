@@ -29,7 +29,7 @@ const RewardCard = ({
         </h3>
       </header>
 
-      <p className='mb-[10px] text-center text-[0.8125rem] leading-[100%] font-medium tracking-[-0.03125rem] text-[#696969]'>
+      <p className='mb-4 text-center text-[0.8125rem] leading-[100%] font-medium tracking-[-0.03125rem] text-[#696969]'>
         {title}
       </p>
 
