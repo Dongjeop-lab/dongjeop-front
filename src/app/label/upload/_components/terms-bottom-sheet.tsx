@@ -79,9 +79,9 @@ const TermsBottomSheet = ({
         <p className='text-16-bold text-center whitespace-break-spaces'>
           업로드한 사진은 이동약자 접근성 향상을 위한
           <br />
-          <span className='text-primary'>AI 학습 연구</span>에만 사용돼요.
+          <span className='text-primary'>AI 학습 연구</span>에만 사용돼요
           <br />
-          약관과 데이터 처리에 동의해 주세요.
+          약관과 데이터 처리에 동의해 주세요
         </p>
         <AgreementForm
           terms={TERMS}

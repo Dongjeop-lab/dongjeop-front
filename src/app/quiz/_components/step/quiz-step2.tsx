@@ -90,7 +90,7 @@ export const QuizStep2 = ({ onNext }: QuizStepProps) => {
     <>
       <QuizStepLayout
         currentStep={2}
-        title={`이동약자에게 불편할 수 있는\n요소 3개를 찾아주세요.`}
+        title={`이동약자에게 불편할 수 있는\n요소 3개를 찾아주세요`}
         subTitle={
           <p>
             <span className='text-border-blue'>{foundCount}/3개</span>
