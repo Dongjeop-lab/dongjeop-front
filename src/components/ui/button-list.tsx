@@ -77,22 +77,26 @@ const Item = ({
         role='option'
         aria-selected={selected}
         className={cn(
-          'flex w-full cursor-pointer items-center justify-between rounded-xl border p-2.5 pr-5 transition-all duration-75 ease-out active:scale-[0.98]',
-          selected ? 'border-border-blue' : 'border-border-default',
+          'flex w-full cursor-pointer items-center justify-between rounded-xl p-2.5 pr-5 transition-all duration-75 ease-out active:scale-[0.98]',
+          selected
+            ? 'border-border-blue border-[1.5px]'
+            : 'border-border-default border',
           className
         )}
       >
-        <span className='flex items-center gap-2.5 p-2.5'>
+        <span className='flex items-center gap-3 p-2.5'>
           <span
             className={cn(
-              'text-[#292929]',
+              'flex-shrink-0 text-base text-[#292929]',
               selected ? 'font-bold' : 'font-medium'
             )}
           >
             {title}
           </span>
           {subTitle && (
-            <span className='text-sm font-normal text-[#555]'>{subTitle}</span>
+            <span className='text-start text-sm font-normal text-[#555]'>
+              {subTitle}
+            </span>
           )}
         </span>
         {/* TODO: 나타날 때, 인터렉션이 있으면 좋을 것 같은데 고려 필요 */}

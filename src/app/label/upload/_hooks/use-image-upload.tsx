@@ -32,7 +32,7 @@ export const useImageUpload = (
     // 파일 크기 검증 (10MB 제한)
     const maxSize = 10 * 1024 * 1024;
     if (file.size > maxSize) {
-      toast.error('파일 크기가 너무 큽니다. 10MB 이하의 파일을 선택해주세요.');
+      toast.error('파일 크기가 너무 큽니다. 10MB 이하의 파일을 선택해 주세요');
       return;
     }
 
