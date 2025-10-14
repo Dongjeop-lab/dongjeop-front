@@ -79,7 +79,7 @@ const EventFormSection = ({ imageKey }: EventFormSectionProps) => {
   return (
     <>
       <div className='mb-6 flex flex-col gap-8 px-5'>
-        <div className='flex flex-col gap-6'>
+        <div className='flex flex-col gap-6 pt-0.5'>
           <TextField
             placeholder='전화번호를 입력해주세요'
             inputMode='numeric'
