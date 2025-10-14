@@ -100,7 +100,7 @@ export const QuizStep2 = ({ onNext }: QuizStepProps) => {
         quizContent={
           <div className='flex justify-center'>
             <div
-              className='relative w-full max-w-[430px] min-w-[360px] cursor-pointer'
+              className='relative w-full max-w-[26.875rem] min-w-[22.5rem] cursor-pointer'
               onClick={handleImageClick}
             >
               <Image
@@ -110,6 +110,7 @@ export const QuizStep2 = ({ onNext }: QuizStepProps) => {
                 height={SIZE.IMAGE_HEIGHT}
                 className='h-auto w-full'
               />
+
               {/* 클릭 마커 표시 */}
               {ANSWER_AREAS.map(
                 area =>
