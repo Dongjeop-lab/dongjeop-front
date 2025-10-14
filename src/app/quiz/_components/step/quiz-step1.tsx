@@ -70,7 +70,7 @@ export const QuizStep1 = ({ onNext }: QuizStepProps) => {
             </span>
             <br />
             경사로는{' '}
-            <span className='font-bold'>&quot;있으면 좋은 것&quot;</span>
+            <strong className='font-bold'>&quot;있으면 좋은 것&quot;</strong>
             이 아니라
             <br />
             이동약자에게 꼭 필요한 길이에요.

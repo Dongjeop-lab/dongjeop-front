@@ -65,7 +65,10 @@ const LabelStepLayout = ({
 
   return (
     <motion.main
-      className={cn('flex flex-col items-center gap-8 px-5 pb-5', className)}
+      className={cn(
+        'mx-auto flex w-full max-w-[768px] flex-col items-center gap-8 px-5 pb-5',
+        className
+      )}
       variants={containerVariants}
       initial='hidden'
       animate='visible'
