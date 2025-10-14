@@ -58,13 +58,13 @@ const UploadContainer = ({ entryType }: UploadContainerProps) => {
       <div className='flex min-h-screen w-full'>
         <main className='flex flex-col items-center justify-center pb-14'>
           {/* 사진 등록 섹션 */}
-          <section className='flex w-full max-w-[360px] flex-1 flex-col items-center justify-center gap-y-8 px-5 pt-11 pb-10'>
-            <h1 className='text-26-bold text-center'>
+          <section className='flex w-full max-w-[360px] flex-1 flex-col items-center justify-center px-5 pt-11 pb-10'>
+            <h1 className='text-26-bold mb-2.5 text-center'>
               실내 사진을 등록해
               <br />
-              계단을 함께 부셔요!
+              계단을 함께 부숴요!
             </h1>
-            <p className='text-18-medium text-muted'>
+            <p className='text-18-medium text-muted mb-8'>
               망치를 눌러 사진을 올려주세요
             </p>
 

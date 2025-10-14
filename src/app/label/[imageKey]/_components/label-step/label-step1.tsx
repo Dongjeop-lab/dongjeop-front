@@ -52,7 +52,7 @@ export const LabelStep1 = ({
   return (
     <LabelStepLayout
       title='계단 또는 턱이 있나요?'
-      description='사진에 보이는 것만 선택해주세요'
+      description='사진에 보이는 것만 선택해 주세요'
       currentStep={1}
       totalSteps={TOTAL_LABELING_STEPS}
       imageKey={imageKey}
