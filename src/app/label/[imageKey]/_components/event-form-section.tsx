@@ -21,13 +21,13 @@ const TERMS: Term[] = [
     id: TERMS_ID.PRIVACY_REWARD_AGREE,
     required: true,
     label: '개인정보 수집·이용 동의 (리워드 지급 목적)',
-    link: BROWSER_PATH.TERMS.REWARD_COLLECTION,
+    terms: 'REWARD_COLLECTION_TERMS',
   },
   {
     id: TERMS_ID.PRIVACY_FEEDBACK_AGREE,
     required: false,
     label: '개인정보 수집·이용 동의 (피드백 요청 목적)',
-    link: BROWSER_PATH.TERMS.FEEDBACK_COLLECTION,
+    terms: 'FEEDBACK_COLLECTION_TERMS',
   },
 ];
 
