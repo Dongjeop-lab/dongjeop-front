@@ -69,7 +69,8 @@ export const QuizStep1 = ({ onNext }: QuizStepProps) => {
               작은 턱 하나도 이동약자에게는 큰 벽이 될 수 있어요.
             </span>
             <br />
-            경사로는 ‘있으면 좋은 것’이 아니라
+            경사로는 <strong className='font-bold'>‘있으면 좋은 것’</strong>이
+            아니라
             <br />
             이동약자에게 꼭 필요한 길이에요.
           </p>
