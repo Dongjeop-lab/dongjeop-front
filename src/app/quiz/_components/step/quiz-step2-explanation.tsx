@@ -53,56 +53,56 @@ const QuizStep2Explanation = ({ onNext }: QuizStep2ExplanationProps) => {
     >
       <h1 className='text-22-bold leading-[130%]'>정답을 같이 살펴볼까요?</h1>
 
-      <div className='flex flex-col justify-center'>
-        <div className='relative inline-block'>
-          <Image
-            src='/images/quiz/quiz2-bg.png'
-            alt='이동약자에게 불편할 수 있는 요소 3개가 포함된 이미지'
-            width={SIZE.IMAGE_WIDTH}
-            height={SIZE.IMAGE_HEIGHT}
-          />
-
-          {/* 현재 설명에 해당하는 원형 마커 표시 */}
-          {currentArea && (
-            <motion.div
-              key={currentAreaId}
-              initial={{ opacity: 0, scale: 0.8 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.4 }}
-              className='absolute'
-              style={{
-                left: `${(currentArea.markerLeft / SIZE.IMAGE_WIDTH) * 100}%`,
-                top: `${(currentArea.markerTop / SIZE.IMAGE_HEIGHT) * 100}%`,
-                width: `${(SIZE.MARKER / SIZE.IMAGE_WIDTH) * 100}%`,
-                height: `${(SIZE.MARKER / SIZE.IMAGE_HEIGHT) * 100}%`,
-                pointerEvents: 'none',
-              }}
-            >
-              <Image
-                src='/images/quiz/marker.svg'
-                alt='정답 위치'
-                width={SIZE.MARKER}
-                height={SIZE.MARKER}
-              />
-            </motion.div>
-          )}
-        </div>
-        <div className='h-[5.9375rem] w-[22.5rem] bg-[#FFF2D5]'></div>
-      </div>
-
-      <motion.div
-        key={currentExplanation}
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 0.4, ease: 'easeOut' }}
-        className='absolute bottom-5'
-      >
-        <ExplanationBox
-          label={EXPLANATIONS[currentExplanation].label}
-          description={EXPLANATIONS[currentExplanation].description}
-          onNext={handleNextExplanation}
+      <div className='relative flex aspect-[360/635] w-full max-w-[26.875rem] min-w-[22.5rem] flex-col items-center justify-center'>
+        <Image
+          src='/images/quiz/quiz2-bg.png'
+          alt='이동약자에게 불편할 수 있는 요소 3개가 포함된 이미지'
+          width={SIZE.IMAGE_WIDTH}
+          height={SIZE.IMAGE_HEIGHT}
+          className='h-auto w-full'
         />
-      </motion.div>
+
+        {/* 현재 설명에 해당하는 원형 마커 표시 */}
+        {currentArea && (
+          <motion.div
+            key={currentAreaId}
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.4 }}
+            className='absolute'
+            style={{
+              left: `${(currentArea.markerLeft / SIZE.IMAGE_WIDTH) * 100}%`,
+              top: `${(currentArea.markerTop / SIZE.IMAGE_HEIGHT) * 100}%`,
+              width: `${(SIZE.MARKER / SIZE.IMAGE_WIDTH) * 100}%`,
+              height: `${(SIZE.MARKER / SIZE.IMAGE_HEIGHT) * 100}%`,
+              pointerEvents: 'none',
+            }}
+          >
+            <Image
+              src='/images/quiz/marker.svg'
+              alt='정답 위치'
+              width={SIZE.MARKER}
+              height={SIZE.MARKER}
+            />
+          </motion.div>
+        )}
+        <div className='h-full w-full bg-[#FFF2D5]' />
+
+        {/* 정답 해설 박스 */}
+        <motion.div
+          key={currentExplanation}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.4, ease: 'easeOut' }}
+          className='absolute bottom-5 w-full px-5'
+        >
+          <ExplanationBox
+            label={EXPLANATIONS[currentExplanation].label}
+            description={EXPLANATIONS[currentExplanation].description}
+            onNext={handleNextExplanation}
+          />
+        </motion.div>
+      </div>
     </motion.div>
   );
 };

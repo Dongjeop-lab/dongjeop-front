@@ -12,8 +12,7 @@ const BottomButton = () => {
   const handleNavigateToAccessibilityQuiz = () => {
     const url = buildUrlWithSearchParams(
       BROWSER_PATH.QUIZ.DEFAULT,
-      searchParams,
-      { step: '1' }
+      searchParams
     );
     router.push(url);
   };
