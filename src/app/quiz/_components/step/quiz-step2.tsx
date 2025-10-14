@@ -100,7 +100,7 @@ export const QuizStep2 = ({ onNext }: QuizStepProps) => {
         quizContent={
           <div className='flex justify-center'>
             <div
-              className='relative inline-block cursor-pointer'
+              className='relative w-full max-w-[430px] min-w-[360px] cursor-pointer'
               onClick={handleImageClick}
             >
               <Image
@@ -108,8 +108,8 @@ export const QuizStep2 = ({ onNext }: QuizStepProps) => {
                 alt='이동약자에게 불편할 수 있는 요소 3개가 포함된 이미지'
                 width={SIZE.IMAGE_WIDTH}
                 height={SIZE.IMAGE_HEIGHT}
+                className='h-auto w-full'
               />
-
               {/* 클릭 마커 표시 */}
               {ANSWER_AREAS.map(
                 area =>

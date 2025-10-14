@@ -53,13 +53,14 @@ const QuizStep2Explanation = ({ onNext }: QuizStep2ExplanationProps) => {
     >
       <h1 className='text-22-bold leading-[130%]'>정답을 같이 살펴볼까요?</h1>
 
-      <div className='flex flex-col justify-center'>
-        <div className='relative inline-block'>
+      <div className='flex aspect-[360/635] w-full max-w-[430px] min-w-[360px] flex-col justify-center'>
+        <div className='relative'>
           <Image
             src='/images/quiz/quiz2-bg.png'
             alt='이동약자에게 불편할 수 있는 요소 3개가 포함된 이미지'
             width={SIZE.IMAGE_WIDTH}
             height={SIZE.IMAGE_HEIGHT}
+            className='h-auto w-full'
           />
 
           {/* 현재 설명에 해당하는 원형 마커 표시 */}
@@ -87,7 +88,7 @@ const QuizStep2Explanation = ({ onNext }: QuizStep2ExplanationProps) => {
             </motion.div>
           )}
         </div>
-        <div className='h-[5.9375rem] w-[22.5rem] bg-[#FFF2D5]'></div>
+        <div className='h-full w-full bg-[#FFF2D5]'></div>
       </div>
 
       <motion.div
