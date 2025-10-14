@@ -5,7 +5,7 @@ import RewardCard from './reward-card';
 
 const EventDescription = () => {
   return (
-    <section className='flex w-full flex-col items-center justify-center bg-[#EAF3FF] px-5 py-12'>
+    <section className='flex w-full flex-col items-center justify-center bg-[#EAF3FF] px-5 pt-12'>
       {/* 이벤트 라벨 */}
       <header className='mb-4'>
         <div className='flex h-[1.5rem] w-[4.1875rem] items-center justify-center gap-[0.625rem] rounded-[1.25rem] bg-black px-[0.75rem] py-[0.125rem] text-center text-sm font-bold tracking-wide text-white'>
@@ -65,12 +65,12 @@ const EventDescription = () => {
           className='rounded-b-xl bg-white'
         />
 
-        <p className='text-14-regular my-3 opacity-50'>
+        <p className='text-14-regular my-3 text-[#00000050]'>
           굿즈는 이벤트 진행에 따라 변경될 수 있습니다
         </p>
 
         <NoticeCard title='참여 방법 및 지급 일정'>
-          <ul className='flex flex-col gap-y-2.5'>
+          <ul className='flex flex-col gap-y-2.5 leading-5'>
             <li className='flex items-start gap-x-2 tracking-[-2%]'>
               <Image
                 src='/icons/check-orange.svg'

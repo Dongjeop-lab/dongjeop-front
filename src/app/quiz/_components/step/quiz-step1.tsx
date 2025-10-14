@@ -64,13 +64,14 @@ export const QuizStep1 = ({ onNext }: QuizStepProps) => {
             {...IMAGE}
             alt={IMAGE.alt}
           />
-          <p className='text=[0.9375rem] text-center whitespace-break-spaces text-[#555]'>
+          <p className='text-center text-[0.9375rem] font-medium whitespace-break-spaces text-[#555]'>
             <span className='text-[#000]'>
               작은 턱 하나도 이동약자에게는 큰 벽이 될 수 있어요.
             </span>
             <br />
-            경사로는 <strong className='font-bold'>‘있으면 좋은 것’</strong>이
-            아니라
+            경사로는{' '}
+            <strong className='font-bold'>&quot;있으면 좋은 것&quot;</strong>
+            이 아니라
             <br />
             이동약자에게 꼭 필요한 길이에요.
           </p>

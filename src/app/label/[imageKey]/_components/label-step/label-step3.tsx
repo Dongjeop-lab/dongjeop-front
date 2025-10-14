@@ -62,7 +62,7 @@ export const LabelStep3 = ({
   return (
     <LabelStepLayout
       title='통로 폭을 알려주세요'
-      description={`통로가 많다면 가장 많이 보이는\n폭을 선택해주세요`}
+      description={`통로가 많다면 가장 많이 보이는\n폭을 선택해 주세요`}
       currentStep={3}
       totalSteps={TOTAL_LABELING_STEPS}
       imageKey={imageKey}

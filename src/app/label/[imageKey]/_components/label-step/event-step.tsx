@@ -10,7 +10,7 @@ interface EventStepProps {
 
 export const EventStep = ({ imageKey }: EventStepProps) => {
   return (
-    <main className='mb-20'>
+    <main>
       <h1 className='mb-8 flex flex-col items-center gap-3'>
         <span className='text-18-semibold text-orange'>EVENT</span>
         <span className='text-26-bold text-center'>
@@ -21,6 +21,7 @@ export const EventStep = ({ imageKey }: EventStepProps) => {
       </h1>
       <EventFormSection imageKey={imageKey} />
       <EventDescription />
+      <div className='h-20 bg-[#EAF3FF]' />
     </main>
   );
 };

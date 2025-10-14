@@ -90,7 +90,7 @@ const EventFormSection = ({ imageKey }: EventFormSectionProps) => {
               setPhoneNumber(digitsOnly.slice(0, PHONE_NUMBER_LENGTH));
             }}
           />
-          <p className='text-center text-[0.9375rem] font-normal text-[#999]'>
+          <p className='text-center text-[0.9375rem] font-normal text-[#555555]'>
             개인정보는 리워드 지급과 피드백 요청에만 사용돼요.
             <br />
             문자/연구팀 카카오톡 채널을 통해 메시지를 받을 수 있어요.

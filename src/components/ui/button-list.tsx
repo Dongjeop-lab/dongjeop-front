@@ -77,17 +77,17 @@ const Item = ({
         role='option'
         aria-selected={selected}
         className={cn(
-          'flex w-full cursor-pointer items-center justify-between rounded-xl border p-2.5 pr-5 transition-all duration-75 ease-out active:scale-[0.98]',
+          'flex w-full cursor-pointer items-center justify-between rounded-xl p-2.5 pr-5 transition-all duration-75 ease-out active:scale-[0.98]',
           selected
             ? 'border-border-blue border-[1.5px]'
-            : 'border-border-default',
+            : 'border-border-default border',
           className
         )}
       >
-        <span className='flex items-center gap-2.5 p-2.5'>
+        <span className='flex items-center gap-3 p-2.5'>
           <span
             className={cn(
-              'text-nowrap text-[#292929]',
+              'flex-shrink-0 text-base text-[#292929]',
               selected ? 'font-bold' : 'font-medium'
             )}
           >
