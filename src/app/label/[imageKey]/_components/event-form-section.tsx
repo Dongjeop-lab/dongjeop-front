@@ -38,7 +38,7 @@ interface EventFormSectionProps {
 }
 
 const EventFormSection = ({ imageKey }: EventFormSectionProps) => {
-  const [phoneNumber, setPhoneNumber] = useState('');
+  const [phoneNumber, setPhoneNumber] = useState('010');
   const [checkedIds, setCheckedIds] = useState<Set<string>>(new Set());
 
   const router = useRouter();
@@ -87,6 +87,10 @@ const EventFormSection = ({ imageKey }: EventFormSectionProps) => {
             value={phoneNumber.replace(/(\d{3})(\d{4})(\d{4})/, '$1-$2-$3')}
             onChange={e => {
               const digitsOnly = e.target.value.replace(/\D/g, '');
+              if (digitsOnly.length < 3) {
+                setPhoneNumber('010');
+                return;
+              }
               setPhoneNumber(digitsOnly.slice(0, PHONE_NUMBER_LENGTH));
             }}
           />
