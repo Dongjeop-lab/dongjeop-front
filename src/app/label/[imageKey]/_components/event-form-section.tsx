@@ -32,13 +32,14 @@ const TERMS: Term[] = [
 ];
 
 const PHONE_NUMBER_LENGTH = 11;
+const DEFAULT_PHONE_NUMBER = '010';
 
 interface EventFormSectionProps {
   imageKey: string;
 }
 
 const EventFormSection = ({ imageKey }: EventFormSectionProps) => {
-  const [phoneNumber, setPhoneNumber] = useState('');
+  const [phoneNumber, setPhoneNumber] = useState(DEFAULT_PHONE_NUMBER);
   const [checkedIds, setCheckedIds] = useState<Set<string>>(new Set());
 
   const router = useRouter();
@@ -87,6 +88,10 @@ const EventFormSection = ({ imageKey }: EventFormSectionProps) => {
             value={phoneNumber.replace(/(\d{3})(\d{4})(\d{4})/, '$1-$2-$3')}
             onChange={e => {
               const digitsOnly = e.target.value.replace(/\D/g, '');
+              if (digitsOnly.length < 3) {
+                setPhoneNumber(DEFAULT_PHONE_NUMBER);
+                return;
+              }
               setPhoneNumber(digitsOnly.slice(0, PHONE_NUMBER_LENGTH));
             }}
           />
