@@ -1,5 +1,4 @@
 import Image from 'next/image';
-import { useState } from 'react';
 
 import ButtonList from '@/components/ui/button-list';
 
@@ -26,9 +25,7 @@ const IMAGE = {
   className: 'mx-auto w-full max-w-80 rounded-2xl',
 };
 
-export const QuizStep3 = ({ onNext }: QuizStepProps) => {
-  const [isCorrect, setIsCorrect] = useState<boolean | null>(null);
-
+export const QuizStep3 = ({ isCorrect, onAnswer, onNext }: QuizStepProps) => {
   if (isCorrect === null) {
     return (
       <QuizStepLayout
@@ -45,7 +42,7 @@ export const QuizStep3 = ({ onNext }: QuizStepProps) => {
                 <ButtonList.Item
                   key={title}
                   title={title}
-                  onClick={() => setIsCorrect(isCorrect)}
+                  onClick={() => onAnswer(isCorrect)}
                 />
               ))}
             </ButtonList>
