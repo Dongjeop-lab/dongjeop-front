@@ -1,4 +1,3 @@
-import Image from 'next/image';
 import { forwardRef } from 'react';
 
 import { AchievementBar } from './achievement-bar';
@@ -13,15 +12,24 @@ export const SubmissionCard = forwardRef<HTMLDivElement, SubmissionsCardProps>(
     return (
       <div
         ref={ref}
-        className='flex h-full w-full flex-col gap-y-1.5 rounded-2xl bg-[url(/images/finish/submission-card-bg.svg)] p-7.5 pt-12.5'
+        className='relative flex h-full w-full flex-col gap-y-1.5 rounded-2xl p-7.5 pt-12.5'
       >
+        <img
+          src='/images/finish/submission-card-bg.svg'
+          alt='기여카드'
+          crossOrigin='anonymous'
+          className='absolute inset-0 -z-10 h-full w-full object-cover'
+        />
+
         <div className='absolute top-0 right-0 p-6'>
-          <Image
+          <img
             src='/images/finish/icon-heart.svg'
             alt=''
             aria-hidden='true'
             width={58.06}
             height={50}
+            crossOrigin='anonymous'
+            className='pointer-events-none h-[50px] w-[58.06px] select-none'
           />
         </div>
         <div className='text-18-bold'>
