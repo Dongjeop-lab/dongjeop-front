@@ -70,7 +70,7 @@ const AgreementForm = ({
 
   return (
     <>
-      <div>
+      <div className='mx-auto max-w-[768px]'>
         {!hideAgreeAll && (
           <label
             className={cn(
