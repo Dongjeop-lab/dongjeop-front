@@ -11,8 +11,8 @@ export const ConfettiAnimation = () => {
       loop={false}
       autoplay
       style={{
-        width: 450,
-        height: 450,
+        width: 500,
+        height: 500,
         pointerEvents: 'none',
       }}
     />
