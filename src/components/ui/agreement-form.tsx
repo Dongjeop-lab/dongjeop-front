@@ -33,8 +33,6 @@ const AgreementForm = ({
 }: AgreementFormProps) => {
   const [openTerm, setOpenTerm] = useState<TermsKey | null>(null);
 
-  console.log(openTerm);
-
   const isAllChecked = terms.length > 0 && checkedIds.size === terms.length;
 
   const handleCheckAll = () => {
@@ -70,7 +68,7 @@ const AgreementForm = ({
 
   return (
     <>
-      <div className='mx-auto max-w-[768px]'>
+      <div className='mx-auto w-full max-w-[768px]'>
         {!hideAgreeAll && (
           <label
             className={cn(
