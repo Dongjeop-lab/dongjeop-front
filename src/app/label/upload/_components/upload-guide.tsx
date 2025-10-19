@@ -51,8 +51,8 @@ const UploadGuide = () => {
               src={src}
               alt={`가이드 이미지 ${index + 1}`}
               className='h-full w-full rounded-2xl object-contain'
-              width={280}
-              height={84}
+              width={1024}
+              height={939}
             />
           </li>
         ))}
