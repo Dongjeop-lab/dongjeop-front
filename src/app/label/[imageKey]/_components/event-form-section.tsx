@@ -21,24 +21,25 @@ const TERMS: Term[] = [
     id: TERMS_ID.PRIVACY_REWARD_AGREE,
     required: true,
     label: '개인정보 수집·이용 동의 (리워드 지급 목적)',
-    link: BROWSER_PATH.TERMS.REWARD_COLLECTION,
+    terms: 'REWARD_COLLECTION_TERMS',
   },
   {
     id: TERMS_ID.PRIVACY_FEEDBACK_AGREE,
     required: false,
     label: '개인정보 수집·이용 동의 (피드백 요청 목적)',
-    link: BROWSER_PATH.TERMS.FEEDBACK_COLLECTION,
+    terms: 'FEEDBACK_COLLECTION_TERMS',
   },
 ];
 
 const PHONE_NUMBER_LENGTH = 11;
+const DEFAULT_PHONE_NUMBER = '010';
 
 interface EventFormSectionProps {
   imageKey: string;
 }
 
 const EventFormSection = ({ imageKey }: EventFormSectionProps) => {
-  const [phoneNumber, setPhoneNumber] = useState('');
+  const [phoneNumber, setPhoneNumber] = useState(DEFAULT_PHONE_NUMBER);
   const [checkedIds, setCheckedIds] = useState<Set<string>>(new Set());
 
   const router = useRouter();
@@ -79,7 +80,7 @@ const EventFormSection = ({ imageKey }: EventFormSectionProps) => {
   return (
     <>
       <div className='mb-6 flex flex-col gap-8 px-5'>
-        <div className='flex flex-col gap-6'>
+        <div className='flex flex-col gap-6 pt-0.5'>
           <TextField
             placeholder='전화번호를 입력해주세요'
             inputMode='numeric'
@@ -87,10 +88,14 @@ const EventFormSection = ({ imageKey }: EventFormSectionProps) => {
             value={phoneNumber.replace(/(\d{3})(\d{4})(\d{4})/, '$1-$2-$3')}
             onChange={e => {
               const digitsOnly = e.target.value.replace(/\D/g, '');
+              if (digitsOnly.length < 3) {
+                setPhoneNumber(DEFAULT_PHONE_NUMBER);
+                return;
+              }
               setPhoneNumber(digitsOnly.slice(0, PHONE_NUMBER_LENGTH));
             }}
           />
-          <p className='text-secondary-foreground text-center text-[0.9375rem] font-normal'>
+          <p className='text-center text-[0.9375rem] font-normal text-[#555555]'>
             개인정보는 리워드 지급과 피드백 요청에만 사용돼요.
             <br />
             문자/연구팀 카카오톡 채널을 통해 메시지를 받을 수 있어요.

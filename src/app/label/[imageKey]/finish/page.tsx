@@ -16,7 +16,7 @@ const FinishPage = () => {
 
   const [step, setStep] = useState<1 | 2 | 3 | 4>(1);
   const cardRef = useRef<HTMLDivElement>(null);
-  const { handleCapture } = useCardCapture(cardRef);
+  const { handleCaptureWithBackground } = useCardCapture(cardRef);
   const { submissionResult, loading, error } = useSubmissionResult(
     params.imageKey
   );
@@ -39,7 +39,10 @@ const FinishPage = () => {
 
   const handleDownloadCard = () => {
     if (submissionResult) {
-      handleCapture(`contribution-card-${submissionResult?.seq_no}.png`);
+      handleCaptureWithBackground(
+        `contribution-card-${submissionResult?.seq_no}.png`,
+        '/images/finish/capture-bg.png'
+      );
     }
   };
 

@@ -17,10 +17,25 @@ const FINISH_STEP = 4;
 
 const QuizPage = () => {
   const [currentStep, setCurrentStep] = useState(FIRST_STEP);
+  const [answerStatus, setAnswerStatus] = useState<{
+    [key: number]: boolean | null;
+  }>({});
 
   const router = useRouter();
 
   const handleBack = () => {
+    const isAnswered =
+      answerStatus[currentStep] !== null &&
+      answerStatus[currentStep] !== undefined;
+
+    if (isAnswered) {
+      setAnswerStatus(prev => ({
+        ...prev,
+        [currentStep]: null,
+      }));
+      return;
+    }
+
     if (currentStep === FIRST_STEP) {
       router.push('/');
       return;
@@ -36,14 +51,41 @@ const QuizPage = () => {
     setCurrentStep(prev => Math.min(prev + 1, FINISH_STEP));
   };
 
+  const handleAnswer = (isCorrect: boolean) => {
+    setAnswerStatus(prev => ({
+      ...prev,
+      [currentStep]: isCorrect,
+    }));
+  };
+
   const renderStep = () => {
+    const isCorrect = answerStatus[currentStep] ?? null;
+
     switch (currentStep) {
       case 1:
-        return <QuizStep1 onNext={handleNext} />;
+        return (
+          <QuizStep1
+            isCorrect={isCorrect}
+            onAnswer={handleAnswer}
+            onNext={handleNext}
+          />
+        );
       case 2:
-        return <QuizStep2 onNext={handleNext} />;
+        return (
+          <QuizStep2
+            isCorrect={isCorrect}
+            onAnswer={handleAnswer}
+            onNext={handleNext}
+          />
+        );
       case 3:
-        return <QuizStep3 onNext={handleNext} />;
+        return (
+          <QuizStep3
+            isCorrect={isCorrect}
+            onNext={handleNext}
+            onAnswer={handleAnswer}
+          />
+        );
       default:
         return null;
     }

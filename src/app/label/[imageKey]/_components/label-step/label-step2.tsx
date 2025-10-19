@@ -134,7 +134,7 @@ export const LabelStep2 = ({
     <>
       <LabelStepLayout
         title='어떤 의자가 있는지 알려주세요'
-        description={`사진에 보이는 의자에 대해\n모두 선택해주세요`}
+        description={`사진에 보이는 의자에 대해\n모두 선택해 주세요`}
         currentStep={2}
         totalSteps={TOTAL_LABELING_STEPS}
         imageKey={imageKey}

@@ -90,7 +90,7 @@ export const QuizStep2 = ({ onNext }: QuizStepProps) => {
     <>
       <QuizStepLayout
         currentStep={2}
-        title={`이동약자에게 불편할 수 있는\n요소 3개를 찾아주세요.`}
+        title={`이동약자에게 불편할 수 있는\n요소 3개를 찾아주세요`}
         subTitle={
           <p>
             <span className='text-border-blue'>{foundCount}/3개</span>
@@ -100,7 +100,7 @@ export const QuizStep2 = ({ onNext }: QuizStepProps) => {
         quizContent={
           <div className='flex justify-center'>
             <div
-              className='relative inline-block cursor-pointer'
+              className='relative w-full max-w-[26.875rem] min-w-[22.5rem] cursor-pointer'
               onClick={handleImageClick}
             >
               <Image
@@ -108,6 +108,7 @@ export const QuizStep2 = ({ onNext }: QuizStepProps) => {
                 alt='이동약자에게 불편할 수 있는 요소 3개가 포함된 이미지'
                 width={SIZE.IMAGE_WIDTH}
                 height={SIZE.IMAGE_HEIGHT}
+                className='h-auto w-full'
               />
 
               {/* 클릭 마커 표시 */}

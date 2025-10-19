@@ -1,5 +1,4 @@
 import Image from 'next/image';
-import { useState } from 'react';
 
 import ButtonList from '@/components/ui/button-list';
 
@@ -26,9 +25,7 @@ const IMAGE = {
   className: 'mx-auto w-full max-w-80 rounded-2xl',
 };
 
-export const QuizStep3 = ({ onNext }: QuizStepProps) => {
-  const [isCorrect, setIsCorrect] = useState<boolean | null>(null);
-
+export const QuizStep3 = ({ isCorrect, onAnswer, onNext }: QuizStepProps) => {
   if (isCorrect === null) {
     return (
       <QuizStepLayout
@@ -45,7 +42,7 @@ export const QuizStep3 = ({ onNext }: QuizStepProps) => {
                 <ButtonList.Item
                   key={title}
                   title={title}
-                  onClick={() => setIsCorrect(isCorrect)}
+                  onClick={() => onAnswer(isCorrect)}
                 />
               ))}
             </ButtonList>
@@ -65,15 +62,13 @@ export const QuizStep3 = ({ onNext }: QuizStepProps) => {
             alt={IMAGE.alt}
           />
           <p className='text=[0.9375rem] text-center whitespace-break-spaces text-[#555]'>
-            <span className='text-[#000]'>
+            <span className='font-semibold text-[#000]'>
               통로 폭은 이동약자가 공간을 이용할 수 있는지를
               <br />
               결정하는 중요한 요소예요.
             </span>
             <br />
-            휠체어가 지나가려면 최소 90cm, 여유롭게는 120cm
-            <br />
-            이상이 필요해요.
+            휠체어가 지나가려면 최소 90cm, 여유롭게는 120cm 이상이 필요해요.
           </p>
         </div>
       }
