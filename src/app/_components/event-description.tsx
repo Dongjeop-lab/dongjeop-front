@@ -108,6 +108,19 @@ const EventDescription = () => {
           </ul>
         </NoticeCard>
       </div>
+      <div className='flex flex-col items-center gap-5 pt-[66px]'>
+        <Image
+          src='/images/home/footer-logo.svg'
+          alt='Kakao, 계단뿌셔클럽, Tech For Impact'
+          width={290}
+          height={20}
+        />
+        <span className='text-center text-xs leading-4 opacity-50'>
+          본 서비스는 카카오임팩트와 계단뿌셔클럽의 지원,
+          <br />
+          테크포임팩트 커뮤니티의 기여로 개발되었습니다.
+        </span>
+      </div>
     </section>
   );
 };
