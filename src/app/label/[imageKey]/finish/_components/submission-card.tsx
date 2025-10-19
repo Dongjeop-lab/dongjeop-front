@@ -15,23 +15,11 @@ export const SubmissionCard = forwardRef<HTMLDivElement, SubmissionsCardProps>(
         className='relative flex h-full w-full flex-col gap-y-1.5 rounded-2xl p-7.5 pt-12.5'
       >
         <img
-          src='/images/finish/submission-card-bg.svg'
+          src='/images/finish/submission-card-bg-with-heart.svg'
           alt='기여카드'
           crossOrigin='anonymous'
           className='absolute inset-0 -z-10 h-full w-full object-cover'
         />
-
-        <div className='absolute top-0 right-0 p-6'>
-          <img
-            src='/images/finish/icon-heart.svg'
-            alt=''
-            aria-hidden='true'
-            width={58.06}
-            height={50}
-            crossOrigin='anonymous'
-            className='pointer-events-none h-[50px] w-[58.06px] select-none'
-          />
-        </div>
         <div className='text-18-bold'>
           <p>지금까지 모인 사진</p>
           <p className='text-[2.625rem] leading-[130%] text-[#984200]'>
