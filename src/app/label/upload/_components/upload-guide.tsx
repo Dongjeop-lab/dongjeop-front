@@ -19,10 +19,10 @@ const guideImages = [
 
 const UploadGuide = () => {
   return (
-    <section className='flex w-full flex-col items-center gap-y-5 bg-[#fff6ed] px-5 py-10'>
-      <h2 className='text-18-semibold'>어떤 사진을 올려야하나요?</h2>
+    <section className='flex w-full flex-col items-center bg-[#fff6ed] px-5 py-10'>
+      <h2 className='text-18-semibold mb-4'>어떤 사진을 올려야하나요?</h2>
 
-      <ul className='flex w-full flex-col items-center gap-y-2'>
+      <ul className='mb-5 flex w-full flex-col items-center'>
         {guideTexts.map(({ icon, text }) => (
           <li
             key={text}
@@ -35,7 +35,7 @@ const UploadGuide = () => {
               width={18}
               height={18}
             />
-            <p>{text}</p>
+            <p className='text-[#484848]'>{text}</p>
           </li>
         ))}
       </ul>

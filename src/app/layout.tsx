@@ -14,13 +14,11 @@ const pretendard = localFont({
 
 export const metadata: Metadata = {
   title: '동접 - 이동약자를 위한 AI 모델 만들기',
-  description:
-    '실내 사진 업로드하고 간단한 퀴즈만 풀어도 이동약자의 접근성 향상에 큰 도움이 돼요.',
+  description: '실내 사진을 업로드하면 이동약자의 접근성 향상에 도움이 돼요.',
   metadataBase: new URL('https://dongjeop.com'),
   openGraph: {
     title: '퀴즈 풀고 선물 받아가세요!',
-    description:
-      '실내 사진 업로드하고 간단한 퀴즈만 풀어도 이동약자의 접근성 향상에 큰 도움이 돼요.',
+    description: '실내 사진을 업로드하면 이동약자의 접근성 향상에 도움이 돼요.',
     images: [
       {
         url: '/images/og/og-image.png',
@@ -39,7 +37,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang='ko'>
-      <body className={`${pretendard.className} text-16-regular`}>
+      <body
+        className={`${pretendard.className} text-16-regular mx-auto max-w-[768px]`}
+      >
         <TanstackQueryProvider>{children}</TanstackQueryProvider>
         <ToastContainer
           position='top-center'

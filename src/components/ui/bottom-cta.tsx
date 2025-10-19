@@ -27,7 +27,7 @@ interface BottomCTAButtonProps extends ClassName, PropsWithChildren {
   onClick?: VoidFunction;
 }
 
-const BOTTOM_CTA_CLASSNAME = 'fixed right-0 bottom-0 left-0';
+const BOTTOM_CTA_CLASSNAME = 'fixed right-0 bottom-0 left-0 z-10';
 const BOTTOM_CTA_INNER_CLASSNAME = 'flex mx-auto h-14 w-full';
 const BUTTON_WIDTHS = {
   '1:1': ['w-1/2', 'w-1/2'],

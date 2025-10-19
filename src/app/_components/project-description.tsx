@@ -27,7 +27,7 @@ const ProjectDescription = () => {
           >
             이동약자들의 이동을 막는 건
             <br />
-            바로 정보의 부족이에요.
+            바로 정보의 부족이에요
           </h2>
         </hgroup>
 
@@ -37,23 +37,28 @@ const ProjectDescription = () => {
           aria-label='사용자 의견'
         >
           <QuoteSection
-            quote={`"식당을 찾을 때 쓰는 지도 서비스에는\n이동약자에게 필요한 정보가\n부족하거나 부정확해요."`}
-            highlightedTexts={[
-              '지도 서비스',
-              '이동약자에게 필요한 정보가 부족하거나 부정확',
-            ]}
             imageSrc='/images/home/person-image1.svg'
             imageAlt='사람 일러스트 1'
             imagePosition='left'
-          />
+          >
+            &quot;식당을 찾을 때 쓰는{' '}
+            <span className='text-14-semibold'>지도 서비스</span>에는
+            <span className='text-14-semibold'>
+              이동약자에게 필요한 정보가 부족하거나 부정확
+            </span>
+            해요.&quot;
+          </QuoteSection>
 
           <QuoteSection
-            quote={`"외부에서 식사를 할 때마다 휠체어로\n갈 수 있는 곳인지 문의하거나 미리 답사\n해야 하는 것이 불합리한 것 같아요."`}
-            highlightedTexts={['문의하거나 미리 답사', '불합리']}
             imageSrc='/images/home/person-image2.svg'
             imageAlt='사람 일러스트 2'
             imagePosition='right'
-          />
+          >
+            &quot;외부에서 식사를 할 때마다 휠체어로 갈 수 있는 곳인지{' '}
+            <span className='text-14-semibold'>문의하거나 미리 답사</span>
+            해야 하는 것이 <span className='text-14-semibold'>불합리</span>한 것
+            같아요.&quot;
+          </QuoteSection>
         </aside>
 
         {/* 하이라이트 섹션 */}
@@ -99,7 +104,7 @@ const ProjectDescription = () => {
           >
             AI 모델 제작 과정
           </h3>
-          <ol className='flex w-full flex-col gap-8'>
+          <ol className='flex w-full flex-col gap-4'>
             <li>
               <StepItem
                 icon='/images/home/camera-image.svg'
