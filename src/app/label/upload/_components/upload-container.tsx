@@ -150,7 +150,7 @@ const UploadContainer = ({ entryType }: UploadContainerProps) => {
             disabled={!selectedImage}
             onClick={() => setIsOpen(true)}
           >
-            1분 만에 등록하기
+            {selectedImage ? '1분 만에 등록하기' : '사진을 등록해 주세요'}
           </BottomCTA.Button>
         </BottomCTA>
       </div>
