@@ -4,7 +4,13 @@ const Introduction = () => {
   return (
     <section className='flex w-full flex-col items-center justify-center bg-white'>
       {/* 서브 타이틀 */}
-      <header className='pt-8'>
+      <header className='flex flex-col items-center gap-6 pt-8'>
+        <Image
+          src='/images/home/stair-logo.svg'
+          alt='계단뿌셔클럽 | Tech For Impact'
+          width={260}
+          height={30}
+        />
         <p className='text-[1rem] leading-[130%] font-semibold tracking-[-1.5%] text-[#686868]'>
           누구나 이동하기 쉬운 세상을 위해
         </p>
