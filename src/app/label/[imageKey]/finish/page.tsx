@@ -24,7 +24,7 @@ const FinishPage = () => {
   useEffect(() => {
     if (step !== 1) return;
 
-    const timer = setTimeout(() => setStep(2), 3000);
+    const timer = setTimeout(() => setStep(2), 1500);
     return () => clearTimeout(timer);
   }, [step]);
 
