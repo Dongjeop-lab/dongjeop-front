@@ -37,7 +37,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang='ko'>
-      <body className={`${pretendard.className} text-16-regular`}>
+      <body
+        className={`${pretendard.className} text-16-regular mx-auto max-w-[768px]`}
+      >
         <TanstackQueryProvider>{children}</TanstackQueryProvider>
         <ToastContainer
           position='top-center'
