@@ -53,7 +53,7 @@ const QuizStep2Explanation = ({ onNext }: QuizStep2ExplanationProps) => {
     >
       <h1 className='text-22-bold leading-[130%]'>정답을 같이 살펴볼까요?</h1>
 
-      <div className='relative flex aspect-[360/635] w-full max-w-[26.875rem] min-w-[22.5rem] flex-col items-center justify-center'>
+      <div className='relative flex w-full max-w-[26.875rem] min-w-[22.5rem] flex-col items-center justify-center'>
         {/* 이미지 & 원형 마커 컨테이너 */}
         <div className='relative w-full'>
           <Image
