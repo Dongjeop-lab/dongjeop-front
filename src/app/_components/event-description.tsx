@@ -35,10 +35,10 @@ const EventDescription = () => {
         {/* 1-3등 상품 */}
         <RewardCard
           rank='1-3등 상품'
-          title='카카오 피규어 조명 + 계단뿌셔클럽 양말'
+          title='카카오 프렌즈 피규어 조명 + 계단뿌셔클럽 양말'
           firstImageSrc='/images/home/event-reward-image1.svg'
           secondImageSrc='/images/home/event-reward-image4.svg'
-          firstImageAlt='카카오 피규어 조명'
+          firstImageAlt='카카오 프렌즈 피규어 조명'
           secondImageAlt='계단뿌셔클럽 양말'
           className='rounded-t-xl bg-white'
         />
