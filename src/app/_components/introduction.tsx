@@ -61,9 +61,9 @@ const Introduction = () => {
               className='mt-0.5 h-[1.125rem] w-[1.125rem]'
             />
             <p>
-              실내 사진을 올리고 <strong>이동약자를 위한</strong>
-              <br />
-              <strong>AI 모델을 만드는 데에 기여</strong>해 보세요!
+              실내 사진을 올리고{' '}
+              <strong>이동약자를 위한 AI 모델을 만드는 데에 기여</strong>해
+              보세요!
             </p>
           </li>
         </ul>
