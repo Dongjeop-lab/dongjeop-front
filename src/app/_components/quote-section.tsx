@@ -15,7 +15,7 @@ const QuoteSection = ({
 }: QuoteSectionProps) => {
   return (
     <div
-      className={`flex items-center gap-2 ${
+      className={`flex items-center gap-2 break-keep ${
         imagePosition === 'right' ? 'flex-row-reverse' : ''
       }`}
     >

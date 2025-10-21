@@ -82,11 +82,8 @@ const EventDescription = () => {
               />
               <p className='text-start text-[#484848]'>
                 사진 등록 시{' '}
-                <span className='text-[#0D6EF9]'>
-                  전화번호를 입력한 경우에 한해
-                </span>
-                <br />
-                참여로 인정됩니다.
+                <span className='text-[#0D6EF9]'>전화번호를 입력한 경우</span>
+                <br />에 한해 참여로 인정됩니다.
               </p>
             </li>
             <li className='flex items-start gap-x-2 tracking-[-2%]'>
