@@ -18,7 +18,7 @@ const EventDescription = () => {
         className='mb-1.5 text-center text-[0.875rem] leading-[1.375rem] font-normal tracking-[-0.03125rem] text-gray-600'
         dateTime='2024-10-15/2024-11-14'
       >
-        10월 15일~11월 14일 동안
+        10월 22일(수) ~ 11월 21일(금) 동안
       </time>
 
       {/* 메인 안내 문구 */}
@@ -100,7 +100,7 @@ const EventDescription = () => {
               />
               <p className='text-start text-[#484848]'>
                 이벤트 기간 종료 후{' '}
-                <span className='text-[#0D6EF9]'>11월 20일</span>에 기재한
+                <span className='text-[#0D6EF9]'>11월 28(금)</span>에 기재한
                 <br />
                 연락처로 개별 안내 드려요.
               </p>
