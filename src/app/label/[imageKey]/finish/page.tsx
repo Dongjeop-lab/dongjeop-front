@@ -48,6 +48,8 @@ const FinishPage = () => {
         `contribution-card-${submissionResult.seq_no}.png`,
         '/images/finish/capture-bg.png'
       );
+    } catch {
+      // useCardCapture에서 toast를 이미 띄웠으므로 추가 메시지 불필요
     } finally {
       setIsCardCaptureloading(false);
     }
