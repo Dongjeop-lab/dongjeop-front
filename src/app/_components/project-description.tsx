@@ -42,7 +42,7 @@ const ProjectDescription = () => {
             imagePosition='left'
           >
             &quot;식당을 찾을 때 쓰는{' '}
-            <span className='text-14-semibold'>지도 서비스</span>에는
+            <span className='text-14-semibold'>지도 서비스</span>에는{' '}
             <span className='text-14-semibold'>
               이동약자에게 필요한 정보가 부족하거나 부정확
             </span>

@@ -2,23 +2,29 @@ import html2canvas from 'html2canvas';
 import { RefObject } from 'react';
 import { toast } from 'react-toastify';
 
-export const useCardCapture = (ref: RefObject<HTMLElement | null>) => {
+export const useCardCapture = (ref: RefObject<HTMLDivElement | null>) => {
   /**
    * 카드만 캡처 (배경 없이)
    * @param filename 파일명
    * @returns
    */
   const handleCapture = async (filename = 'capture.png') => {
-    if (!ref || !ref.current) {
+    if (!ref.current) {
       toast.error('저장 실패! 캡처할 요소를 찾지 못했어요.');
       return;
     }
 
     try {
+      // 폰트 로딩 대기
+      if (document.fonts) {
+        await document.fonts.ready;
+      }
+
       const canvas = await html2canvas(ref.current, {
         useCORS: true,
         backgroundColor: null,
-        scale: 2,
+        scale: Math.min(window.devicePixelRatio || 2, 3),
+        imageTimeout: 10000,
         logging: false,
       });
 
@@ -30,11 +36,21 @@ export const useCardCapture = (ref: RefObject<HTMLElement | null>) => {
 
       document.body.appendChild(link);
       link.click();
-      document.body.removeChild(link);
+      link.remove();
+
       toast.success('저장 성공! 다운로드 폴더에서 확인하세요.');
     } catch (error) {
       console.error(error);
-      toast.error('저장 실패! 오류가 발생했습니다.');
+
+      const errorMessage = error instanceof Error ? error.message : '';
+
+      if (errorMessage.includes('timeout')) {
+        toast.error(
+          '이미지 로딩 시간이 초과됐어요. 잠시 후 다시 시도해주세요.'
+        );
+      } else {
+        toast.error('저장 중 오류가 발생했습니다. 다시 시도해주세요.');
+      }
     }
   };
 
@@ -47,20 +63,28 @@ export const useCardCapture = (ref: RefObject<HTMLElement | null>) => {
     filename = 'capture.png',
     backgroundImageUrl: string
   ) => {
-    if (!ref || !ref.current) {
+    if (!ref.current) {
       toast.error('저장 실패! 캡처할 요소를 찾지 못했어요.');
       return;
     }
 
+    let backgroundImage: HTMLImageElement | null = null;
+
     try {
+      // 폰트 로딩 대기
+      if (document.fonts) {
+        await document.fonts.ready;
+      }
+
       const cardCanvas = await html2canvas(ref.current, {
         useCORS: true,
         backgroundColor: null,
-        scale: 2,
+        scale: Math.min(window.devicePixelRatio || 2, 3),
+        imageTimeout: 10000,
         logging: false,
       });
 
-      // 9:16 비율의 최종 캔버스 생성 (720x1280 기준, scale 2 적용)
+      // 9:16 비율의 최종 캔버스 생성
       const finalWidth = 720 * 2;
       const finalHeight = 1280 * 2;
       const finalCanvas = document.createElement('canvas');
@@ -73,23 +97,31 @@ export const useCardCapture = (ref: RefObject<HTMLElement | null>) => {
       }
 
       // 배경 이미지 로드 및 그리기
-      const backgroundImage = new Image();
+      backgroundImage = new Image();
       backgroundImage.crossOrigin = 'anonymous';
 
-      await new Promise((resolve, reject) => {
-        backgroundImage.onload = resolve;
-        backgroundImage.onerror = reject;
+      await new Promise<void>((resolve, reject) => {
+        if (!backgroundImage) return reject(new Error('IMAGE_INIT_ERROR'));
+
+        backgroundImage.onload = () => resolve();
+        backgroundImage.onerror = () => reject(new Error('IMAGE_LOAD_ERROR'));
         backgroundImage.src = backgroundImageUrl;
       });
 
       // 배경 이미지를 캔버스 전체에 그리기
       ctx.drawImage(backgroundImage, 0, 0, finalWidth, finalHeight);
 
-      // 카드 크기 계산 (양옆 90px 여백, scale 2 적용하면 80px)
+      // 카드 크기 계산
       const cardPadding = 90 * 2;
       const targetCardWidth = finalWidth - cardPadding;
       const targetCardHeight =
         (cardCanvas.height / cardCanvas.width) * targetCardWidth;
+
+      // 그림자 효과 설정
+      ctx.shadowColor = 'rgba(255, 110, 0, 0.30)'; // #FF6E004D
+      ctx.shadowBlur = 120 * 2; // scale 2
+      ctx.shadowOffsetX = 0;
+      ctx.shadowOffsetY = 12 * 2; // scale 2
 
       // 카드를 중앙에 배치
       const cardX = (finalWidth - targetCardWidth) / 2;
@@ -102,6 +134,13 @@ export const useCardCapture = (ref: RefObject<HTMLElement | null>) => {
         targetCardHeight
       );
 
+      // 그림자 효과 초기화
+      ctx.shadowColor = 'transparent';
+      ctx.shadowBlur = 0;
+      ctx.shadowOffsetX = 0;
+      ctx.shadowOffsetY = 0;
+
+      // 다운로드
       const dataUrl = finalCanvas.toDataURL('image/png');
       const link = document.createElement('a');
       link.href = dataUrl;
@@ -109,11 +148,34 @@ export const useCardCapture = (ref: RefObject<HTMLElement | null>) => {
 
       document.body.appendChild(link);
       link.click();
-      document.body.removeChild(link);
+      link.remove();
+
       toast.success('저장 성공! 다운로드 폴더에서 확인하세요.');
     } catch (error) {
       console.error(error);
-      toast.error('저장 실패! 오류가 발생했습니다.');
+
+      const errorMessage = error instanceof Error ? error.message : '';
+
+      // 오류 유형에 따른 토스트 메시지
+      if (errorMessage === 'IMAGE_LOAD_ERROR') {
+        toast.error(
+          '이미지를 불러오지 못했어요. 네트워크 상태 확인 후 다시 시도해주세요.'
+        );
+      } else if (errorMessage.includes('timeout')) {
+        toast.error(
+          '이미지 로딩 시간이 초과됐어요. 잠시 후 다시 시도해주세요.'
+        );
+      } else {
+        toast.error('저장 중 오류가 발생했습니다. 다시 시도해주세요.');
+      }
+    } finally {
+      // 메모리 정리
+      if (backgroundImage) {
+        backgroundImage.onload = null;
+        backgroundImage.onerror = null;
+        backgroundImage.src = '';
+        backgroundImage = null;
+      }
     }
   };
 

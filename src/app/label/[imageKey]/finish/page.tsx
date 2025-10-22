@@ -15,6 +15,7 @@ const FinishPage = () => {
   const params = useParams<{ imageKey: string }>();
 
   const [step, setStep] = useState<1 | 2 | 3 | 4>(1);
+  const [isCardCaptureloading, setIsCardCaptureloading] = useState(false);
   const cardRef = useRef<HTMLDivElement>(null);
   const { handleCaptureWithBackground } = useCardCapture(cardRef);
   const { submissionResult, loading, error } = useSubmissionResult(
@@ -37,12 +38,20 @@ const FinishPage = () => {
     }, 1500);
   };
 
-  const handleDownloadCard = () => {
-    if (submissionResult) {
-      handleCaptureWithBackground(
-        `contribution-card-${submissionResult?.seq_no}.png`,
+  const handleDownloadCard = async () => {
+    if (!submissionResult || isCardCaptureloading) return;
+
+    setIsCardCaptureloading(true);
+
+    try {
+      await handleCaptureWithBackground(
+        `contribution-card-${submissionResult.seq_no}.png`,
         '/images/finish/capture-bg.png'
       );
+    } catch {
+      // useCardCapture에서 toast를 이미 띄웠으므로 추가 메시지 불필요
+    } finally {
+      setIsCardCaptureloading(false);
     }
   };
 
@@ -90,6 +99,7 @@ const FinishPage = () => {
           submissionResult={submissionResult}
           onHammerClick={handleHammerClick}
           onDownloadCard={handleDownloadCard}
+          isCardCaptureloading={isCardCaptureloading}
           cardRef={cardRef}
         />
       </main>

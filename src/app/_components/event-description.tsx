@@ -82,11 +82,8 @@ const EventDescription = () => {
               />
               <p className='text-start text-[#484848]'>
                 사진 등록 시{' '}
-                <span className='text-[#0D6EF9]'>
-                  전화번호를 입력한 경우에 한해
-                </span>
-                <br />
-                참여로 인정됩니다.
+                <span className='text-[#0D6EF9]'>전화번호를 입력한 경우</span>
+                <br />에 한해 참여로 인정됩니다.
               </p>
             </li>
             <li className='flex items-start gap-x-2 tracking-[-2%]'>
@@ -112,8 +109,8 @@ const EventDescription = () => {
         <Image
           src='/images/home/footer-logo.svg'
           alt='Kakao, 계단뿌셔클럽, Tech For Impact'
-          width={290}
-          height={20}
+          width={188}
+          height={15}
         />
         <span className='text-center text-xs leading-4 opacity-50'>
           본 서비스는 카카오임팩트와 계단뿌셔클럽의 지원,
