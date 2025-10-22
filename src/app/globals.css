@@ -45,6 +45,12 @@
 }
 
 @layer base {
+  /* 기본 배경색을 흰색으로 설정 */
+  html,
+  body {
+    @apply bg-white text-black;
+  }
+
   /* 활성화된 버튼에 자동으로 cursor: pointer 적용 */
   button:not(:disabled),
   button:not([disabled]) {
