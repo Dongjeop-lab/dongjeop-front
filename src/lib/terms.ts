@@ -468,7 +468,7 @@ const PRIVACY_POLICY: TermsContent = {
 };
 
 const SERVICE: TermsContent = {
-  id: 'dongjeop-lab-terms-of-service',
+  id: 'terms-of-service',
   title: '서비스 이용약관',
   subtitle:
     '제1장 총칙\n제1조 [목적]\n본 약관은 이용자가 동접 LAB(이하 “운영자”)이 제공하는 서비스를 이용하는 데 필요한 권리·의무 및 책임사항, 이용조건 및 절차 등 기본적인 사항, 운영자와 이용자간 권리 및 의무를 규정함을 목적으로 합니다.',
