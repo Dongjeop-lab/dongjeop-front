@@ -8,8 +8,8 @@ const Introduction = () => {
         <Image
           src='/images/home/stair-logo.svg'
           alt='계단뿌셔클럽 | Tech For Impact'
-          width={260}
-          height={30}
+          width={215}
+          height={33}
         />
         <p className='text-[1rem] leading-[130%] font-semibold tracking-[-1.5%] text-[#686868]'>
           누구나 이동하기 쉬운 세상을 위해
