@@ -18,7 +18,7 @@ const EventDescription = () => {
         className='mb-1.5 text-center text-[0.875rem] leading-[1.375rem] font-normal tracking-[-0.03125rem] text-gray-600'
         dateTime='2024-10-15/2024-11-14'
       >
-        10월 22일(수) ~ 11월 21일(금) 동안
+        10월 24일(금) ~ 11월 23일(일) 동안
       </time>
 
       {/* 메인 안내 문구 */}
