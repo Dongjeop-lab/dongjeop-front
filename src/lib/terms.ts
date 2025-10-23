@@ -320,7 +320,7 @@ const RESEARCH_PROJECT_TERMS: TermsContent = {
   ],
 };
 
-export const REWARD_COLLECTION_TERMS: TermsContent = {
+const REWARD_COLLECTION_TERMS: TermsContent = {
   id: 'reward-collection-terms',
   title: '[필수] 개인정보 수집 및 이용 동의 (리워드 지급 목적)',
   subtitle:
