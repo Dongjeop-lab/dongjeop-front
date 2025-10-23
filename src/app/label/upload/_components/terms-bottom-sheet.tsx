@@ -67,7 +67,7 @@ const TermsBottomSheet = ({
     <BottomSheet
       isOpen={isOpen}
       onClose={onClose}
-      sheetHeight='380px'
+      sheetHeight='430px'
       bottom={
         <BottomCTA>
           <BottomCTA.Button
