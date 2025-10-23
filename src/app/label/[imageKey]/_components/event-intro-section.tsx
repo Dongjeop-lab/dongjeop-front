@@ -16,7 +16,7 @@ const EventIntroSection = () => {
         className='mb-1.5 text-center text-[0.875rem] leading-[1.375rem] font-normal tracking-[-0.03125rem] text-gray-600'
         dateTime='2024-10-15/2024-11-14'
       >
-        10월 15일~11월 14일 동안
+        10월 24일~11월 23일 동안
       </time>
 
       {/* 메인 안내 문구 */}
@@ -64,7 +64,7 @@ const EventIntroSection = () => {
 
         <NoticeCard title='지급 일정'>
           <p className='text-secondary-foreground text-center text-[0.875rem] leading-[100%] font-medium tracking-[-0.03125rem]'>
-            활동 기간 종료 후 11월 20일에
+            활동 기간 종료 후 11월 28일에
             <br />
             기재한 연락처로 개별 안내 드려요
           </p>
