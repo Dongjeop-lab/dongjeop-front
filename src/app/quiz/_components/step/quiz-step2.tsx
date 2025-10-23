@@ -1,6 +1,6 @@
 import { AnimatePresence, motion } from 'motion/react';
 import Image from 'next/image';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import BottomCTA from '@/components/ui/bottom-cta';
 import { cn } from '@/lib/utils';
@@ -22,13 +22,25 @@ const FADE_ANIMATION = {
   },
 };
 
-export const QuizStep2 = ({ onNext }: QuizStepProps) => {
+export const QuizStep2 = ({ isCorrect, onNext, onAnswer }: QuizStepProps) => {
   const [foundCount, setFoundCount] = useState<0 | 1 | 2 | 3>(0);
   const [foundAreas, setFoundAreas] = useState<Set<number>>(new Set());
   const [wrongClickCount, setWrongClickCount] = useState<number>(0);
   const [showRetryMessage, setShowRetryMessage] = useState<boolean>(false);
   const [hintAreaId, setHintAreaId] = useState<number | null>(null);
   const [showExplanation, setShowExplanation] = useState<boolean>(false);
+
+  // 해설 화면에서 뒤로가기 시 QuizStep2 초기 상태로 리셋
+  useEffect(() => {
+    if (isCorrect === null) {
+      setShowExplanation(false);
+      setFoundCount(0);
+      setFoundAreas(new Set());
+      setWrongClickCount(0);
+      setShowRetryMessage(false);
+      setHintAreaId(null);
+    }
+  }, [isCorrect]);
 
   const handleImageClick = (e: React.MouseEvent<HTMLDivElement>) => {
     const rect = e.currentTarget.getBoundingClientRect();
@@ -84,7 +96,14 @@ export const QuizStep2 = ({ onNext }: QuizStepProps) => {
     }
   };
 
-  if (showExplanation) return <QuizStep2Explanation onNext={onNext} />;
+  const handleShowExplanation = () => {
+    setShowExplanation(true);
+    onAnswer(true);
+  };
+
+  if (showExplanation) {
+    return <QuizStep2Explanation onNext={onNext} />;
+  }
 
   return (
     <>
@@ -199,7 +218,7 @@ export const QuizStep2 = ({ onNext }: QuizStepProps) => {
         <BottomCTA hasAnimation>
           <BottomCTA.Button
             variant={'primary'}
-            onClick={() => setShowExplanation(true)}
+            onClick={handleShowExplanation}
           >
             다음
           </BottomCTA.Button>
