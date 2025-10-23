@@ -8,6 +8,8 @@ export const BROWSER_PATH = {
     DEFAULT: '/quiz',
   },
   TERMS: {
+    SERVICE: '/terms/service',
+    PRIVACY_POLICY: '/terms/privacy-policy',
     RESEARCH_PROJECT: '/terms/research-project',
     IMAGE_COLLECTION: '/terms/image-collection',
     PRIVACY_ANONYMIZATION: '/terms/privacy-anonymization',

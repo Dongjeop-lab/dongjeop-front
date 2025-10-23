@@ -12,15 +12,21 @@ interface TermsBottomSheetProps {
 
 const TERMS: Term[] = [
   {
-    id: 'terms-research',
+    id: 'service',
     required: true,
-    label: '연구 프로젝트 참여 약관 동의',
-    terms: 'RESEARCH_PROJECT_TERMS',
+    label: '서비스 이용 약관',
+    terms: 'SERVICE',
+  },
+  {
+    id: 'privacy-policy',
+    required: true,
+    label: '개인정보 처리방침',
+    terms: 'PRIVACY_POLICY',
   },
   {
     id: 'terms-ai',
     required: true,
-    label: 'AI 학습용 데이터 수집 및 이용 동의',
+    label: '이미지 수집 이용 및 AI 학습 동의',
     terms: 'IMAGE_COLLECTION_TERMS',
   },
   {
@@ -61,7 +67,7 @@ const TermsBottomSheet = ({
     <BottomSheet
       isOpen={isOpen}
       onClose={onClose}
-      sheetHeight='380px'
+      sheetHeight='430px'
       bottom={
         <BottomCTA>
           <BottomCTA.Button
