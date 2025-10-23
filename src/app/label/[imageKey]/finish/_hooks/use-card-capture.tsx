@@ -101,10 +101,26 @@ export const useCardCapture = (ref: RefObject<HTMLDivElement | null>) => {
       backgroundImage.crossOrigin = 'anonymous';
 
       await new Promise<void>((resolve, reject) => {
-        if (!backgroundImage) return reject(new Error('IMAGE_INIT_ERROR'));
+        if (!backgroundImage) {
+          return reject(new Error('IMAGE_INIT_ERROR'));
+        }
 
-        backgroundImage.onload = () => resolve();
-        backgroundImage.onerror = () => reject(new Error('IMAGE_LOAD_ERROR'));
+        // 타임아웃 설정 (10초)
+        const timer = window.setTimeout(
+          () => reject(new Error('IMAGE_LOAD_TIMEOUT')),
+          10000
+        );
+
+        backgroundImage.onload = () => {
+          window.clearTimeout(timer);
+          resolve();
+        };
+
+        backgroundImage.onerror = () => {
+          window.clearTimeout(timer);
+          reject(new Error('IMAGE_LOAD_ERROR'));
+        };
+
         backgroundImage.src = backgroundImageUrl;
       });
 
@@ -117,15 +133,17 @@ export const useCardCapture = (ref: RefObject<HTMLDivElement | null>) => {
       const targetCardHeight =
         (cardCanvas.height / cardCanvas.width) * targetCardWidth;
 
+      // 카드 중앙 배치
+      const cardX = (finalWidth - targetCardWidth) / 2;
+      const cardY = (finalHeight - targetCardHeight) / 2;
+
       // 그림자 효과 설정
       ctx.shadowColor = 'rgba(255, 110, 0, 0.30)'; // #FF6E004D
       ctx.shadowBlur = 120 * 2; // scale 2
       ctx.shadowOffsetX = 0;
       ctx.shadowOffsetY = 12 * 2; // scale 2
 
-      // 카드를 중앙에 배치
-      const cardX = (finalWidth - targetCardWidth) / 2;
-      const cardY = (finalHeight - targetCardHeight) / 2;
+      // 카드 그리기
       ctx.drawImage(
         cardCanvas,
         cardX,
@@ -152,15 +170,21 @@ export const useCardCapture = (ref: RefObject<HTMLDivElement | null>) => {
 
       toast.success('저장 성공! 다운로드 폴더에서 확인하세요.');
     } catch (error) {
-      console.error(error);
+      console.error('캡처 오류:', error);
 
       const errorMessage = error instanceof Error ? error.message : '';
 
       // 오류 유형에 따른 토스트 메시지
-      if (errorMessage === 'IMAGE_LOAD_ERROR') {
+      if (errorMessage === 'IMAGE_LOAD_TIMEOUT') {
         toast.error(
-          '이미지를 불러오지 못했어요. 네트워크 상태 확인 후 다시 시도해주세요.'
+          '배경 이미지 로딩 시간이 초과됐어요. 잠시 후 다시 시도해주세요.'
         );
+      } else if (errorMessage === 'IMAGE_LOAD_ERROR') {
+        toast.error(
+          '배경 이미지를 불러오지 못했어요. 네트워크 상태 확인 후 다시 시도해주세요.'
+        );
+      } else if (errorMessage === 'IMAGE_INIT_ERROR') {
+        toast.error('이미지 초기화에 실패했어요. 다시 시도해주세요.');
       } else if (errorMessage.includes('timeout')) {
         toast.error(
           '이미지 로딩 시간이 초과됐어요. 잠시 후 다시 시도해주세요.'
