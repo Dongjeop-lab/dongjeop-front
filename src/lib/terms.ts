@@ -58,7 +58,7 @@ const COPYRIGHT_PORTRAIT_TERMS: TermsContent = {
     {
       title: '7. 문의처',
       items: [
-        '• 연구 프로젝트 운영팀: 동정 LAB',
+        '• 연구 프로젝트 운영팀: 동접 LAB',
         '• 이메일: rex.leto.addib@gmail.com',
       ],
     },
@@ -125,7 +125,7 @@ const IMAGE_COLLECTION_TERMS: TermsContent = {
     {
       title: '6. 문의처',
       items: [
-        '• 연구 프로젝트 운영팀: 동정 LAB',
+        '• 연구 프로젝트 운영팀: 동접 LAB',
         '• 이메일: rex.leto.addib@gmail.com',
       ],
     },
@@ -182,7 +182,7 @@ const PRIVACY_ANONYMIZATION_TERMS: TermsContent = {
     {
       title: '6. 문의처',
       items: [
-        '• 연구 프로젝트 운영팀: 동정 LAB',
+        '• 연구 프로젝트 운영팀: 동접 LAB',
         '• 이메일: rex.leto.addib@gmail.com',
       ],
     },
