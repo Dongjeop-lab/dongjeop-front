@@ -49,7 +49,7 @@ export const QuizStep2 = ({ isCorrect, onNext, onAnswer }: QuizStepProps) => {
     const scaleX = rect.width / SIZE.IMAGE_WIDTH;
     const scaleY = rect.height / SIZE.IMAGE_HEIGHT;
 
-    let isCorrect = false;
+    let allCorrect = false;
 
     for (const area of ANSWER_AREAS) {
       if (foundAreas.has(area.id)) continue;
@@ -71,12 +71,12 @@ export const QuizStep2 = ({ isCorrect, onNext, onAnswer }: QuizStepProps) => {
         setWrongClickCount(0);
         setShowRetryMessage(false);
         setHintAreaId(null);
-        isCorrect = true;
+        allCorrect = true;
         break;
       }
     }
 
-    if (!isCorrect) {
+    if (!allCorrect) {
       setWrongClickCount(prev => prev + 1);
       setShowRetryMessage(true);
       setTimeout(() => {
