@@ -1,6 +1,6 @@
 'use client';
 
-import { useId } from 'react';
+import { useEffect, useId } from 'react';
 import ReactFocusLock from 'react-focus-lock';
 
 import { TERMS, TermsKey } from '@/lib/terms';
@@ -18,10 +18,19 @@ const TermSheet = ({ contentKey, onClose }: TermSheetProps) => {
 
   const term = TERMS[contentKey];
 
+  useEffect(() => {
+    const originalOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+
+    return () => {
+      document.body.style.overflow = originalOverflow;
+    };
+  }, []);
+
   return (
     <Portal id={id}>
       <ReactFocusLock>
-        <div className='absolute top-0 right-0 left-0 z-50 min-h-screen w-full bg-white'>
+        <div className='absolute top-0 right-0 bottom-0 left-0 z-50 w-full overflow-y-auto bg-white'>
           <TermsHeader onClose={onClose} />
           <TermsContentComponent content={term} />
         </div>
