@@ -21,7 +21,7 @@ export const metadata: Metadata = {
     description: '실내 사진을 업로드하면 이동약자의 접근성 향상에 도움이 돼요.',
     images: [
       {
-        url: '/images/og/og-image.png',
+        url: '/images/og/og-img.png',
         width: 1200,
         height: 630,
         alt: '퀴즈 풀고 선물 받아가세요! - 동접',
