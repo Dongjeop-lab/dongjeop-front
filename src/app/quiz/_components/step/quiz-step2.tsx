@@ -23,8 +23,8 @@ const FADE_ANIMATION = {
 };
 
 export const QuizStep2 = ({ isCorrect, onNext, onAnswer }: QuizStepProps) => {
-  const [foundCount, setFoundCount] = useState<0 | 1 | 2 | 3>(0);
   const [foundAreas, setFoundAreas] = useState<Set<number>>(new Set());
+  const foundCount = foundAreas.size as 0 | 1 | 2 | 3;
   const [wrongClickCount, setWrongClickCount] = useState<number>(0);
   const [showRetryMessage, setShowRetryMessage] = useState<boolean>(false);
   const [hintAreaId, setHintAreaId] = useState<number | null>(null);
@@ -34,7 +34,6 @@ export const QuizStep2 = ({ isCorrect, onNext, onAnswer }: QuizStepProps) => {
   useEffect(() => {
     if (isCorrect === null) {
       setShowExplanation(false);
-      setFoundCount(0);
       setFoundAreas(new Set());
       setWrongClickCount(0);
       setShowRetryMessage(false);
@@ -49,7 +48,7 @@ export const QuizStep2 = ({ isCorrect, onNext, onAnswer }: QuizStepProps) => {
     const scaleX = rect.width / SIZE.IMAGE_WIDTH;
     const scaleY = rect.height / SIZE.IMAGE_HEIGHT;
 
-    let isCorrect = false;
+    let allCorrect = false;
 
     for (const area of ANSWER_AREAS) {
       if (foundAreas.has(area.id)) continue;
@@ -67,16 +66,15 @@ export const QuizStep2 = ({ isCorrect, onNext, onAnswer }: QuizStepProps) => {
       ) {
         const newFoundAreas = new Set(foundAreas).add(area.id);
         setFoundAreas(newFoundAreas);
-        setFoundCount(newFoundAreas.size as 0 | 1 | 2 | 3);
         setWrongClickCount(0);
         setShowRetryMessage(false);
         setHintAreaId(null);
-        isCorrect = true;
+        allCorrect = true;
         break;
       }
     }
 
-    if (!isCorrect) {
+    if (!allCorrect) {
       setWrongClickCount(prev => prev + 1);
       setShowRetryMessage(true);
       setTimeout(() => {
