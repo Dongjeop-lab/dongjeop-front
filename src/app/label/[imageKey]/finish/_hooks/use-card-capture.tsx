@@ -105,19 +105,35 @@ export const useCardCapture = (ref: RefObject<HTMLDivElement | null>) => {
           return reject(new Error('IMAGE_INIT_ERROR'));
         }
 
+        let settled = false;
+
+        const cleanup = () => {
+          if (!backgroundImage) return;
+          backgroundImage.onload = null;
+          backgroundImage.onerror = null;
+        };
+
         // 타임아웃 설정 (10초)
-        const timer = window.setTimeout(
-          () => reject(new Error('IMAGE_LOAD_TIMEOUT')),
-          10000
-        );
+        const timer = window.setTimeout(() => {
+          if (settled) return;
+          settled = true;
+          cleanup();
+          reject(new Error('IMAGE_LOAD_TIMEOUT'));
+        }, 10000);
 
         backgroundImage.onload = () => {
+          if (settled) return;
+          settled = true;
           window.clearTimeout(timer);
+          cleanup();
           resolve();
         };
 
         backgroundImage.onerror = () => {
+          if (settled) return;
+          settled = true;
           window.clearTimeout(timer);
+          cleanup();
           reject(new Error('IMAGE_LOAD_ERROR'));
         };
 
