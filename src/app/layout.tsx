@@ -1,5 +1,6 @@
 import './globals.css';
 
+import { GoogleAnalytics } from '@next/third-parties/google';
 import { Metadata } from 'next';
 import localFont from 'next/font/local';
 import { ToastContainer } from 'react-toastify';
@@ -48,6 +49,7 @@ export default function RootLayout({
           theme='colored'
         />
       </body>
+      <GoogleAnalytics gaId='G-FSQSD0GFC5' />
     </html>
   );
 }
