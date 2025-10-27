@@ -8,7 +8,7 @@ import { cn } from '@/lib/utils';
 import { QuizStepProps } from '../../_types/quiz-step';
 import { ANSWER_AREAS, SIZE } from '../../lib/constants';
 import QuizStepLayout from '../quiz-step-layout';
-import QuizMarker, { QuizMarkerHint } from '../ui/quiz-marker';
+import { QuizMarker, QuizMarkerHint } from '../ui/quiz-marker';
 import QuizStep2Explanation from './quiz-step2-explanation';
 
 const FADE_ANIMATION = {

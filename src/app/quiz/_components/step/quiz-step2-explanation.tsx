@@ -4,7 +4,7 @@ import { useState } from 'react';
 
 import { ANSWER_AREAS, SIZE } from '../../lib/constants';
 import ExplanationBox from '../ui/explanation-box';
-import QuizMarker from '../ui/quiz-marker';
+import { QuizMarker } from '../ui/quiz-marker';
 
 interface QuizStep2ExplanationProps {
   onNext: () => void;
