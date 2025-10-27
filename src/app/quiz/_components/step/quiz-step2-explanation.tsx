@@ -4,6 +4,7 @@ import { useState } from 'react';
 
 import { ANSWER_AREAS, SIZE } from '../../lib/constants';
 import ExplanationBox from '../ui/explanation-box';
+import QuizMarker from '../ui/quiz-marker';
 
 interface QuizStep2ExplanationProps {
   onNext: () => void;
@@ -80,12 +81,7 @@ const QuizStep2Explanation = ({ onNext }: QuizStep2ExplanationProps) => {
                 pointerEvents: 'none',
               }}
             >
-              <Image
-                src='/images/quiz/marker.svg'
-                alt='정답 위치'
-                width={SIZE.MARKER}
-                height={SIZE.MARKER}
-              />
+              <QuizMarker />
             </motion.div>
           )}
         </div>
