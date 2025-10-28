@@ -133,7 +133,7 @@ const UploadContainer = ({ entryType }: UploadContainerProps) => {
             <input
               ref={fileInputRef}
               type='file'
-              accept='image/*'
+              accept='image/*,android/allowCamera'
               onChange={handleImageChange}
               className='hidden'
               aria-label='사진 선택'
