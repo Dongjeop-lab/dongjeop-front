@@ -112,6 +112,7 @@ jobs:
             NODE_ENV=production
             NEXT_PUBLIC_BUILD_ID=${{ github.sha }}
             NEXT_PUBLIC_LABEL_IMAGE_BASE_URL=${{ secrets.NEXT_PUBLIC_LABEL_IMAGE_BASE_URL }}
+            NEXT_PUBLIC_GA_ID=${{ secrets.NEXT_PUBLIC_GA_ID }}
           # 🔒 보안 강화: CA 인증서 사용, insecure 모드 제거
           provenance: false
           sbom: false
