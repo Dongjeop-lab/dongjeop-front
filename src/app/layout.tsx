@@ -49,7 +49,10 @@ export default function RootLayout({
           theme='colored'
         />
       </body>
-      <GoogleAnalytics gaId='G-FSQSD0GFC5' />
+      {process.env.NODE_ENV === 'production' &&
+        process.env.NEXT_PUBLIC_GA_ID && (
+          <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GA_ID!} />
+        )}
     </html>
   );
 }
