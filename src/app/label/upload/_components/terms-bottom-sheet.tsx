@@ -7,7 +7,7 @@ import BottomSheet from '@/components/ui/bottom-sheet';
 interface TermsBottomSheetProps {
   isOpen: boolean;
   onClose: VoidFunction;
-  onConfirm: VoidFunction;
+  onConfirm: () => Promise<void>;
 }
 
 const TERMS: Term[] = [
@@ -49,6 +49,13 @@ const TermsBottomSheet = ({
   onConfirm,
 }: TermsBottomSheetProps) => {
   const [selectedTerms, setSelectedTerms] = useState<Set<string>>(new Set());
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handleConfirm = async () => {
+    setIsLoading(true);
+    await onConfirm();
+    setIsLoading(false);
+  };
 
   const handleCheck = (id: string) => {
     setSelectedTerms(prev => {
@@ -72,8 +79,8 @@ const TermsBottomSheet = ({
         <BottomCTA>
           <BottomCTA.Button
             variant='primary'
-            disabled={selectedTerms.size < TERMS.length}
-            onClick={onConfirm}
+            disabled={selectedTerms.size < TERMS.length || isLoading}
+            onClick={handleConfirm}
           >
             확인
           </BottomCTA.Button>
