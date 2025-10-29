@@ -12,6 +12,11 @@ interface TermsBottomSheetProps {
 
 const TERMS: Term[] = [
   {
+    id: '14-age',
+    required: true,
+    label: '본인은 만14세 이상입니다',
+  },
+  {
     id: 'service',
     required: true,
     label: '서비스 이용 약관',
@@ -74,7 +79,7 @@ const TermsBottomSheet = ({
     <BottomSheet
       isOpen={isOpen}
       onClose={onClose}
-      sheetHeight='430px'
+      sheetHeight='450px'
       bottom={
         <BottomCTA>
           <BottomCTA.Button

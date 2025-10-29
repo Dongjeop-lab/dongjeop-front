@@ -1,5 +1,6 @@
 import './globals.css';
 
+import { GoogleAnalytics } from '@next/third-parties/google';
 import { Metadata } from 'next';
 import localFont from 'next/font/local';
 import { ToastContainer } from 'react-toastify';
@@ -48,6 +49,10 @@ export default function RootLayout({
           theme='colored'
         />
       </body>
+      {process.env.NODE_ENV === 'production' &&
+        process.env.NEXT_PUBLIC_GA_ID && (
+          <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GA_ID!} />
+        )}
     </html>
   );
 }
