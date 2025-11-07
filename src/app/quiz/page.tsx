@@ -1,9 +1,10 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import Header from '@/components/ui/header';
+import { sendGAEvent } from '@/lib/ga';
 
 import {
   QuizFinishStep,
@@ -90,6 +91,28 @@ const QuizPage = () => {
         return null;
     }
   };
+
+  useEffect(() => {
+    if (currentStep === FIRST_STEP) {
+      sendGAEvent('quiz_start', {
+        event_category: '퀴즈 퍼널',
+        event_label: '1단계 - 퀴즈 시작',
+        quiz_step: currentStep,
+      });
+    } else if (currentStep === FINISH_STEP) {
+      sendGAEvent('quiz_finish', {
+        event_category: '퀴즈 퍼널',
+        event_label: '4단계 - 퀴즈 완료',
+        quiz_step: currentStep,
+      });
+    } else {
+      sendGAEvent('quiz_step_view', {
+        event_category: '퀴즈 퍼널',
+        event_label: `${currentStep}단계 - 퀴즈 진행`,
+        quiz_step: currentStep,
+      });
+    }
+  }, [currentStep]);
 
   if (currentStep === FINISH_STEP) {
     return <QuizFinishStep />;
