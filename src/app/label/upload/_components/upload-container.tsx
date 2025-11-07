@@ -3,6 +3,7 @@ import Image from 'next/image';
 import { useEffect, useRef, useState } from 'react';
 
 import BottomCTA from '@/components/ui/bottom-cta';
+import { sendGAEvent } from '@/lib/ga';
 import { EntryType, ImageSourceType } from '@/types/api/upload';
 
 import { useImageUpload } from '../_hooks/use-image-upload';
@@ -52,6 +53,13 @@ const UploadContainer = ({ entryType }: UploadContainerProps) => {
 
     setSourceType(detectedSource);
   }, [selectedImage]);
+
+  useEffect(() => {
+    sendGAEvent('view_upload_page', {
+      event_category: '라벨링 퍼널',
+      event_label: '1단계 - 업로드 페이지 조회',
+    });
+  }, []);
 
   return (
     <>
