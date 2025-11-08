@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from 'react';
 import { toast } from 'react-toastify';
 
 import BottomCTA from '@/components/ui/bottom-cta';
+import { sendGAEvent } from '@/lib/ga';
 import { BROWSER_PATH, ENTRY_QUERY } from '@/lib/path';
 
 import FinishContent from './_components/finish-content';
@@ -37,6 +38,14 @@ const FinishPage = () => {
       setStep(4);
     }, 1500);
   };
+
+  useEffect(() => {
+    sendGAEvent('view_finish_card', {
+      event_category: '라벨링 퍼널',
+      event_label: '3단계 - 기여카드 확인',
+      image_key: params.imageKey,
+    });
+  }, [params.imageKey]);
 
   const handleDownloadCard = async () => {
     if (!submissionResult || isCardCaptureLoading) return;

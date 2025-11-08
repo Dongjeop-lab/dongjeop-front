@@ -3,9 +3,11 @@ import Image from 'next/image';
 import { useEffect, useRef, useState } from 'react';
 
 import BottomCTA from '@/components/ui/bottom-cta';
+import { sendGAEvent } from '@/lib/ga';
 import { EntryType, ImageSourceType } from '@/types/api/upload';
 
 import { useImageUpload } from '../_hooks/use-image-upload';
+import { uploadAnalytics } from '../_utils/analytics';
 import TermsBottomSheet from './terms-bottom-sheet';
 import UploadGuide from './upload-guide';
 
@@ -31,6 +33,12 @@ const UploadContainer = ({ entryType }: UploadContainerProps) => {
 
   const openImagePicker = () => {
     if (imagePreview) return;
+
+    // GA: 업로드 버튼 클릭 추적
+    uploadAnalytics.trackUploadButtonClick({
+      entry_type: entryType === EntryType.SHARE ? 'share' : 'normal',
+    });
+
     fileInputRef.current?.click();
   };
 
@@ -52,6 +60,13 @@ const UploadContainer = ({ entryType }: UploadContainerProps) => {
 
     setSourceType(detectedSource);
   }, [selectedImage]);
+
+  useEffect(() => {
+    sendGAEvent('view_upload_page', {
+      event_category: '라벨링 퍼널',
+      event_label: '1단계 - 업로드 페이지 조회',
+    });
+  }, []);
 
   return (
     <>

@@ -13,6 +13,7 @@ import { useEffect, useRef, useState } from 'react';
 import { apiClient } from '@/app/api/client';
 import Header from '@/components/ui/header';
 import { STEP_NUMBER } from '@/lib/constants';
+import { sendGAEvent } from '@/lib/ga';
 import { API_PATH, BROWSER_PATH } from '@/lib/path';
 import { queryKeys } from '@/lib/query-key';
 import { GetLabelStatusResponse } from '@/types/api/label';
@@ -127,6 +128,14 @@ const LabelPage = () => {
       router.push(`${pathname}?step=1`);
     }
   }, [isError, router, pathname]);
+
+  useEffect(() => {
+    sendGAEvent('start_labeling', {
+      event_category: '라벨링 퍼널',
+      event_label: '2단계 - 라벨링 시작',
+      image_key: params.imageKey,
+    });
+  }, [params.imageKey]);
 
   const renderStep = () => {
     switch (currentStep) {
