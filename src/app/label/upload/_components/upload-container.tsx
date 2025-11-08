@@ -7,6 +7,7 @@ import { sendGAEvent } from '@/lib/ga';
 import { EntryType, ImageSourceType } from '@/types/api/upload';
 
 import { useImageUpload } from '../_hooks/use-image-upload';
+import { uploadAnalytics } from '../_utils/analytics';
 import TermsBottomSheet from './terms-bottom-sheet';
 import UploadGuide from './upload-guide';
 
@@ -32,6 +33,12 @@ const UploadContainer = ({ entryType }: UploadContainerProps) => {
 
   const openImagePicker = () => {
     if (imagePreview) return;
+
+    // GA: 업로드 버튼 클릭 추적
+    uploadAnalytics.trackUploadButtonClick({
+      entry_type: entryType === EntryType.SHARE ? 'share' : 'normal',
+    });
+
     fileInputRef.current?.click();
   };
 

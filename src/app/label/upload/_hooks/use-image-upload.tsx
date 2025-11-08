@@ -9,6 +9,8 @@ import {
   PostImageResponse,
 } from '@/types/api/upload';
 
+import { uploadAnalytics } from '../_utils/analytics';
+
 interface UseImageUploadReturn {
   selectedImage: File | null;
   imagePreview: string | null;
@@ -47,7 +49,9 @@ export const useImageUpload = (
     const reader = new FileReader();
     reader.onload = e => {
       const result = e.target?.result as string;
-      if (result) setImagePreview(result);
+      if (result) {
+        setImagePreview(result);
+      }
     };
 
     reader.onerror = () => {
@@ -70,13 +74,15 @@ export const useImageUpload = (
   const handleImageUpload = async () => {
     if (!selectedImage) return;
 
+    const uploadSourceType = sourceType ?? ImageSourceType.GALLERY;
+    const sourceTypeString =
+      uploadSourceType === ImageSourceType.CAMERA ? 'camera' : 'gallery';
+    const entryTypeString = entryType === EntryType.SHARE ? 'share' : 'normal';
+
     try {
       const formData = new FormData();
       formData.append('image_file', selectedImage);
-
-      const uploadSourceType = sourceType ?? ImageSourceType.GALLERY;
       formData.append('source_type', uploadSourceType.toString());
-
       formData.append('entry_type', entryType.toString());
       formData.append('file_name', selectedImage.name);
       formData.append('terms_agreed', 'true'); // TODO: 실제 동의 여부로 교체
@@ -93,6 +99,14 @@ export const useImageUpload = (
         console.error('업로드 실패:', data);
         return;
       }
+
+      // GA: 업로드 완료 추적
+      uploadAnalytics.trackUploadCompleted({
+        source_type: sourceTypeString,
+        entry_type: entryTypeString,
+        image_key: data.image_key,
+        file_size: selectedImage.size,
+      });
 
       router.push(BROWSER_PATH.LABEL.LABELING(data.image_key));
     } catch (error) {
