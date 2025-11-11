@@ -16,5 +16,6 @@ export interface GAEventParams {
     entry_type?: string;
     file_size?: number;
     image_key?: string;
+    landing_path?: string;
   };
 }
