@@ -21,7 +21,8 @@ interface UseImageUploadReturn {
 
 export const useImageUpload = (
   sourceType: ImageSourceType | null,
-  entryType: EntryType
+  entryType: EntryType,
+  landingPath: 'quiz' | 'direct' | null
 ): UseImageUploadReturn => {
   const router = useRouter();
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
