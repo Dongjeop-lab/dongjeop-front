@@ -2,7 +2,7 @@
 
 import { useRouter, useSearchParams } from 'next/navigation';
 
-import { BROWSER_PATH, SOURCE_QUERY } from '@/lib/path';
+import { BROWSER_PATH, LANDING_PATH_QUERY } from '@/lib/path';
 import { buildUrlWithSearchParams } from '@/lib/queryParams';
 
 const BottomButton = () => {
@@ -13,7 +13,7 @@ const BottomButton = () => {
     const url = buildUrlWithSearchParams(
       BROWSER_PATH.QUIZ.DEFAULT,
       searchParams,
-      { [SOURCE_QUERY.KEY]: SOURCE_QUERY.VALUE.QUIZ }
+      { [LANDING_PATH_QUERY.KEY]: LANDING_PATH_QUERY.VALUE.QUIZ }
     );
     router.push(url);
   };
@@ -22,7 +22,7 @@ const BottomButton = () => {
     const url = buildUrlWithSearchParams(
       BROWSER_PATH.LABEL.UPLOAD,
       searchParams,
-      { [SOURCE_QUERY.KEY]: SOURCE_QUERY.VALUE.DIRECT }
+      { [LANDING_PATH_QUERY.KEY]: LANDING_PATH_QUERY.VALUE.DIRECT }
     );
     router.push(url);
   };

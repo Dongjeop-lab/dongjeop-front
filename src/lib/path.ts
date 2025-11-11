@@ -24,8 +24,8 @@ export const ENTRY_QUERY = {
   VALUE: 'share',
 } as const;
 
-export const SOURCE_QUERY = {
-  KEY: 'source',
+export const LANDING_PATH_QUERY = {
+  KEY: 'landing_path',
   VALUE: {
     QUIZ: 'quiz', // 퀴즈를 통한 진입
     DIRECT: 'direct', // 랜딩 페이지에서 직접 진입
