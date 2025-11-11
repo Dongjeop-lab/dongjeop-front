@@ -5,6 +5,8 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { BROWSER_PATH, LANDING_PATH_QUERY } from '@/lib/path';
 import { buildUrlWithSearchParams } from '@/lib/queryParams';
 
+import { landingAnalytics } from '../_utils/analytics';
+
 const BottomButton = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -15,6 +17,11 @@ const BottomButton = () => {
       searchParams,
       { [LANDING_PATH_QUERY.KEY]: LANDING_PATH_QUERY.VALUE.QUIZ }
     );
+
+    landingAnalytics.trackCTAClick({
+      cta_type: 'quiz',
+    });
+
     router.push(url);
   };
 
@@ -24,6 +31,11 @@ const BottomButton = () => {
       searchParams,
       { [LANDING_PATH_QUERY.KEY]: LANDING_PATH_QUERY.VALUE.DIRECT }
     );
+
+    landingAnalytics.trackCTAClick({
+      cta_type: 'direct_upload',
+    });
+
     router.push(url);
   };
 
