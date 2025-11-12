@@ -4,6 +4,11 @@ export const GAEventName = {
     BUTTON_CLICK: 'upload_button_click',
     COMPLETED: 'upload_completed',
   },
+
+  // 랜딩페이지 CTA 클릭 이벤트
+  LANDING: {
+    CTA_CLICK: 'landing_cta_click',
+  },
 } as const;
 
 /**
@@ -16,5 +21,11 @@ export interface GAEventParams {
     entry_type?: string;
     file_size?: number;
     image_key?: string;
+    landing_path?: string;
+  };
+
+  // 랜딩페이지 CTA 클릭 이벤트 관련 파라미터
+  LANDING: {
+    cta_type: 'quiz' | 'direct_upload';
   };
 }
