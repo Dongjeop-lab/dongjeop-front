@@ -1,10 +1,11 @@
 'use client';
 import { AnimatePresence, motion } from 'motion/react';
 import Image from 'next/image';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
 import { BROWSER_PATH } from '@/lib/path';
+import { buildUrlWithSearchParams } from '@/lib/queryParams';
 import { cn } from '@/lib/utils';
 
 const STEP_DESCRIPTION = [
@@ -19,6 +20,7 @@ export const QuizFinishStep = () => {
   const [step, setStep] = useState(0);
 
   const router = useRouter();
+  const searchParams = useSearchParams();
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -30,11 +32,15 @@ export const QuizFinishStep = () => {
 
   useEffect(() => {
     const timer = setTimeout(() => {
-      router.push(BROWSER_PATH.LABEL.UPLOAD);
+      const url = buildUrlWithSearchParams(
+        BROWSER_PATH.LABEL.UPLOAD,
+        searchParams
+      );
+      router.push(url);
     }, ROUTE_TO_LABEL_UPLOAD_DELAY);
 
     return () => clearTimeout(timer);
-  }, [router]);
+  }, [router, searchParams]);
 
   return (
     <>

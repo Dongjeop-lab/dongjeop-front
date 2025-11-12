@@ -21,7 +21,8 @@ interface UseImageUploadReturn {
 
 export const useImageUpload = (
   sourceType: ImageSourceType | null,
-  entryType: EntryType
+  entryType: EntryType,
+  landingPath: 'quiz' | 'direct' | null
 ): UseImageUploadReturn => {
   const router = useRouter();
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
@@ -106,6 +107,7 @@ export const useImageUpload = (
         entry_type: entryTypeString,
         image_key: data.image_key,
         file_size: selectedImage.size,
+        ...(landingPath && { landing_path: landingPath }), // null이면 포함 X
       });
 
       router.push(BROWSER_PATH.LABEL.LABELING(data.image_key));
