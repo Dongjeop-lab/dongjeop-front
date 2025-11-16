@@ -15,7 +15,8 @@ export const getEntryTypeParam = (
 export const getLandingPathParam = (params: {
   [key: string]: string | string[] | undefined;
 }) => {
-  const landingPath = params[LANDING_PATH_QUERY.KEY];
+  const rawValue = params[LANDING_PATH_QUERY.KEY];
+  const landingPath = Array.isArray(rawValue) ? rawValue[0] : rawValue;
 
   if (
     landingPath === LANDING_PATH_QUERY.VALUE.QUIZ ||
