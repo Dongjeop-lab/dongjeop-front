@@ -90,19 +90,18 @@ const UploadContainer = ({ entryType, landingPath }: UploadContainerProps) => {
             onClick={openImagePicker}
           >
             {imagePreview ? (
-              <>
+              <div className='relative inline-block max-h-[280px]'>
                 <Image
                   src={imagePreview}
                   alt='선택된 사진 미리보기'
-                  width={0}
-                  height={0}
-                  sizes='100vw'
-                  className='h-auto max-h-[280px] w-auto rounded-2xl object-contain'
+                  width={280}
+                  height={280}
+                  className='block h-auto max-h-[280px] w-auto rounded-2xl object-contain'
                   unoptimized
                 />
                 <button
                   type='button'
-                  className='absolute top-2 right-2 cursor-pointer'
+                  className='absolute top-2 right-2 z-10 cursor-pointer'
                   onClick={handleImageReset}
                   aria-label='사진 선택 취소'
                 >
@@ -114,7 +113,7 @@ const UploadContainer = ({ entryType, landingPath }: UploadContainerProps) => {
                     height={32}
                   />
                 </button>
-              </>
+              </div>
             ) : (
               <>
                 <Image
