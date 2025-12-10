@@ -44,11 +44,16 @@ const LabelPage = () => {
 
   const stepParam = Number.parseInt(searchParams.get('step') ?? '', 10);
   const currentStep = Number.isFinite(stepParam)
-    ? Math.min(Math.max(stepParam, STEP_NUMBER.STEP1), STEP_NUMBER.EVENT)
+    ? Math.min(Math.max(stepParam, STEP_NUMBER.STEP1), STEP_NUMBER.STEP3)
     : STEP_NUMBER.STEP1;
 
   const handleNextStep = () => {
-    const nextStep = Math.min(currentStep + 1, STEP_NUMBER.EVENT);
+    if (currentStep === STEP_NUMBER.STEP3) {
+      router.push(BROWSER_PATH.LABEL.FINISH(params.imageKey));
+      return;
+    }
+
+    const nextStep = Math.min(currentStep + 1, STEP_NUMBER.STEP3);
     router.push(`${pathname}?step=${nextStep}`);
   };
 
