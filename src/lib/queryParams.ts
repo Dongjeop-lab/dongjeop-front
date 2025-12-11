@@ -1,13 +1,31 @@
 import { ReadonlyURLSearchParams } from 'next/navigation';
 
-import { ENTRY_QUERY } from '@/lib/path';
+import { ENTRY_QUERY, LANDING_PATH_QUERY } from '@/lib/path';
 import { EntryType } from '@/types/api/upload';
 
+// 친구 공유 링크를 통해 진입했는지 확인
 export const getEntryTypeParam = (
   params: Record<string, string | string[] | undefined>
 ): EntryType => {
   const entry = Array.isArray(params.entry) ? params.entry[0] : params.entry;
   return entry === ENTRY_QUERY.VALUE ? EntryType.SHARE : EntryType.NORMAL;
+};
+
+// 랜딩 페이지에서의 진입 경로 확인 (퀴즈 참여 or 바로 업로드)
+export const getLandingPathParam = (params: {
+  [key: string]: string | string[] | undefined;
+}) => {
+  const rawValue = params[LANDING_PATH_QUERY.KEY];
+  const landingPath = Array.isArray(rawValue) ? rawValue[0] : rawValue;
+
+  if (
+    landingPath === LANDING_PATH_QUERY.VALUE.QUIZ ||
+    landingPath === LANDING_PATH_QUERY.VALUE.DIRECT
+  ) {
+    return landingPath;
+  }
+
+  return null;
 };
 
 /**

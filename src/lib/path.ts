@@ -24,6 +24,14 @@ export const ENTRY_QUERY = {
   VALUE: 'share',
 } as const;
 
+export const LANDING_PATH_QUERY = {
+  KEY: 'landing_path',
+  VALUE: {
+    QUIZ: 'quiz', // 퀴즈를 통한 진입
+    DIRECT: 'direct', // 랜딩 페이지에서 직접 진입
+  },
+} as const;
+
 const DEFAULT_API_ENDPOINT = '/api/v1';
 
 export const API_PATH = {

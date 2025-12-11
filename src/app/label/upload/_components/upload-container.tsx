@@ -13,12 +13,13 @@ import UploadGuide from './upload-guide';
 
 interface UploadContainerProps {
   entryType: EntryType;
+  landingPath: 'quiz' | 'direct' | null;
 }
 
 // 카메라 촬영 감지를 위한 임계값 (2분)
 const CAMERA_DETECTION_THRESHOLD_MS = 2 * 60 * 1000;
 
-const UploadContainer = ({ entryType }: UploadContainerProps) => {
+const UploadContainer = ({ entryType, landingPath }: UploadContainerProps) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [sourceType, setSourceType] = useState<ImageSourceType | null>(null);
   const [isOpen, setIsOpen] = useState(false);
@@ -29,7 +30,7 @@ const UploadContainer = ({ entryType }: UploadContainerProps) => {
     handleImageChange,
     handleImageReset,
     handleImageUpload,
-  } = useImageUpload(sourceType, entryType);
+  } = useImageUpload(sourceType, entryType, landingPath);
 
   const openImagePicker = () => {
     if (imagePreview) return;

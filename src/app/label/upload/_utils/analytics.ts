@@ -20,7 +20,8 @@ export const uploadAnalytics = {
         GAEventParams['UPLOAD'],
         'source_type' | 'entry_type' | 'image_key' | 'file_size'
       >
-    >
+    > &
+      Pick<GAEventParams['UPLOAD'], 'landing_path'> // landing_path는 optional (랜딩 페이지를 거치지 않고 직접 진입한 경우 null)
   ) => {
     sendGAEvent(GAEventName.UPLOAD.COMPLETED, params);
   },
