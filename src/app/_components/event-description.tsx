@@ -94,7 +94,7 @@ const EventDescription = () => {
                 className='h-[1.125rem] w-[1.125rem]'
               />
               <p className='text-start text-[#484848]'>
-                <span className='text-[#0D6EF9]'>기여카드</span>를 제시하면
+                <span className='text-[#0D6EF9]'>기여카드</span>를 제시하면{' '}
                 <span className='text-[#0D6EF9]'>제비뽑기</span>에 참여할 수
                 있어요.
               </p>
