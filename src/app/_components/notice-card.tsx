@@ -5,7 +5,7 @@ interface NoticeCardProps {
 
 const NoticeCard = ({ title, children }: NoticeCardProps) => {
   return (
-    <article className='flex w-[19.8125rem] flex-col rounded-xl bg-white p-5'>
+    <article className='mt-3 flex w-[19.8125rem] flex-col rounded-xl bg-white p-5'>
       <header className='mb-4 text-center'>
         <h3 className='text-center text-[1rem] leading-[100%] font-bold tracking-[-0.03125rem] text-[#080808]'>
           {title}
