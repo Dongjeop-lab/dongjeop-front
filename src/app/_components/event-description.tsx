@@ -13,63 +13,60 @@ const EventDescription = () => {
         </div>
       </header>
 
-      {/* 이벤트 기간 */}
-      <time
-        className='mb-1.5 text-center text-[0.875rem] leading-[1.375rem] font-normal tracking-[-0.03125rem] text-gray-600'
-        dateTime='2024-10-15/2024-11-14'
-      >
-        10월 24일(금) ~ 11월 23일(일) 동안
-      </time>
-
       {/* 메인 안내 문구 */}
       <article className='mb-9 text-center'>
+        <p className='mb-[6px] text-center text-[0.875rem] leading-[1.375rem] font-normal tracking-[-0.03125rem] text-[#000000] opacity-71'>
+          모두콘 2025
+        </p>
         <h2 className='text-center text-[1.125rem] leading-[1.5rem] font-bold tracking-[-0.03125rem]'>
-          사진을 업로드한 참여자 중
+          사진을 업로드한
           <br />
-          <span className='text-info'>상위 10명에게</span> 굿즈를 드려요
+          <span className='text-info'>20명</span>에게 선물을 드려요
         </h2>
       </article>
 
       {/* 상품 정보 목록 */}
       <div className='flex w-full flex-col items-center'>
-        {/* 1-3등 상품 */}
+        {/* 1등 상품 */}
         <RewardCard
-          rank='1-3등 상품'
-          title='카카오 프렌즈 피규어 조명 + 계단뿌셔클럽 양말'
-          firstImageSrc='/images/home/event-reward-image1.svg'
-          secondImageSrc='/images/home/event-reward-image4.svg'
-          firstImageAlt='카카오 프렌즈 피규어 조명'
-          secondImageAlt='계단뿌셔클럽 양말'
+          rank='1등 상품'
+          title={
+            <>
+              카카오 꿈나라 달나라 춘식이&라이언
+              <br />
+              무드등 블루투스 스피커
+            </>
+          }
+          firstImageSrc='/images/home/reward-speaker.svg'
+          firstImageAlt='무드등 블루투스 스피커'
           className='rounded-t-xl bg-white'
+          firstImageSize={{ width: 148, height: 111 }}
         />
 
-        {/* 4-6등 상품 */}
+        {/* 2등 상품 */}
         <RewardCard
-          rank='4-6등 상품'
-          title='카카오 오덴세 텀블러 + 계단뿌셔클럽 양말'
-          firstImageSrc='/images/home/event-reward-image2.svg'
-          secondImageSrc='/images/home/event-reward-image4.svg'
-          firstImageAlt='카카오 오덴세 텀블러'
-          secondImageAlt='계단뿌셔클럽 양말'
+          rank='2등 상품 (3명)'
+          title='카카오 미니 손난로 + 보조 배터리'
+          firstImageSrc='/images/home/reward-rion.svg'
+          secondImageSrc='/images/home/reward-battery.svg'
+          firstImageAlt='카카오 미니 손난로'
+          secondImageAlt='보조 배터리'
           className='bg-[#F4FAFF]'
+          firstImageSize={{ width: 73, height: 86 }}
+          secondImageSize={{ width: 56, height: 76 }}
         />
 
         {/* 7-10등 상품 */}
         <RewardCard
-          rank='7-10등 상품'
-          title='카카오 키링 인형 + 계단뿌셔클럽 양말'
-          firstImageSrc='/images/home/event-reward-image3.svg'
-          secondImageSrc='/images/home/event-reward-image4.svg'
-          firstImageAlt='카카오 키링 인형'
-          secondImageAlt='계단뿌셔클럽 양말'
+          rank='3등 상품 (16명)'
+          title='스타벅스 아이스 카페 아메리카노 T'
+          firstImageSrc='/images/home/reward-coffee.svg'
+          firstImageAlt='스타벅스 아이스 카페 아메리카노'
           className='rounded-b-xl bg-white'
+          firstImageSize={{ width: 52, height: 64 }}
         />
 
-        <p className='text-14-regular my-3 text-[#00000050]'>
-          굿즈는 이벤트 진행에 따라 변경될 수 있습니다
-        </p>
-
-        <NoticeCard title='참여 방법 및 지급 일정'>
+        <NoticeCard title='참여 방법'>
           <ul className='flex flex-col gap-y-2.5 leading-5'>
             <li className='flex items-start gap-x-2 tracking-[-2%]'>
               <Image
@@ -81,9 +78,10 @@ const EventDescription = () => {
                 className='h-[1.125rem] w-[1.125rem]'
               />
               <p className='text-start text-[#484848]'>
-                사진 등록 시{' '}
-                <span className='text-[#0D6EF9]'>전화번호를 입력한 경우</span>
-                <br />에 한해 참여로 인정됩니다.
+                사진 등록 후 <span className='text-[#0D6EF9]'>동접 부스</span>에
+                방문해 <span className='text-[#0D6EF9]'>기여카드</span>를
+                <br />
+                보여주세요.
               </p>
             </li>
             <li className='flex items-start gap-x-2 tracking-[-2%]'>
@@ -96,10 +94,9 @@ const EventDescription = () => {
                 className='h-[1.125rem] w-[1.125rem]'
               />
               <p className='text-start text-[#484848]'>
-                이벤트 기간 종료 후{' '}
-                <span className='text-[#0D6EF9]'>11월 28(금)</span>에 기재한
-                <br />
-                연락처로 개별 안내 드려요.
+                <span className='text-[#0D6EF9]'>기여카드</span>를 제시하면
+                <span className='text-[#0D6EF9]'>제비뽑기</span>에 참여할 수
+                있어요.
               </p>
             </li>
           </ul>
