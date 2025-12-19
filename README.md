@@ -165,7 +165,7 @@ sequenceDiagram
 
 **콜로케이션(Colocation) 패턴**을 사용해 기능별로 관련 파일을 한 곳에 모아 관리했습니다.
 
-```
+```bash
 dongjeop-front/
 ├── .github/                    # GitHub 설정 (GitHub Actions CI/CD, 이슈/PR 템플릿)
 ├── public/                     # 정적 파일 (fonts, icons, images)
