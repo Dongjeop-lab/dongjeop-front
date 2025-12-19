@@ -28,8 +28,6 @@ LAB 내 **실내 접근성 분석 AI 모델** 개발을 위한 [**데이터셋 �
 
 <!-- ## 주요 기능 -->
 
-<!-- ## 유저 플로우 -->
-
 ## 🛠️ 기술 스택
 
 - **Core** : Next.js 15, React 19, TypeScript
@@ -39,6 +37,61 @@ LAB 내 **실내 접근성 분석 AI 모델** 개발을 위한 [**데이터셋 �
 - **Deployment**: Kakao Cloud, Docker
 - **Dev Tools & Analytics**: ESLint, Prettier, Google Analytics
 
+## 📊 시퀀스 다이어그램
+
+### 📤 이미지 업로드 및 라벨링
+
+```mermaid
+sequenceDiagram
+  autonumber
+  actor User as 사용자
+  participant Upload as 업로드
+  participant API as 서버
+  participant Label as 라벨링
+  participant Finish as 완료
+
+  User->>Upload: 이미지 선택 및 약관 동의
+  Upload->>API: 이미지 업로드
+  API-->>Upload: imageKey 발급
+  
+  Upload->>Label: 라벨링 페이지 이동
+  User->>Label: 접근성 정보 입력 (3단계)
+  Label->>API: 라벨링 데이터 저장
+  
+  Label->>Finish: 완료 페이지 이동
+  User->>Finish: 기여 카드 다운로드
+  User->>Finish: 공유 URL 복사
+  ```
+
+### 🎯 퀴즈
+
+```mermaid
+sequenceDiagram
+  autonumber
+  actor User as 사용자
+  participant Quiz as 퀴즈 페이지
+  participant Upload as 업로드 페이지
+
+  User->>Quiz: /quiz 접근
+  
+  Note over User,Quiz: Step 1 - OX 퀴즈
+  User->>Quiz: 답안 선택 (O/X)
+  Quiz->>Quiz: 정답 여부 + 해설 표시
+  User->>Quiz: 다음 버튼 클릭
+  
+  Note over User,Quiz: Step 2 - 틀린그림찾기
+  User->>Quiz: 이미지 클릭 (접근성 문제 찾기)
+  Quiz->>Quiz: 발견 영역 카운트
+  Quiz->>Quiz: 모든 영역 발견 시 해설 표시
+  User->>Quiz: 다음 버튼 클릭
+  
+  Note over User,Quiz: Step 3 - OX 퀴즈
+  User->>Quiz: 답안 선택 (O/X)
+  Quiz->>Quiz: 정답 여부 + 해설 표시
+  User->>Quiz: 다음 버튼 클릭
+  
+  Quiz->>Upload: 업로드 페이지로 이동
+```
 
 ## 📁 프로젝트 구조
 
