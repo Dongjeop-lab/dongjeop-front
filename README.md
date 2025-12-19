@@ -1,217 +1,106 @@
-# 🗺️ 동접 (DongJeop) Frontend
+# [테크포임팩트 2기] 동접 LAB
 
-> **이동약자와 비이동약자 모두가 동등한 접근성을 가질 수 있는 실내 정보 수집 플랫폼**
+> **『동접』은 이동약자와 비이동약자 모두가 동등한 접근성을 가지길 바라는 마음으로 지어졌습니다.**<br/>
+모든 장소의 물리적·환경적 접근성을 완벽하게 해결하는 데에는 한계가 있지만, **정보에 대한 접근성만큼은 누구에게나 공평하고 정확하게 제공**하고자 합니다.
 
-『동접』은 이동약자와 비이동약자 모두가 동등한 접근성을 가지길 바라는 마음으로 지어졌습니다. 모든 장소의 물리적이고 환경적인 접근성을 완벽하게 해결하는 데에는 한계가 있겠지만, 최소한 **정보에 대한 접근성만큼은 누구에게나 공평하고 정확하게 제공**하고자 합니다.
+> 본 서비스는 [카카오임팩트](https://www.kakaoimpact.org/)와 [계단뿌셔클럽](https://staircrusher.club/)의 지원, [테크포임팩트](https://techforimpact.io/) 커뮤니티의 기여로 개발되었습니다.
 
-## 🎯 주요 기능
+## ♿️ 서비스 개요
+<!-- POSTER -->
+<p align="center">
+  <img src="public/images/readme/insta.png" alt="poster1" width="800">
+</p>
 
-- **🗺️ 지도 기반 위치 검색**: 실내 접근성 정보를 확인하고 싶은 장소 검색
-- **📷 이미지 업로드**: 해당 위치의 접근성 관련 사진 업로드 및 공유
-- **📝 정보 입력**: 가게/시설의 접근성 정보 상세 입력 (경사로, 화장실, 출입구 등)
-- **👥 커뮤니티**: 이동약자를 위한 정보 공유 및 소통
+<p align="center">
+  <img src="public/images/readme/poster.png" alt="poster" height="500" style="margin-right: 20px;">
+  <img src="public/images/readme/intro.png" alt="intro" height="500">
+</p>
+
+LAB 내 **실내 접근성 분석 AI 모델** 개발을 위한 [**데이터셋 수집 캠페인 서비스**](www.dongjeop.com/)입니다.
+
+**공감형 퀴즈**를 통해 이동약자의 관점을 이해하고, 직접 촬영한 사진에 **접근성 정보를 라벨링**하여 AI 학습 데이터를 구축합니다. 참여 완료 시 **기여 카드**를 발급하고 SNS 공유 기능을 제공하여 캠페인 확산을 도모합니다.
+
+- 🌍 이동약자의 접근성 불편 해소를 위한 사회적 인식 확대 및 공감 유도
+- 📸 식당/카페 등의 실내 사진 데이터 수집
+- 🏷️ 사용자 참여형 라벨링
+- 🎮 게임화 요소를 통한 참여 동기 부여
+- 🔗 SNS 공유를 통한 캠페인 확산
+
+<!-- ## 주요 기능 -->
+
+<!-- ## 유저 플로우 -->
 
 ## 🛠️ 기술 스택
 
-### **Frontend**
-- **Framework**: [Next.js 15](https://nextjs.org) (App Router)
-- **Language**: [TypeScript](https://www.typescriptlang.org)
-- **UI Library**: [React 19](https://react.dev)
-- **Styling**: [Tailwind CSS v4](https://tailwindcss.com)
-- **Build Tool**: [Turbopack](https://turbo.build/pack) (개발 모드)
+- **Core** : Next.js 15, React 19, TypeScript
+- **State Management** : TanStack Query 5
+- **Styling** : Tailwind CSS 4
+- **Animation** : Motion, Lottie
+- **Deployment**: Kakao Cloud, Docker
+- **Dev Tools & Analytics**: ESLint, Prettier, Google Analytics
 
-### **Development**
-- **Linting**: [ESLint](https://eslint.org) + Next.js Config
-- **Type Checking**: TypeScript Compiler
-- **Package Manager**: npm
-- **Version Control**: Git Flow 전략
-
-### **CI/CD & Deployment**
-- **CI/CD**: [GitHub Actions](https://github.com/features/actions)
-- **Quality Gates**: Lint + TypeCheck + Build 검증
-e- **Deployment**: 카카오 클라우드 + nginx + Next.js
-- **Environment**: Development, Dev, Prod
-- **SSL**: Let's Encrypt 자동 갱신
-
-## ⚡ 빠른 시작
-
-### **Prerequisites**
-- Node.js 20.10.0+ 
-- npm 10.0.0+
-- Git
-
-### **설치 및 실행**
-
-```bash
-# 1. 저장소 클론
-git clone https://github.com/Dongjeop-lab/dongjeop-front.git
-cd dongjeop-front
-
-# 2. 의존성 설치
-npm install
-
-# 3. 환경변수 설정
-cp .env.example .env.local
-# .env.local 파일을 열어서 실제 값으로 수정
-
-# 4. 개발 서버 실행 (Turbopack 사용)
-npm run dev
-```
-
-개발 서버가 실행되면 [http://localhost:3000](http://localhost:3000)에서 확인할 수 있습니다.
-
-## 🔧 개발 환경 설정
-
-### **환경변수 파일 구조**
-
-프로젝트는 **극도로 단순한 환경변수 시스템**을 사용합니다:
-
-| 파일명 | 용도 | Git 추적 |
-|--------|------|----------|
-| `.env.local` | 🔒 개인별 설정 (API 키, 백엔드 URL 등) | ❌ 제외됨 |
-| `.env.example` | 📋 개인 설정 가이드 템플릿 | ✅ 커밋됨 |
-
-💡 **기본값들은 Next.js가 자동으로 제공합니다** (localhost:3000, NODE_ENV=development)
-
-### **환경변수 설정 방법**
-
-```bash
-# 개인 환경변수 파일 생성 (필수)
-cp .env.example .env.local
-
-# .env.local 파일을 열어서 개인 설정들 입력:
-# - NEXT_PUBLIC_API_URL=http://localhost:3001 (백엔드 URL)  
-# - NEXT_PUBLIC_MAP_API_KEY=발급받은_API_키 (지도 서비스 키)
-# - 기타 개인별 필요한 설정들
-
-# 그 외 기본값들 (별도 설정 불필요):
-# - localhost:3000 (Next.js 기본 포트)
-# - NODE_ENV=development (npm run dev에서 자동 설정)
-```
-
-### **실제 환경변수 예시**
-
-```bash
-# 클라이언트 접근 가능 (NEXT_PUBLIC_ 접두사)
-NEXT_PUBLIC_API_URL=[미정 - 백엔드 개발 후 설정] (예: http://localhost:3001)
-NEXT_PUBLIC_MAP_API_KEY=[미정 - 지도 서비스 결정 후 발급] (예: Google Maps API Key)
-NEXT_PUBLIC_DOMAIN=localhost:3000                # 개발환경 고정값
-
-# 서버 전용 (민감한 정보)
-# DATABASE_URL=[미정 - 데이터베이스 설정 후 작성] (예: postgresql://...)
-# REVIEW_SECRET_KEY=[미정 - 보안 키 생성 후 설정] (예: random-secret-key)
-```
-
-### **개발 스크립트**
-
-```bash
-# 개발
-npm run dev          # 개발 서버 실행 (Turbopack)
-
-# 품질 검사
-npm run lint         # ESLint 검사
-npm run typecheck    # TypeScript 타입 검사
-npm run ci           # 통합 품질 검사 (lint + typecheck + build)
-
-# 빌드
-npm run build        # 프로덕션 빌드
-npm run start        # 프로덕션 서버 실행
-npm run preview      # 빌드 후 미리보기
-
-# 유틸리티
-npm run clean        # 캐시 및 빌드 파일 정리
-```
 
 ## 📁 프로젝트 구조
 
+**콜로케이션(Colocation) 패턴**을 사용해 기능별로 관련 파일을 한 곳에 모아 관리했습니다.
+
 ```
 dongjeop-front/
+├── .github/                    # GitHub 설정 (GitHub Actions CI/CD, 이슈/PR 템플릿)
+├── public/                     # 정적 파일 (fonts, icons, images)
 ├── src/
-│   ├── app/                    # Next.js App Router
-│   │   ├── globals.css         # 전역 스타일
-│   │   ├── layout.tsx          # 루트 레이아웃
-│   │   ├── page.tsx           # 홈페이지
-│   │   └── api/               # API Routes (향후)
-│   ├── components/            # 재사용 가능한 컴포넌트 (향후)
-│   │   ├── ui/               # 기본 UI 컴포넌트
-│   │   └── map/              # 지도 관련 컴포넌트
-│   ├── features/             # 기능별 모듈 (향후)
-│   │   ├── map/             # 지도 기능
-│   │   └── places/          # 장소 및 리뷰 기능 (이미지 업로드 포함)
-│   ├── lib/                 # 라이브러리 및 유틸리티 (향후)
-│   ├── types/               # TypeScript 타입 정의 (향후)
-│   └── utils/               # 헬퍼 함수 (향후)
-├── public/                   # 정적 파일
-├── .github/                  # GitHub 설정
-│   ├── workflows/           # GitHub Actions
-│   ├── ISSUE_TEMPLATE/      # 이슈 템플릿
-│   └── pull_request_template.md
-└── ...config files
+│   ├── app/                   # Next.js App Router
+│   │   ├── _components/       # 앱 전역 컴포넌트
+│   │   ├── _utils/            # 앱 전역 유틸리티
+│   │   ├── api/               # API 클라이언트
+│   │   │
+│   │   ├── label/             # 라벨링 기능
+│   │   │   ├── [imageKey]/    # 동적 라우트
+│   │   │   │   ├── _components/  # 페이지 전용 컴포넌트
+│   │   │   │   ├── _hooks/       # 페이지 전용 훅
+│   │   │   │   ├── _types/       # 페이지 전용 타입
+│   │   │   │   ├── finish/       # 라벨링 완료 페이지
+│   │   │   │   │   └── page.tsx  # /label/[imageKey]/finish
+│   │   │   │   └── page.tsx      # /label/[imageKey]
+│   │   │   └── upload/        # 이미지 업로드
+│   │   │       └── page.tsx      # /label/upload
+│   │   │
+│   │   ├── quiz/              # 퀴즈 페이지
+│   │   │   └── page.tsx          # /quiz
+│   │   │
+│   │   ├── terms/             # 약관 페이지
+│   │   │   └── page.tsx          # /terms
+│   │   │
+│   │   ├── layout.tsx         # 루트 레이아웃
+│   │   └── page.tsx           # 홈 /
+│   │
+│   ├── components/            # 전역 재사용 컴포넌트
+│   │
+│   ├── contexts/              # React Context (Tanstack Query Provider)
+│   │
+│   ├── lib/                   # 공통 유틸리티 및 설정
+│   │   ├── constants.ts       # 전역 상수
+│   │   ├── ga.ts              # Google Analytics
+│   │   ├── path.ts            # 경로 관리
+│   │   └── utils.ts           # 유틸리티 함수
+│   │
+│   └── types/                 # 전역 TypeScript 타입
+│
+├── Dockerfile                 # Docker 설정
+├── docker-compose.yml         # Docker Compose 설정
+├── next.config.ts             # Next.js 설정
+├── package.json               # 의존성 관리
+├── tsconfig.json              # TypeScript 설정
+└── ...config files            # 기타 설정 파일
 ```
+## 👥 팀원 소개
 
-## 🚀 배포
+<div align="center">
 
-### **배포 환경**
-1. **Prod**: nginx + Next.js 서버 (카카오 클라우드)
-2. **Dev**: 개발 테스트용 환경 (develop 브랜치 자동 배포)
-3. **무중단 배포**: Blue-Green 방식으로 서비스 중단 없는 업데이트
+| 양혜림 | 정유정 | 조재석 |
+|:------:|:------:|:------:|
+| <img src="https://github.com/hyrmzz1.png" alt="양혜림" width="150"> | <img src="https://github.com/dbwjd5864.png" alt="정유정" width="150"> | <img src="https://github.com/Pridesd.png" alt="조재석" width="150"> |
+| FE | FE | FE |
+| [GitHub](https://github.com/hyrmzz1) | [GitHub](https://github.com/dbwjd5864) | [GitHub](https://github.com/Pridesd) |
 
-### **배포 프로세스**
-```bash
-# 배포 전 품질 검사
-npm run ci
-
-# 환경별 자동 배포
-develop 브랜치 push → [미정 - Dev 도메인] (예: dev.dongjeop.com) 자동 배포
-main 브랜치 push → [미정 - Prod 도메인] (예: dongjeop.com) 자동 배포
-
-# 서버 구성
-nginx (80/443) → Next.js 서버 (3000/3001) → [미정 - 카카오 클라우드 서버]
-```
-
-자세한 배포 가이드는 **[README-DEPLOYMENT.md](./README-DEPLOYMENT.md)**를 참조하세요.
-
-## 🔗 API 및 백엔드 연동
-
-### **API 연동 계획**
-```bash
-# 예정된 API 엔드포인트들 (백엔드 개발 후 확정)
-GET    /api/places              # 장소 목록 조회
-POST   /api/places              # 새 장소 정보 추가
-GET    /api/places/:id          # 특정 장소 상세 조회
-POST   /api/places/:id/reviews  # 장소 리뷰 등록 (이미지 포함)
-GET    /api/accessibility       # 접근성 정보 조회
-```
-
-> 📝 **참고**: 백엔드 API는 현재 계획 단계입니다. API 문서(Swagger)가 완성되면 이 섹션을 업데이트할 예정입니다.
-
-## 📚 관련 문서
-
-- **[GitHub 협업 가이드](./README-GITHUB-SETUP.md)**: 팀 온보딩, 이슈/PR 템플릿, 자동화 시스템
-- **[배포 가이드](./README-DEPLOYMENT.md)**: 카카오 클라우드 + nginx 배포 설정, 무중단 배포
-- **[환경변수 가이드](./.env.example)**: 개발/프로덕션 환경변수 템플릿
-
-## 🤝 기여하기
-
-1. 이 저장소를 Fork
-2. Feature 브랜치 생성 (`git checkout -b feature/amazing-feature`)
-3. 변경사항 커밋 (`git commit -m 'feat: Add amazing feature'`)
-4. 브랜치에 Push (`git push origin feature/amazing-feature`)
-5. Pull Request 생성
-
-자세한 협업 가이드는 **[README-GITHUB-SETUP.md](./README-GITHUB-SETUP.md)**를 참조하세요.
-
-## 👥 팀
-
-- **[@jyj0216jyj](https://github.com/jyj0216jyj)**: 프로젝트 리드, 지도 기능, GitHub 설정
-- **[@hyrmzz1](https://github.com/hyrmzz1)**: UI/UX, 컴포넌트, 업로드 기능
-
-## 📄 라이선스
-
-이 프로젝트는 MIT 라이선스 하에 있습니다. 자세한 내용은 [LICENSE](LICENSE) 파일을 참조하세요.
-
----
-
-> 💡 **프로젝트 상태**: 초기 개발 단계  
-> 🔄 **최종 업데이트**: 2024년 12월  
-> 📧 **문의**: GitHub Issues 또는 담당자에게 연락
+</div>
