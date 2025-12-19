@@ -29,24 +29,68 @@ LAB 내 **실내 접근성 분석 AI 모델** 개발을 위한 [**데이터셋 �
 ## ✨ 주요 기능
 
 ### 🎯 공감형 퀴즈
+
+<div align="center">
+  <table>
+    <tr>
+      <td align="center">
+        <img src="public/images/readme/quiz-1.gif" alt="퀴즈 데모" width="200">
+      </td>
+      <td align="center">
+        <img src="public/images/readme/quiz-2.gif" alt="퀴즈 데모" width="200">
+      </td>
+      <td align="center">
+        <img src="public/images/readme/quiz-3.gif" alt="퀴즈 데모" width="200">
+      </td>
+    </tr>
+  </table>
+</div>
+
 이동약자의 관점을 이해할 수 있는 3단계 퀴즈를 제공합니다.
 - **Step 1, 3**: 계단, 통로 너비 등 물리적 접근성에 대한 OX 퀴즈
 - **Step 2**: 틀린그림찾기 방식으로 실제 공간의 접근성 문제 발견
 - 각 단계마다 정답과 해설을 함께 제공
 
 ### 📸 이미지 업로드
+
+<div align="center">
+    <table>
+    <tr>
+        <td><img src="public/images/readme/upload-1.png" alt="screenshot1" width="200"></td>
+        <td><img src="public/images/readme/upload-2.png" alt="screenshot2" width="200"></td>
+        <td><img src="public/images/readme/upload-3.png" alt="screenshot3" width="200"></td>
+    </tr>
+    </table>
+</div>
+
 식당, 카페 등 실내 공간의 접근성 정보를 담은 사진을 쉽게 등록할 수 있습니다.
 - 카메라 촬영 또는 갤러리에서 선택
 - 업로드 가이드 제공
 - 약관 동의를 통한 개인정보 보호
 
 ### 🏷️ 접근성 라벨링
+
+<div align="center">
+    <table>
+    <tr>
+        <td><img src="public/images/readme/labeling-1.png" alt="screenshot1" width="200"></td>
+        <td><img src="public/images/readme/labeling-2.png" alt="screenshot2" width="200"></td>
+        <td><img src="public/images/readme/labeling-3.png" alt="screenshot3" width="200"></td>
+    </tr>
+    </table>
+</div>
+
 업로드한 이미지에 3단계에 걸쳐 접근성 정보를 입력합니다.
 - 계단/턱 유무, 의자 종류, 통로 폭 등 세부 항목별 라벨링
 - 간편한 입력 과정으로 참여 부담 최소화
 - AI 학습을 위한 고품질 데이터 생성
 
 ### 🎁 기여 카드
+
+<p align="center">
+  <img src="public/images/readme/contribute-card.gif" alt="기여카드 데모" width="200">
+</p>
+
 라벨링 완료 시 기여 카드를 발급받을 수 있습니다.
 - 참여 순서가 표시된 개인화 카드 자동 생성
 - 카드 이미지 다운로드
