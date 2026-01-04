@@ -161,6 +161,21 @@ sequenceDiagram
   Quiz->>Upload: 업로드 페이지로 이동
 ```
 
+## 🚀 실행 방법
+
+```bash
+# 설치
+npm install
+
+# 개발 서버 실행
+npm run dev
+```
+
+환경별 설정 파일이 필요합니다. 자세한 내용은 동접 LAB 구글 드라이브의 FE 환경변수 문서를 참고하세요.
+
+- `.env.local`: 실제 API 연결용
+- `.env.development`
+
 ## 📁 프로젝트 구조
 
 **콜로케이션(Colocation) 패턴**을 사용해 기능별로 관련 파일을 한 곳에 모아 관리했습니다.
@@ -175,16 +190,16 @@ dongjeop-front/
 │   │   ├── _utils/            # 앱 전역 유틸리티
 │   │   ├── api/               # API 클라이언트
 │   │   │
-│   │   ├── label/             # 라벨링 기능
-│   │   │   ├── [imageKey]/    # 동적 라우트
+│   │   ├── label/                # 라벨링 기능
+│   │   │   ├── [imageKey]/       # 동적 라우트
 │   │   │   │   ├── _components/  # 페이지 전용 컴포넌트
 │   │   │   │   ├── _hooks/       # 페이지 전용 훅
 │   │   │   │   ├── _types/       # 페이지 전용 타입
 │   │   │   │   ├── finish/       # 라벨링 완료 페이지
-│   │   │   │   │   └── page.tsx  # /label/[imageKey]/finish
-│   │   │   │   └── page.tsx      # /label/[imageKey]
-│   │   │   └── upload/        # 이미지 업로드
-│   │   │       └── page.tsx      # /label/upload
+│   │   │   │   │   └── page.tsx    # /label/[imageKey]/finish
+│   │   │   │   └── page.tsx        # /label/[imageKey]
+│   │   │   └── upload/           # 이미지 업로드
+│   │   │       └── page.tsx        # /label/upload
 │   │   │
 │   │   ├── quiz/              # 퀴즈 페이지
 │   │   │   └── page.tsx          # /quiz
